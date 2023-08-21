@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="EN">
+  <head>
+    <title>NavigationPanel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cerulean/bootstrap.min.css" id="nsd-bootstrap-theme-stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Nasdanika/html@master/model/app.gen/web-resources/css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jstree@3.3.11/dist/themes/default/style.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.1.0/github-markdown.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/styles/default.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.21.2/dist/bootstrap-vue.css">
+    <script src="https://cdn.jsdelivr.net/gh/Nasdanika/html@master/model/app.gen/web-resources/js/common.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Nasdanika/html@master/model/app.gen/web-resources/js/dark-head.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jstree@3.3.11/dist/jstree.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.3.1/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.21.2/dist/bootstrap-vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Nasdanika/html@master/model/app.gen/web-resources/js/components/table.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/components/table.js"></script><!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9BRJVLK8CC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9BRJVLK8CC');
+</script>    
+
+<script src="../../../search-documents.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/olivernn/lunr.js@v2.3.9/lunr.js"></script>
+
+<script>
+// Script for full-text search of JsTree
+
+window.nsdJsTreeSearchCallback = function(str, node) { 
+    var sf = new $.vakata.search(str, true, { caseSensitive : false, fuzzy : false }); 
+    if (sf.search(node.text).isMatch) {
+		return true;
+	} 
+    let searchResult = this.search(str); 
+    for (const sr in searchResult) {
+        if (searchResult[sr].ref === node.original['data-nsd-label-uuid']) {
+            return true;
+        } 
+    } 
+    return false; 
+}.bind(lunr(function () {
+			  this.ref('id');
+			  this.field('title');
+			  this.field('content');
+
+			  for (const key in searchDocuments) {
+				  let doc = searchDocuments[key];
+				this.add({
+					id: doc['action-uuid'],
+					title: doc.title,
+					path: doc.path,
+					content: doc.content
+				});  
+			  }
+			}));
+</script>
+</head>
+  <body>
+    <div class="container-fluid nsd-app-container">
+      <div class="row">
+        <div class="col nsd-app-header">
+          <a href="https://github.com/Nasdanika-Models" data-nsd-label-uuid="6b2673b5-a9ea-4d6c-8aa1-4abd129c9fab" class="nsd-app-header-title">
+            <img src="https://docs.nasdanika.org/images/nasdanika-logo.png" class="nsd-app-label-icon">Nasdanika Models</a>
+          <ul class="nav nsd-app-header-navs">
+            <li class="nav-item">
+              <a href="../../../search.html" data-nsd-label-uuid="9d1f8cb0-be7c-42c4-9f5e-3ea6721e9c44" class="nav-link"><span class="fas fa-search nsd-app-label-icon"></span>Search</a>
+            </li>
+            <li class="nav-item">
+              <a href="../../../glossary.html" data-nsd-label-uuid="57c6e350-6ed1-4e3f-a8d0-290de8cc402d" class="nav-link"><span class="fas fa-book nsd-app-label-icon"></span>Glossary</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col nsd-app-navbar">
+          <ul class="navbar navbar-light navbar-expand-lg">
+            <a href="../../../index.html" data-nsd-label-uuid="3c5d0e4a-44ff-4ea2-ab1f-0b8cf859f250" class="navbar-brand">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EPackage.gif" class="nsd-app-label-icon">app</a>
+            <button type="button" data-toggle="collapse" data-target="#nsd_1ai" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"><span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="nsd_1ai" class="collapse navbar-collapse">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                  <a href="../../../classifiers.html" data-nsd-label-uuid="54412692-695c-4d83-8b8f-8ca451e6d8a1" class="nav-link">Classifiers</a>
+                </li>
+              </ul>
+            </div>
+          </ul>
+        </div>
+      </div>
+      <div class="row nsd-app-content-row">
+        <div class="col nsd-app-navigation-panel">
+          <div class="list-group list-group-flush">
+            <a href="../Action/index.html" title="Actions form a hierarchy. Application pages are generated from actions. " data-nsd-label-uuid="7f50660c-fe54-4d80-9416-2e34fda1b360" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon">Action</a>
+            <a href="../ActionReference/index.html" data-nsd-label-uuid="bbce9c17-cc82-42b4-8752-359e8550e981" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon">ActionReference</a>
+            <a href="../ContentPanel/index.html" title="Content panel displays the primary page conent and can have a navigation bar and several navigation panels." data-nsd-label-uuid="b6b997d5-b8e0-4637-ad71-ee9e16524c89" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon">ContentPanel</a>
+            <a href="../Footer/index.html" title="Footer is displayed below the navigation and content panels." data-nsd-label-uuid="ccac9718-47ae-4f7d-8bac-9874f8bbf205" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon">Footer</a>
+            <a href="../Header/index.html" title="Page header has a title on the left and a navigation bar on the right." data-nsd-label-uuid="968579bc-fbfd-489a-9b0c-de785a1d909a" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon">Header</a>
+            <a href="../Label/index.html" title="Label is a text and an icon with a tooltip, notification badge, and help dialog. Labels can have children. Label is a base class for Link." data-nsd-label-uuid="9c2cb74b-f3c6-4b96-a987-a6a42aad9cd5" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon">Label</a>
+            <a href="../Link/index.html" data-nsd-label-uuid="39e73c86-a011-4e20-8ba4-2411c9f1e165" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon">Link</a>
+            <a href="../NavigationBar/index.html" title="Navigation bar has a brand and navigation items." data-nsd-label-uuid="ae5c1615-da05-4413-8a51-e79413dfbcc8" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon">NavigationBar</a><span title="Navigation panel contains navigation items. Supports several styles." data-nsd-label-uuid="7c24d7b0-e9ea-49c9-84df-f7a5011ade16" class="list-group-item list-group-action active"><img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon">NavigationPanel</span>
+            <a href="../NavigationPanelStyle/index.html" data-nsd-label-uuid="e7c1e72f-ff56-4177-9fc2-045a389d33fb" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EEnum.gif" class="nsd-app-label-icon">NavigationPanelStyle</a>
+            <a href="../Page/index.html" title="Application page consisting of several parts - header, navigation bar, navigation panel, content panel, and footer. Page extends Tag, but ``name`` attribute shall not be used - it defaults to ``div``." data-nsd-label-uuid="a0fb8ae0-d0df-4eb5-ad8c-8f06ae8e7341" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon">Page</a>
+            <a href="../PagePart/index.html" title="Base class for page parts." data-nsd-label-uuid="4f511170-6dd9-45df-95af-4337f78a7cd7" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"><i>PagePart</i></a>
+            <a href="../SectionStyle/index.html" data-nsd-label-uuid="fc615076-7952-4e49-8ed3-16a514fd0a2c" class="list-group-item list-group-action">
+              <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EEnum.gif" class="nsd-app-label-icon">SectionStyle</a>
+          </div>
+        </div>
+        <div data-nsd-label-uuid="7c24d7b0-e9ea-49c9-84df-f7a5011ade16" data-nsd-action-uris="uuid:7c24d7b0-e9ea-49c9-84df-f7a5011ade16" class="col nsd-app-content-panel">
+          <div class="container-fluid">
+            <div class="row nsd-app-content-panel-title-and-items-row">
+              <div class="col-auto">
+                <h1><span title="Navigation panel contains navigation items. Supports several styles." data-nsd-label-uuid="7c24d7b0-e9ea-49c9-84df-f7a5011ade16" class="nsd-app-content-panel-title"><img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon">NavigationPanel</span>
+                </h1>
+              </div>
+              <div class="col">
+                <ul class="nav nsd-app-content-panel-navs">
+                  <li class="nav-item">
+                    <a href="attributes.html" data-nsd-label-uuid="7454484d-0fde-400f-aad3-35c1b622a0d8" class="nav-link">
+                      <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EAttribute.gif" class="nsd-app-label-icon">Attributes</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="inheritance.html" data-nsd-label-uuid="8c80511e-f01c-4c3e-b6f5-df4c5c81f1dc" class="nav-link">
+                      <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EGenericSuperType.gif" class="nsd-app-label-icon">Inheritance</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="references.html" data-nsd-label-uuid="d6a21a9a-c8c5-4d62-b6b0-9c86d1b14551" class="nav-link">
+                      <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EReference.gif" class="nsd-app-label-icon">References</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="diagram.html" data-nsd-label-uuid="0f75c259-38a6-4e26-9f36-ce9030ec8901" class="nav-link"><span class="fas fa-project-diagram nsd-app-label-icon"></span>Diagram</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="load-specification.html" data-nsd-label-uuid="92c3494d-45dc-42ab-a9c8-1329f85d174c" class="nav-link">Load specification</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="row nsd-app-content-panel-content-row">
+              <div class="col">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col"><div class="markdown-body"><p>Navigation panel contains navigation items. Supports several styles.</p>
+</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
