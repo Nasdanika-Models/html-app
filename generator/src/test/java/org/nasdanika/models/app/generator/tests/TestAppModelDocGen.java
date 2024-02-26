@@ -27,7 +27,7 @@ import org.nasdanika.html.model.app.AppPackage;
 import org.nasdanika.html.model.app.gen.ActionSiteGenerator;
 import org.nasdanika.html.model.bootstrap.BootstrapPackage;
 import org.nasdanika.html.model.html.HtmlPackage;
-import org.nasdanika.models.app.processors.EcoreGenAppProcessorsFactory;
+import org.nasdanika.models.app.processors.AppEcoreGenProcessorsFactory;
 import org.nasdanika.models.ecore.graph.processors.EcoreActionGenerator;
 import org.nasdanika.models.ecore.graph.processors.EcoreNodeProcessorFactory;
 import org.nasdanika.ncore.NcorePackage;
@@ -45,7 +45,7 @@ public class TestAppModelDocGen {
 		MutableContext context = Context.EMPTY_CONTEXT.fork();
 		Consumer<Diagnostic> diagnosticConsumer = d -> d.dump(System.out, 0);
 		List<Function<URI,Action>> actionProviders = new ArrayList<>();		
-		EcoreGenAppProcessorsFactory ecoreGenExecProcessorFactory = new EcoreGenAppProcessorsFactory(context);		
+		AppEcoreGenProcessorsFactory ecoreGenExecProcessorFactory = new AppEcoreGenProcessorsFactory(context);		
 		EcoreNodeProcessorFactory ecoreNodeProcessorFactory = new EcoreNodeProcessorFactory(
 				context, 
 				(uri, pm) -> {

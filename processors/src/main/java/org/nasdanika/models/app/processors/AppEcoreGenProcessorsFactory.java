@@ -14,7 +14,7 @@ import org.nasdanika.models.ecore.graph.processors.EPackageNodeProcessor;
 import org.nasdanika.models.ecore.graph.processors.EPackageNodeProcessorFactory;
 
 @EPackageNodeProcessorFactory(nsURI = AppPackage.eNS_URI)
-public class EcoreGenAppProcessorsFactory {
+public class AppEcoreGenProcessorsFactory {
 
 	private Context context;
 	
@@ -57,7 +57,7 @@ public class EcoreGenAppProcessorsFactory {
 	@Factory
 	public final SectionStyleProcessorFactory sectionStyleProcessorFactory;	
 	
-	public EcoreGenAppProcessorsFactory(Context context) {
+	public AppEcoreGenProcessorsFactory(Context context) {
 		this.context = context; 
 		actionProcessorFactory = new ActionProcessorFactory(context);
 		actionReferenceProcessorFactory = new ActionReferenceProcessorFactory(context);
