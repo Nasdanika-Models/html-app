@@ -107,7 +107,7 @@ public class TestAppModelDocGen {
 		
 		System.out.println("There are " + errorCount + " site errors");
 		
-		if (errorCount != 90) {
+		if (errorCount != 89) {
 			throw new ExecutionException("There are problems with pages: " + errorCount);
 		}		
 	}
