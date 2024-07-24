@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nasdanika.models.app</groupId>
 	<artifactId>parent</artifactId>
-	<version>2024.7.0</version>
+	<version>2024.7.1</version>
 	<packaging>pom</packaging>
 	<name>Ncore processors, doc generator</name>
 
 	<properties>
-		<core.version>2024.7.0</core.version>
-		<html.version>2024.7.0</html.version>
-		<models.ecore.version>2024.7.0</models.ecore.version>
+		<core.version>2024.7.1</core.version>
+		<html.version>2024.7.1</html.version>
+		<models.ecore.version>2024.7.1</models.ecore.version>
 		<jacoco.version>0.8.12</jacoco.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.javadoc.failOnError>false</maven.javadoc.failOnError>
