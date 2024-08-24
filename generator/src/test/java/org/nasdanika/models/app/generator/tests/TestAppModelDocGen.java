@@ -24,7 +24,7 @@ import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.exec.ExecPackage;
 import org.nasdanika.html.model.app.Action;
 import org.nasdanika.html.model.app.AppPackage;
-import org.nasdanika.html.model.app.gen.ActionSiteGenerator;
+import org.nasdanika.html.model.app.gen.AppSiteGenerator;
 import org.nasdanika.html.model.bootstrap.BootstrapPackage;
 import org.nasdanika.html.model.html.HtmlPackage;
 import org.nasdanika.models.app.processors.AppEcoreGenProcessorsFactory;
@@ -86,7 +86,7 @@ public class TestAppModelDocGen {
 		URI pageTemplateURI = URI.createFileURI(new File(pageTemplateResource).getAbsolutePath());//.appendFragment("/");
 		
 		String siteMapDomain = "https://html-app.models.nasdanika.org";		
-		ActionSiteGenerator actionSiteGenerator = new ActionSiteGenerator() {
+		AppSiteGenerator actionSiteGenerator = new AppSiteGenerator() {
 			
 			protected boolean isDeleteOutputPath(String path) {
 				return !"CNAME".equals(path);				
