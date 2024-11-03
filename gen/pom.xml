@@ -44,18 +44,18 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>app-model</artifactId>
+			<artifactId>model</artifactId>
 			<version>${project.version}</version>
 		</dependency>	
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>org.nasdanika.html</groupId>
 			<artifactId>bootstrap-model-gen</artifactId>
-			<version>${core.version}</version>
+			<version>${html.version}</version>
 		</dependency>	
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>org.nasdanika.html</groupId>
 			<artifactId>jstree</artifactId>
-			<version>${project.version}</version>
+			<version>${html.version}</version>
 		</dependency>	
 		<dependency>
 			<groupId>${project.groupId}</groupId>

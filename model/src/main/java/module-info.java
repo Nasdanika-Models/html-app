@@ -1,7 +1,7 @@
 import org.nasdanika.capability.CapabilityFactory;
 import org.nasdanika.models.app.util.AppEPackageResourceSetCapabilityFactory;
 
-module org.nasdanika.html.model.app {
+module org.nasdanika.models.app {
 		
 	requires transitive org.nasdanika.html.model.bootstrap;
 	

@@ -43,7 +43,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>app-model-gen</artifactId>
+			<artifactId>gen</artifactId>
 			<version>${project.version}</version>
 		</dependency>	
 	</dependencies>

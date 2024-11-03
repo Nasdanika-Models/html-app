@@ -1,22 +1,22 @@
 import org.nasdanika.capability.CapabilityFactory;
-import org.nasdanika.html.model.app.gen.cli.ActionHelpMixInFactory;
-import org.nasdanika.html.model.app.gen.cli.AppCommandFactory;
-import org.nasdanika.html.model.app.gen.cli.DrawioHtmlAppGeneratorCommandFactory;
-import org.nasdanika.html.model.app.gen.cli.HelpSiteCommandFactory;
-import org.nasdanika.html.model.app.gen.cli.HtmlAppGeneratorCommandFactory;
-import org.nasdanika.html.model.app.gen.cli.SiteGeneratorCommandFactory;
+import org.nasdanika.models.app.cli.ActionHelpMixInFactory;
+import org.nasdanika.models.app.cli.AppCommandFactory;
+import org.nasdanika.models.app.cli.DrawioHtmlAppGeneratorCommandFactory;
+import org.nasdanika.models.app.cli.HelpSiteCommandFactory;
+import org.nasdanika.models.app.cli.HtmlAppGeneratorCommandFactory;
+import org.nasdanika.models.app.cli.SiteGeneratorCommandFactory;
 
-module org.nasdanika.html.model.app.gen.cli {
+module org.nasdanika.models.app.cli {
 	
-	exports org.nasdanika.html.model.app.gen.cli;
+	exports org.nasdanika.models.app.cli;
 
-	requires transitive org.nasdanika.html.model.app.gen;		
+	requires transitive org.nasdanika.models.app.gen;		
 	requires transitive org.nasdanika.cli;
 	requires spring.core;
 	requires org.eclipse.emf.ecore.xmi;
-	requires org.nasdanika.html.model.app.graph;
+	requires org.nasdanika.models.app.graph;
 	
-	opens org.nasdanika.html.model.app.gen.cli to info.picocli;
+	opens org.nasdanika.models.app.cli to info.picocli;
 	
 	provides CapabilityFactory with 
 		AppCommandFactory, 
