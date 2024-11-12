@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nasdanika.models.app</groupId>
 	<artifactId>parent</artifactId>
-	<version>2024.10.0</version>
+	<version>2024.11.0</version>
 	<packaging>pom</packaging>
 	<name>Ncore processors, doc generator</name>
 
