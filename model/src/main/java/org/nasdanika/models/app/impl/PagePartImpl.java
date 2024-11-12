@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.InternalEList;
-import org.nasdanika.html.model.bootstrap.impl.BootstrapElementImpl;
+import org.nasdanika.models.bootstrap.impl.BootstrapElementImpl;
 import org.nasdanika.models.app.AppPackage;
 import org.nasdanika.models.app.PagePart;
 

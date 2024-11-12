@@ -7,8 +7,8 @@ import org.eclipse.emf.ecore.EPackage;
 
 import org.eclipse.emf.ecore.util.Switch;
 import org.nasdanika.common.Adaptable;
-import org.nasdanika.html.model.bootstrap.BootstrapElement;
-import org.nasdanika.html.model.bootstrap.Item;
+import org.nasdanika.models.bootstrap.BootstrapElement;
+import org.nasdanika.models.bootstrap.Item;
 import org.nasdanika.html.model.html.HtmlElement;
 import org.nasdanika.models.app.*;
 import org.nasdanika.ncore.Marked;

@@ -4,7 +4,7 @@ package org.nasdanika.models.app;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.nasdanika.html.model.bootstrap.BootstrapElement;
+import org.nasdanika.models.bootstrap.BootstrapElement;
 
 /**
  * <!-- begin-user-doc -->

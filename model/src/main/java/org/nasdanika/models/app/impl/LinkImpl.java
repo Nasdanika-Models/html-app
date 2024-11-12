@@ -5,7 +5,7 @@ package org.nasdanika.models.app.impl;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.nasdanika.html.model.bootstrap.Modal;
+import org.nasdanika.models.bootstrap.Modal;
 import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.AppPackage;
 import org.nasdanika.models.app.Link;

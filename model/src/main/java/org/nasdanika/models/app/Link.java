@@ -4,7 +4,7 @@ package org.nasdanika.models.app;
 
 import org.eclipse.emf.common.util.URI;
 import org.nasdanika.common.Util;
-import org.nasdanika.html.model.bootstrap.Modal;
+import org.nasdanika.models.bootstrap.Modal;
 
 
 /**

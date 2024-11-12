@@ -6,8 +6,8 @@ import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.nasdanika.html.model.bootstrap.Appearance;
-import org.nasdanika.html.model.bootstrap.impl.BootstrapElementImpl;
+import org.nasdanika.models.bootstrap.Appearance;
+import org.nasdanika.models.bootstrap.impl.BootstrapElementImpl;
 import org.nasdanika.models.app.AppPackage;
 import org.nasdanika.models.app.ContentPanel;
 import org.nasdanika.models.app.Footer;

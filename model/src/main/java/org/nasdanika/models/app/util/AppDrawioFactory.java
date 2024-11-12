@@ -10,7 +10,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.nasdanika.common.Util;
 import org.nasdanika.emf.SpecLoadingDrawioFactory;
 import org.nasdanika.exec.ExecPackage;
-import org.nasdanika.html.model.bootstrap.BootstrapPackage;
+import org.nasdanika.models.bootstrap.BootstrapPackage;
 import org.nasdanika.html.model.html.HtmlPackage;
 import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.AppPackage;

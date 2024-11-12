@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.nasdanika.common.Context;
-import org.nasdanika.html.model.bootstrap.util.BootstrapObjectLoaderExecutionParticipant;
+import org.nasdanika.models.bootstrap.util.BootstrapObjectLoaderExecutionParticipant;
 import org.nasdanika.models.app.AppPackage;
 
 /**

@@ -84,7 +84,7 @@ public interface NavigationBar extends PagePart {
 	 * @return the value of the '<em>Expand</em>' attribute.
 	 * @see #setExpand(Breakpoint)
 	 * @see org.nasdanika.models.app.AppPackage#getNavigationBar_Expand()
-	 * @model default="LARGE" dataType="org.nasdanika.html.model.bootstrap.Breakpoint"
+	 * @model default="LARGE" dataType="org.nasdanika.models.bootstrap.Breakpoint"
 	 * @generated
 	 */
 	Breakpoint getExpand();
@@ -106,7 +106,7 @@ public interface NavigationBar extends PagePart {
 	 * @return the value of the '<em>Background</em>' attribute.
 	 * @see #setBackground(Color)
 	 * @see org.nasdanika.models.app.AppPackage#getNavigationBar_Background()
-	 * @model dataType="org.nasdanika.html.model.bootstrap.Color"
+	 * @model dataType="org.nasdanika.models.bootstrap.Color"
 	 * @generated
 	 */
 	Color getBackground();

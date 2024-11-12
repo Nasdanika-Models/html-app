@@ -9,8 +9,8 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 import org.eclipse.emf.ecore.EObject;
 import org.nasdanika.common.Adaptable;
-import org.nasdanika.html.model.bootstrap.BootstrapElement;
-import org.nasdanika.html.model.bootstrap.Item;
+import org.nasdanika.models.bootstrap.BootstrapElement;
+import org.nasdanika.models.bootstrap.Item;
 import org.nasdanika.html.model.html.HtmlElement;
 import org.nasdanika.models.app.*;
 import org.nasdanika.ncore.Marked;
@@ -394,13 +394,13 @@ public class AppAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.nasdanika.html.model.bootstrap.BootstrapElement <em>Element</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.nasdanika.models.bootstrap.BootstrapElement <em>Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.nasdanika.html.model.bootstrap.BootstrapElement
+	 * @see org.nasdanika.models.bootstrap.BootstrapElement
 	 * @generated
 	 */
 	public Adapter createBootstrapElementAdapter() {
@@ -408,13 +408,13 @@ public class AppAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.nasdanika.html.model.bootstrap.Item <em>Item</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.nasdanika.models.bootstrap.Item <em>Item</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.nasdanika.html.model.bootstrap.Item
+	 * @see org.nasdanika.models.bootstrap.Item
 	 * @generated
 	 */
 	public Adapter createItemAdapter() {

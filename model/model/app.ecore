@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="app" nsURI="ecore://nasdanika.org/html/app" nsPrefix="org.nasdanika.html.model.app">
-  <eClassifiers xsi:type="ecore:EClass" name="Label" eSuperTypes="../../org.nasdanika.html.model.bootstrap/model/bootstrap.ecore#//BootstrapElement ../../org.nasdanika.html.model.bootstrap/model/bootstrap.ecore#//Item">
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="app" nsURI="ecore://app.models.nasdanika.org" nsPrefix="org.nasdanika.html.model.app">
+  <eClassifiers xsi:type="ecore:EClass" name="Label" eSuperTypes="../../org.nasdanika.models.bootstrap/model/bootstrap.ecore#//BootstrapElement ../../org.nasdanika.models.bootstrap/model/bootstrap.ecore#//Item">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="text" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
@@ -28,7 +28,7 @@
         <details key="exclusive-with" value="location"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="modal" eType="ecore:EClass ../../org.nasdanika.html.model.bootstrap/model/bootstrap.ecore#//Modal"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="modal" eType="ecore:EClass ../../org.nasdanika.models.bootstrap/model/bootstrap.ecore#//Modal"
         containment="true">
       <eAnnotations source="urn:org.nasdanika">
         <details key="homogeneous" value="true"/>
@@ -59,7 +59,7 @@
     <eLiterals name="Tab" value="7"/>
     <eLiterals name="Table" value="8"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Page" eSuperTypes="../../org.nasdanika.html.model.bootstrap/model/bootstrap.ecore#//BootstrapElement">
+  <eClassifiers xsi:type="ecore:EClass" name="Page" eSuperTypes="../../org.nasdanika.models.bootstrap/model/bootstrap.ecore#//BootstrapElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Application page consisting of several parts - header, navigation bar, navigation panel, content panel, and footer. Page extends Tag, but ``name`` attribute shall not be used - it defaults to ``div``."/>
     </eAnnotations>
@@ -106,14 +106,14 @@
         <details key="homogeneous" value="true"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="contentRowAppearance" eType="ecore:EClass ../../org.nasdanika.html.model.bootstrap/model/bootstrap.ecore#//Appearance"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="contentRowAppearance" eType="ecore:EClass ../../org.nasdanika.models.bootstrap/model/bootstrap.ecore#//Appearance"
         containment="true">
       <eAnnotations source="urn:org.nasdanika">
         <details key="homogeneous" value="true"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PagePart" abstract="true" eSuperTypes="../../org.nasdanika.html.model.bootstrap/model/bootstrap.ecore#//BootstrapElement">
+  <eClassifiers xsi:type="ecore:EClass" name="PagePart" abstract="true" eSuperTypes="../../org.nasdanika.models.bootstrap/model/bootstrap.ecore#//BootstrapElement">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Base class for page parts."/>
     </eAnnotations>
@@ -146,9 +146,9 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dark" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="expand" eType="ecore:EDataType ../../org.nasdanika.html.model.bootstrap/model/bootstrap.ecore#//Breakpoint"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="expand" eType="ecore:EDataType ../../org.nasdanika.models.bootstrap/model/bootstrap.ecore#//Breakpoint"
         defaultValueLiteral="LARGE"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="background" eType="ecore:EDataType ../../org.nasdanika.html.model.bootstrap/model/bootstrap.ecore#//Color"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="background" eType="ecore:EDataType ../../org.nasdanika.models.bootstrap/model/bootstrap.ecore#//Color"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NavigationPanel" eSuperTypes="#//PagePart">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

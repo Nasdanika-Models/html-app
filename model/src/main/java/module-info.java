@@ -3,7 +3,7 @@ import org.nasdanika.models.app.util.AppEPackageResourceSetCapabilityFactory;
 
 module org.nasdanika.models.app {
 		
-	requires transitive org.nasdanika.html.model.bootstrap;
+	requires transitive org.nasdanika.models.bootstrap;
 	
 	exports org.nasdanika.models.app;
 	exports org.nasdanika.models.app.impl;

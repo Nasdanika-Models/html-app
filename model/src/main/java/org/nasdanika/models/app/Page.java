@@ -2,8 +2,8 @@
  */
 package org.nasdanika.models.app;
 
-import org.nasdanika.html.model.bootstrap.Appearance;
-import org.nasdanika.html.model.bootstrap.BootstrapElement;
+import org.nasdanika.models.bootstrap.Appearance;
+import org.nasdanika.models.bootstrap.BootstrapElement;
 
 /**
  * <!-- begin-user-doc -->

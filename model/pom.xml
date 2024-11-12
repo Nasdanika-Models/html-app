@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.nasdanika.models.app</groupId>
-		<version>2024.10.0</version>
+		<version>2024.11.0</version>
 		<artifactId>parent</artifactId>
 		<relativePath>..</relativePath>
 	</parent>
@@ -38,9 +38,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.nasdanika.html</groupId>
-			<artifactId>bootstrap-model</artifactId>
-			<version>${html.version}</version>
+			<groupId>org.nasdanika.models.bootstrap</groupId>
+			<artifactId>model</artifactId>
+			<version>2024.11.0</version>
 		</dependency>
 	</dependencies>
 </project>

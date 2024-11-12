@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
-import org.nasdanika.html.model.bootstrap.BootstrapPackage;
+import org.nasdanika.models.bootstrap.BootstrapPackage;
 
 import org.nasdanika.ncore.NcorePackage;
 

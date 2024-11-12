@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.EValidator;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.nasdanika.exec.ExecPackage;
 import org.nasdanika.exec.resources.ResourcesPackage;
-import org.nasdanika.html.model.bootstrap.BootstrapPackage;
+import org.nasdanika.models.bootstrap.BootstrapPackage;
 import org.nasdanika.html.model.html.HtmlPackage;
 import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.ActionReference;
