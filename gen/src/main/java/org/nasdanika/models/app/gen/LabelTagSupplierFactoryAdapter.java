@@ -26,7 +26,7 @@ import org.nasdanika.html.bootstrap.Color;
 import org.nasdanika.models.app.AppPackage;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.NavigationPanel;
-import org.nasdanika.html.model.bootstrap.gen.BootstrapElementSupplierFactoryAdapter;
+import org.nasdanika.models.bootstrap.gen.BootstrapElementSupplierFactoryAdapter;
 
 public class LabelTagSupplierFactoryAdapter<M extends Label> extends BootstrapElementSupplierFactoryAdapter<M, BootstrapElement<?,?>> {
 	

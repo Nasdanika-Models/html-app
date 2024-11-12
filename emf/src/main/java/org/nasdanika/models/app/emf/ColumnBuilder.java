@@ -3,13 +3,13 @@ package org.nasdanika.models.app.emf;
 import org.eclipse.emf.ecore.ETypedElement;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.models.app.Action;
-import org.nasdanika.html.model.bootstrap.TableCell;
+import org.nasdanika.models.bootstrap.TableCell;
 import org.nasdanika.models.app.emf.EObjectActionResolver.Context;
 
 /**
  * Interface for building table columns.
  * @author Pavel
- * @deprecated Use org.nasdanika.html.model.bootstrap.util.ColumnBuilder
+ * @deprecated Use org.nasdanika.models.bootstrap.util.ColumnBuilder
  */
 @Deprecated
 public interface ColumnBuilder<T> {

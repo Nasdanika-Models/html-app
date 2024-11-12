@@ -1,4 +1,4 @@
-package org.nasdanika.html.model.app.tests;
+package org.nasdanika.models.app.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,7 +17,7 @@ public class TestPage extends TestBase {
 		load(
 				"page.yml", 
 				obj -> {
-					org.nasdanika.html.model.bootstrap.Page page = (org.nasdanika.html.model.bootstrap.Page) obj;
+					org.nasdanika.models.bootstrap.Page page = (org.nasdanika.models.bootstrap.Page) obj;
 					assertThat(page.getBody()).hasSize(1);
 					org.nasdanika.models.app.Page appPage = (org.nasdanika.models.app.Page) page.getBody().get(0);
 					assertThat(appPage.getHeader()).isNotNull();

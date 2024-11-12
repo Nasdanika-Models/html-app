@@ -13,7 +13,7 @@ import org.nasdanika.models.app.Link;
 import org.nasdanika.models.app.NavigationBar;
 import org.nasdanika.models.app.NavigationPanel;
 import org.nasdanika.models.app.Page;
-import org.nasdanika.html.model.bootstrap.gen.BootstrapAdapterFactory;
+import org.nasdanika.models.bootstrap.gen.BootstrapAdapterFactory;
 
 /**
  * @author Pavel

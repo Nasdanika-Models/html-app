@@ -77,7 +77,7 @@ import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.AppFactory;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.Link;
-import org.nasdanika.html.model.html.gen.ContentConsumer;
+import org.nasdanika.models.html.gen.ContentConsumer;
 import org.nasdanika.models.app.emf.NcoreActionBuilder;
 import org.nasdanika.models.app.emf.ResolutionListener;
 import org.nasdanika.models.app.gen.Util.HTMLProcessor;
@@ -158,7 +158,7 @@ public class SiteGenerator {
 	protected Resource generateResourceModel(
 			Label root, 
 			Iterable<Map.Entry<SemanticInfo, ?>> semanticInfoSource,
-			org.nasdanika.html.model.bootstrap.Page pageTemplate, 
+			org.nasdanika.models.bootstrap.Page pageTemplate, 
 			URI resourceURI, 
 			String containerName,
 			File resourceWorkDir, 
@@ -337,7 +337,7 @@ public class SiteGenerator {
 	 * @param progressMonitor
 	 * @return
 	 */
-	protected EList<EObject> getPageContent(org.nasdanika.html.model.bootstrap.Page page, URI baseURI,
+	protected EList<EObject> getPageContent(org.nasdanika.models.bootstrap.Page page, URI baseURI,
 			BiFunction<Label, URI, URI> uriResolver, File pagesDir, Context contentProviderContext,
 			ProgressMonitor progressMonitor) {
 
@@ -798,7 +798,7 @@ public class SiteGenerator {
 				info.put("style", style);
 			}
 
-			Set<String> tags = modelElement.getTags();
+			Set<org.nasdanika.drawio.Tag> tags = modelElement.getTags();
 			if (tags != null && !tags.isEmpty()) {
 				info.put("tags", tags);
 			}

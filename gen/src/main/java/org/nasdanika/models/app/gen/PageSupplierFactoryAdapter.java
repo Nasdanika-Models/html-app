@@ -26,8 +26,8 @@ import org.nasdanika.models.app.Header;
 import org.nasdanika.models.app.NavigationBar;
 import org.nasdanika.models.app.NavigationPanel;
 import org.nasdanika.models.app.Page;
-import org.nasdanika.html.model.bootstrap.Appearance;
-import org.nasdanika.html.model.bootstrap.gen.BootstrapElementSupplierFactoryAdapter;
+import org.nasdanika.models.bootstrap.Appearance;
+import org.nasdanika.models.bootstrap.gen.BootstrapElementSupplierFactoryAdapter;
 
 public class PageSupplierFactoryAdapter extends BootstrapElementSupplierFactoryAdapter<Page, BootstrapElement<?,?>> {
 	

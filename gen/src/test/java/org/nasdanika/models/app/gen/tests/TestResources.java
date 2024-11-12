@@ -8,7 +8,7 @@ public class TestResources {
 	
 	@Test
 	public void testSearchResource() {
-		assertNotNull(getClass().getClassLoader().getResource("org/nasdanika/html/model/app/gen/search.html"));
+		assertNotNull(getClass().getClassLoader().getResource("org/nasdanika/models/app/gen/search.html"));
 	}
 
 }

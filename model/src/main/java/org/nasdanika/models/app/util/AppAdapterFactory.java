@@ -11,7 +11,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.nasdanika.common.Adaptable;
 import org.nasdanika.models.bootstrap.BootstrapElement;
 import org.nasdanika.models.bootstrap.Item;
-import org.nasdanika.html.model.html.HtmlElement;
 import org.nasdanika.models.app.*;
 import org.nasdanika.ncore.Marked;
 import org.nasdanika.ncore.ModelElement;
@@ -134,7 +133,7 @@ public class AppAdapterFactory extends AdapterFactoryImpl {
 				return createModelElementAdapter();
 			}
 			@Override
-			public Adapter caseHtmlElement(HtmlElement object) {
+			public Adapter caseHtmlElement(org.nasdanika.models.html.HtmlElement object) {
 				return createHtmlElementAdapter();
 			}
 			@Override
@@ -380,13 +379,13 @@ public class AppAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.nasdanika.html.model.html.HtmlElement <em>Element</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.nasdanika.models.html.HtmlElement <em>Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.nasdanika.html.model.html.HtmlElement
+	 * @see org.nasdanika.models.html.HtmlElement
 	 * @generated
 	 */
 	public Adapter createHtmlElementAdapter() {

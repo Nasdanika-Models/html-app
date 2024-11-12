@@ -1,4 +1,4 @@
-package org.nasdanika.html.model.app.tests;
+package org.nasdanika.models.app.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

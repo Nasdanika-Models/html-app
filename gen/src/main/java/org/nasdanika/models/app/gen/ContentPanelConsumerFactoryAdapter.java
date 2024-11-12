@@ -40,8 +40,8 @@ import org.nasdanika.models.app.ContentPanel;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.NavigationPanel;
 import org.nasdanika.models.app.SectionStyle;
-import org.nasdanika.html.model.bootstrap.Item;
-import org.nasdanika.html.model.html.HtmlPackage;
+import org.nasdanika.models.bootstrap.Item;
+import org.nasdanika.models.html.HtmlPackage;
 
 public class ContentPanelConsumerFactoryAdapter extends PagePartConsumerFactoryAdapter<ContentPanel> {
 

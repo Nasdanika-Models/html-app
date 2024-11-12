@@ -20,6 +20,6 @@ public interface PageContentProvider {
 		
 	};
 	
-	EList<EObject> getPageContent(org.nasdanika.html.model.bootstrap.Page page, URI baseURI, BiFunction<Label, URI, URI> uriResolver, ProgressMonitor progressMonitor);
+	EList<EObject> getPageContent(org.nasdanika.models.bootstrap.Page page, URI baseURI, BiFunction<Label, URI, URI> uriResolver, ProgressMonitor progressMonitor);
 
 }

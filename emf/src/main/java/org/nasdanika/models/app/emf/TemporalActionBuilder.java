@@ -9,7 +9,7 @@ import org.nasdanika.common.Context;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.SectionStyle;
-import org.nasdanika.html.model.bootstrap.Table;
+import org.nasdanika.models.bootstrap.Table;
 import org.nasdanika.ncore.NcorePackage;
 import org.nasdanika.ncore.Temporal;
 

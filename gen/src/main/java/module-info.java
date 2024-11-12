@@ -3,7 +3,7 @@ import org.nasdanika.models.app.gen.AppAdapterCapabilityFactory;
 
 module org.nasdanika.models.app.gen {
 		
-	requires transitive org.nasdanika.html.model.bootstrap.gen;
+	requires transitive org.nasdanika.models.bootstrap.gen;
 	requires transitive org.nasdanika.html.jstree;
 	requires transitive org.nasdanika.models.app.emf;
 	requires transitive sitemapgen4j;

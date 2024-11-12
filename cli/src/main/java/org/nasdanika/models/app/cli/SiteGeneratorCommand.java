@@ -22,7 +22,7 @@ import org.nasdanika.common.Util;
 import org.nasdanika.html.bootstrap.Theme;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.gen.AppSiteGenerator;
-import org.nasdanika.models.app.util.AppDrawioResourceFactory;
+//import org.nasdanika.models.app.util.AppDrawioResourceFactory;
 import org.nasdanika.models.app.util.LabelSupplier;
 import org.springframework.util.AntPathMatcher;
 
@@ -144,9 +144,10 @@ public class SiteGeneratorCommand extends DelegatingCommand {
 			@Override
 			protected ResourceSet createResourceSet(Context context, ProgressMonitor progressMonitor) {
 				ResourceSet resourceSet = super.createResourceSet(context, progressMonitor);
-				resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("drawio", new AppDrawioResourceFactory(uri -> resourceSet.getEObject(uri, true)));
+				throw new UnsupportedOperationException("Use capability and general drawio factory, not app");
+//				resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("drawio", new AppDrawioResourceFactory(uri -> resourceSet.getEObject(uri, true)));
 				// TODO - URI handlers from capability loader. E.g. Maven, GitLab, ...
-				return resourceSet;
+//				return resourceSet;
 			}
 			
 			@Override

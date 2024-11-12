@@ -63,19 +63,19 @@ import org.nasdanika.models.app.Link;
 import org.nasdanika.models.app.NavigationPanel;
 import org.nasdanika.models.app.util.ActionBuilder;
 import org.nasdanika.models.app.util.ActionProvider;
-import org.nasdanika.html.model.bootstrap.Alert;
-import org.nasdanika.html.model.bootstrap.Appearance;
-import org.nasdanika.html.model.bootstrap.BootstrapElement;
-import org.nasdanika.html.model.bootstrap.BootstrapFactory;
-import org.nasdanika.html.model.bootstrap.Modal;
-import org.nasdanika.html.model.bootstrap.Table;
-import org.nasdanika.html.model.bootstrap.TableCell;
-import org.nasdanika.html.model.bootstrap.TableHeader;
-import org.nasdanika.html.model.bootstrap.TableRow;
-import org.nasdanika.html.model.bootstrap.TableSection;
-import org.nasdanika.html.model.html.HtmlFactory;
-import org.nasdanika.html.model.html.Script;
-import org.nasdanika.html.model.html.Tag;
+import org.nasdanika.models.bootstrap.Alert;
+import org.nasdanika.models.bootstrap.Appearance;
+import org.nasdanika.models.bootstrap.BootstrapElement;
+import org.nasdanika.models.bootstrap.BootstrapFactory;
+import org.nasdanika.models.bootstrap.Modal;
+import org.nasdanika.models.bootstrap.Table;
+import org.nasdanika.models.bootstrap.TableCell;
+import org.nasdanika.models.bootstrap.TableHeader;
+import org.nasdanika.models.bootstrap.TableRow;
+import org.nasdanika.models.bootstrap.TableSection;
+import org.nasdanika.models.html.HtmlFactory;
+import org.nasdanika.models.html.Script;
+import org.nasdanika.models.html.Tag;
 import org.nasdanika.models.app.emf.EObjectActionResolver.Context;
 import org.nasdanika.ncore.GitMarker;
 import org.nasdanika.ncore.Map;
@@ -479,7 +479,7 @@ public class EObjectActionBuilder<T extends EObject> extends AdapterImpl impleme
 				if (severity > 0) {
 					Appearance headerAppearance = BootstrapFactory.eINSTANCE.createAppearance();
 					propertyHeader.setAppearance(headerAppearance);
-					org.nasdanika.html.model.bootstrap.Text aText = BootstrapFactory.eINSTANCE.createText();
+					org.nasdanika.models.bootstrap.Text aText = BootstrapFactory.eINSTANCE.createText();
 					headerAppearance.setText(aText);
 					aText.setColor(getSeverityColor(severity));
 				}
@@ -980,7 +980,7 @@ public class EObjectActionBuilder<T extends EObject> extends AdapterImpl impleme
 	 * @param progressMonitor progress monitor.
 	 * @return null for null or empty collections or a list.
 	 */
-	protected <E> org.nasdanika.html.model.html.Tag renderList(
+	protected <E> org.nasdanika.models.html.Tag renderList(
 			Collection<E> elements,
 			boolean ordered,
 			ContentProvider<E> contentProvider,
@@ -992,10 +992,10 @@ public class EObjectActionBuilder<T extends EObject> extends AdapterImpl impleme
 			return null;
 		}
 			
-		org.nasdanika.html.model.html.Tag ol = HtmlFactory.eINSTANCE.createTag();
+		org.nasdanika.models.html.Tag ol = HtmlFactory.eINSTANCE.createTag();
 		ol.setName(ordered ? "ol" : "ul");
 		for (E element: elements) {
-			org.nasdanika.html.model.html.Tag li = HtmlFactory.eINSTANCE.createTag();
+			org.nasdanika.models.html.Tag li = HtmlFactory.eINSTANCE.createTag();
 			li.setName("li");
 			ol.getContent().add(li);
 			li.getContent().add(renderValue(base, typedElement, element, context, progressMonitor));

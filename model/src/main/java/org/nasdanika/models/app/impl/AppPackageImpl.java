@@ -10,11 +10,13 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EValidator;
+
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+
 import org.nasdanika.exec.ExecPackage;
+
 import org.nasdanika.exec.resources.ResourcesPackage;
-import org.nasdanika.models.bootstrap.BootstrapPackage;
-import org.nasdanika.html.model.html.HtmlPackage;
+
 import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.ActionReference;
 import org.nasdanika.models.app.AppFactory;
@@ -30,7 +32,13 @@ import org.nasdanika.models.app.NavigationPanelStyle;
 import org.nasdanika.models.app.Page;
 import org.nasdanika.models.app.PagePart;
 import org.nasdanika.models.app.SectionStyle;
+
 import org.nasdanika.models.app.util.AppValidator;
+
+import org.nasdanika.models.bootstrap.BootstrapPackage;
+
+import org.nasdanika.models.html.HtmlPackage;
+
 import org.nasdanika.ncore.NcorePackage;
 
 /**
@@ -149,7 +157,6 @@ public class AppPackageImpl extends EPackageImpl implements AppPackage {
 	private AppPackageImpl() {
 		super(eNS_URI, AppFactory.eINSTANCE);
 	}
-
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -180,8 +187,8 @@ public class AppPackageImpl extends EPackageImpl implements AppPackage {
 
 		// Initialize simple dependencies
 		BootstrapPackage.eINSTANCE.eClass();
-		HtmlPackage.eINSTANCE.eClass();
 		ExecPackage.eINSTANCE.eClass();
+		HtmlPackage.eINSTANCE.eClass();
 		NcorePackage.eINSTANCE.eClass();
 
 		// Create package meta-data objects
@@ -344,8 +351,8 @@ public class AppPackageImpl extends EPackageImpl implements AppPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getLink_Confirmation() {
-		return (EAttribute)linkEClass.getEStructuralFeatures().get(4);
+	public EAttribute getLink_Name() {
+		return (EAttribute)linkEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -354,8 +361,8 @@ public class AppPackageImpl extends EPackageImpl implements AppPackage {
 	 * @generated
 	 */
 	@Override
-	public EAttribute getLink_Name() {
-		return (EAttribute)linkEClass.getEStructuralFeatures().get(3);
+	public EAttribute getLink_Confirmation() {
+		return (EAttribute)linkEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -624,8 +631,8 @@ public class AppPackageImpl extends EPackageImpl implements AppPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getContentPanel_Title() {
-		return (EReference)contentPanelEClass.getEStructuralFeatures().get(1);
+	public EReference getContentPanel_Breadcrumb() {
+		return (EReference)contentPanelEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -634,8 +641,8 @@ public class AppPackageImpl extends EPackageImpl implements AppPackage {
 	 * @generated
 	 */
 	@Override
-	public EReference getContentPanel_Breadcrumb() {
-		return (EReference)contentPanelEClass.getEStructuralFeatures().get(0);
+	public EReference getContentPanel_Title() {
+		return (EReference)contentPanelEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -874,8 +881,8 @@ public class AppPackageImpl extends EPackageImpl implements AppPackage {
 	 * @generated
 	 */
 	@Override
-	public EEnum getNavigationPanelStyle() {
-		return navigationPanelStyleEEnum;
+	public EEnum getSectionStyle() {
+		return sectionStyleEEnum;
 	}
 
 	/**
@@ -884,8 +891,8 @@ public class AppPackageImpl extends EPackageImpl implements AppPackage {
 	 * @generated
 	 */
 	@Override
-	public EEnum getSectionStyle() {
-		return sectionStyleEEnum;
+	public EEnum getNavigationPanelStyle() {
+		return navigationPanelStyleEEnum;
 	}
 
 	/**

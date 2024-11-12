@@ -39,7 +39,7 @@ import org.nasdanika.common.Supplier;
 import org.nasdanika.common.Supplier.FunctionResult;
 import org.nasdanika.common.SupplierFactory;
 import org.nasdanika.common.Util;
-import org.nasdanika.drawio.model.util.AbstractDrawioFactory;
+import org.nasdanika.drawio.emf.AbstractDrawioFactory;
 import org.nasdanika.emf.persistence.MarkerFactory;
 import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Interpolator;
@@ -65,10 +65,10 @@ import org.nasdanika.models.app.AppFactory;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.Link;
 import org.nasdanika.models.app.gen.AppAdapterFactory;
-import org.nasdanika.html.model.bootstrap.BootstrapElement;
-import org.nasdanika.html.model.bootstrap.BootstrapFactory;
-import org.nasdanika.html.model.bootstrap.Modal;
-import org.nasdanika.html.model.html.HtmlFactory;
+import org.nasdanika.models.bootstrap.BootstrapElement;
+import org.nasdanika.models.bootstrap.BootstrapFactory;
+import org.nasdanika.models.bootstrap.Modal;
+import org.nasdanika.models.html.HtmlFactory;
 import org.nasdanika.models.app.graph.WidgetFactory;
 import org.nasdanika.ncore.Documented;
 import org.nasdanika.ncore.NamedElement;
@@ -1066,7 +1066,7 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 		
 			if (!Util.isBlank(title)) {
 				BootstrapElement header = BootstrapFactory.eINSTANCE.createBootstrapElement();
-				org.nasdanika.html.model.html.Tag h2 = HtmlFactory.eINSTANCE.createTag();
+				org.nasdanika.models.html.Tag h2 = HtmlFactory.eINSTANCE.createTag();
 				h2.setName("H2");
 				header.getContent().add(h2);
 				if (Util.isBlank(location)) {					

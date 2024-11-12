@@ -23,7 +23,7 @@ import org.nasdanika.html.bootstrap.BootstrapFactory;
 import org.nasdanika.html.bootstrap.Navs;
 import org.nasdanika.models.app.Header;
 import org.nasdanika.models.app.Label;
-import org.nasdanika.html.model.bootstrap.Appearance;
+import org.nasdanika.models.bootstrap.Appearance;
 
 public class HeaderConsumerFactoryAdapter extends PagePartConsumerFactoryAdapter<Header> {
 
@@ -40,7 +40,7 @@ public class HeaderConsumerFactoryAdapter extends PagePartConsumerFactoryAdapter
 			Label cTitle = EcoreUtil.copy(title);
 			cTitle.eAdapters().add(AppAdapterFactory.INSTANCE.adapt(cTitle, SupplierFactory.Provider.class));
 			
-			Appearance titleAppearance = org.nasdanika.html.model.bootstrap.BootstrapFactory.eINSTANCE.createAppearance();
+			Appearance titleAppearance = org.nasdanika.models.bootstrap.BootstrapFactory.eINSTANCE.createAppearance();
 			titleAppearance.eAdapters().add(AppAdapterFactory.INSTANCE.adapt(titleAppearance, ConsumerFactory.class));
 			cTitle.setAppearance(titleAppearance);
 			

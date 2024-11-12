@@ -51,7 +51,7 @@ public class AppSiteGenerator extends SiteGenerator {
 			root = (Action) actionResource.getContents().get(0);
 		}
 		
-		org.nasdanika.html.model.bootstrap.Page pageTemplate = (org.nasdanika.html.model.bootstrap.Page) actionResource.getResourceSet().getEObject(pageTemplateURI, true);
+		org.nasdanika.models.bootstrap.Page pageTemplate = (org.nasdanika.models.bootstrap.Page) actionResource.getResourceSet().getEObject(pageTemplateURI, true);
 		
 		return generateResourceModel(
 				root, 
@@ -131,7 +131,7 @@ public class AppSiteGenerator extends SiteGenerator {
 					rootActionResource.save(null);
 				}
 				
-				org.nasdanika.html.model.bootstrap.Page pageTemplate = (org.nasdanika.html.model.bootstrap.Page) rootActionResourceSet.getEObject(pageTemplateURI, true);
+				org.nasdanika.models.bootstrap.Page pageTemplate = (org.nasdanika.models.bootstrap.Page) rootActionResourceSet.getEObject(pageTemplateURI, true);
 				
 				URI resourceModelsURI = URI.createFileURI(resourceModelsDir.getAbsolutePath() + "/");	
 				URI resourceURI = URI.createURI(modelName + ".xml").resolve(resourceModelsURI);

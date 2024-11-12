@@ -9,7 +9,6 @@ import org.eclipse.emf.ecore.util.Switch;
 import org.nasdanika.common.Adaptable;
 import org.nasdanika.models.bootstrap.BootstrapElement;
 import org.nasdanika.models.bootstrap.Item;
-import org.nasdanika.html.model.html.HtmlElement;
 import org.nasdanika.models.app.*;
 import org.nasdanika.ncore.Marked;
 import org.nasdanika.ncore.ModelElement;
@@ -450,7 +449,7 @@ public class AppSwitch<T1> extends Switch<T1> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T1 caseHtmlElement(HtmlElement object) {
+	public T1 caseHtmlElement(org.nasdanika.models.html.HtmlElement object) {
 		return null;
 	}
 

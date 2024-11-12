@@ -15,7 +15,7 @@ import org.nasdanika.html.Tag;
 import org.nasdanika.html.TagName;
 import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.Link;
-import org.nasdanika.html.model.html.gen.ContentConsumer;
+import org.nasdanika.models.html.gen.ContentConsumer;
 
 public class LinkTagSupplierFactoryAdapter<M extends Link> extends LabelTagSupplierFactoryAdapter<M> {
 	
@@ -50,7 +50,7 @@ public class LinkTagSupplierFactoryAdapter<M extends Link> extends LabelTagSuppl
 				anchor.attribute("href", "#");
 	
 				@SuppressWarnings("unchecked")
-				List<Object> pageBody = context.get(org.nasdanika.html.model.html.gen.PageSupplierFactoryAdapter.PAGE_BODY_PROPERTY, List.class);
+				List<Object> pageBody = context.get(org.nasdanika.models.html.gen.PageSupplierFactoryAdapter.PAGE_BODY_PROPERTY, List.class);
 				if (pageBody != null) {
 					pageBody.add(modal);
 				} else {
@@ -97,7 +97,7 @@ public class LinkTagSupplierFactoryAdapter<M extends Link> extends LabelTagSuppl
 	@Override
 	protected SupplierFactory<Tag> getModalFactory() {
 		M semanticElement = getTarget();
-		org.nasdanika.html.model.bootstrap.Modal modal = semanticElement.getModal();
+		org.nasdanika.models.bootstrap.Modal modal = semanticElement.getModal();
 		SupplierFactory<Tag> modalFactory = modal == null ? SupplierFactory.empty() : EObjectAdaptable.adaptToSupplierFactoryNonNull(modal, Tag.class);
 		return modalFactory;
 	}

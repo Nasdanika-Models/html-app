@@ -15,7 +15,7 @@ import org.nasdanika.html.jstree.JsTreeNode;
 import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.AppPackage;
 import org.nasdanika.models.app.Link;
-import org.nasdanika.html.model.html.gen.ContentConsumer;
+import org.nasdanika.models.html.gen.ContentConsumer;
 
 public class LinkJsTreeNodeSupplierFactoryAdapter<M extends Link> extends LabelJsTreeNodeSupplierFactoryAdapter<M> {
 	
@@ -65,7 +65,7 @@ public class LinkJsTreeNodeSupplierFactoryAdapter<M extends Link> extends LabelJ
 						jsTreeNode.anchorAttribute("data-target", "#" + modal.getId());
 			
 						@SuppressWarnings("unchecked")
-						List<Object> pageBody = context.get(org.nasdanika.html.model.html.gen.PageSupplierFactoryAdapter.PAGE_BODY_PROPERTY, List.class);
+						List<Object> pageBody = context.get(org.nasdanika.models.html.gen.PageSupplierFactoryAdapter.PAGE_BODY_PROPERTY, List.class);
 						if (pageBody != null) {
 							pageBody.add(modal);
 						} else {

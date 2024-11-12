@@ -212,7 +212,7 @@ public class SemanticSiteGenerator extends SiteGenerator {
 			root = (Action) rootActionResourceSet.getEObject(rootActionURI, true);
 		}
 		
-		org.nasdanika.html.model.bootstrap.Page pageTemplate = (org.nasdanika.html.model.bootstrap.Page) actionResource.getResourceSet().getEObject(pageTemplateURI, true);
+		org.nasdanika.models.bootstrap.Page pageTemplate = (org.nasdanika.models.bootstrap.Page) actionResource.getResourceSet().getEObject(pageTemplateURI, true);
 		
 		return generateResourceModel(
 				root, 

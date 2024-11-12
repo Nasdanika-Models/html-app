@@ -91,11 +91,10 @@ import org.nasdanika.models.app.Link;
 import org.nasdanika.models.app.NavigationBar;
 import org.nasdanika.models.app.NavigationPanel;
 import org.nasdanika.models.app.SectionStyle;
-import org.nasdanika.models.app.util.AppDrawioResourceFactory;
-import org.nasdanika.html.model.bootstrap.Appearance;
-import org.nasdanika.html.model.bootstrap.BootstrapPackage;
-import org.nasdanika.html.model.bootstrap.Item;
-import org.nasdanika.html.model.html.HtmlPackage;
+import org.nasdanika.models.bootstrap.Appearance;
+import org.nasdanika.models.bootstrap.BootstrapPackage;
+import org.nasdanika.models.bootstrap.Item;
+import org.nasdanika.models.html.HtmlPackage;
 import org.nasdanika.models.app.emf.NcoreActionBuilder;
 import org.nasdanika.ncore.NcorePackage;
 import org.nasdanika.ncore.util.NcoreResourceSet;
@@ -206,7 +205,7 @@ public final class Util {
 	 */
 	public static void generateSite(
 			Label root, 
-			org.nasdanika.html.model.bootstrap.Page pageTemplate,
+			org.nasdanika.models.bootstrap.Page pageTemplate,
 			Container container,
 			ActionContentProvider.Factory actionContentProviderFactory,
 			PageContentProvider.Factory pageContentProviderFactory,
@@ -243,7 +242,7 @@ public final class Util {
 			Label principal, 
 			Label activeAction, 
 			List<Label> actionPath,
-			org.nasdanika.html.model.bootstrap.Page pageTemplate,
+			org.nasdanika.models.bootstrap.Page pageTemplate,
 			Container container,
 			ActionContentProvider.Factory contentProviderFactory,
 			PageContentProvider.Factory pageProviderFactory,
@@ -290,7 +289,7 @@ public final class Util {
 			Label principal, 
 			Label activeAction, 
 			List<Label> actionPath,
-			org.nasdanika.html.model.bootstrap.Page pageTemplate,
+			org.nasdanika.models.bootstrap.Page pageTemplate,
 			BiFunction<Label, URI, URI> uriResolver, 
 			URI baseURI,
 			Container container,
@@ -303,7 +302,7 @@ public final class Util {
 			if (uri != null && uri.isRelative()) {
 				org.nasdanika.exec.resources.File file = container.getFile(uri.toString());
 				if (file != null) {
-					org.nasdanika.html.model.bootstrap.Page bootstrapPage = EcoreUtil.copy(pageTemplate);
+					org.nasdanika.models.bootstrap.Page bootstrapPage = EcoreUtil.copy(pageTemplate);
 					String activeActionText = activeAction.getText();
 					if (!org.nasdanika.common.Util.isBlank(activeActionText)) {
 						bootstrapPage.setName(Jsoup.parse(activeActionText).text());
@@ -822,7 +821,7 @@ public final class Util {
 			Label principal, 
 			List<Label> actionPath,
 			NavigationPanel navigationPanel,
-			org.nasdanika.html.model.bootstrap.Page pageTemplate,
+			org.nasdanika.models.bootstrap.Page pageTemplate,
 			BiFunction<Label, URI, URI> uriResolver, 
 			URI baseURI, 
 			Container container,
@@ -1335,8 +1334,8 @@ public final class Util {
 		extensionToFactoryMap.put("json", objectLoaderResourceFactory);
 		resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("data", objectLoaderResourceFactory);
 		
-		AppDrawioResourceFactory drawioResourceFactory = new AppDrawioResourceFactory(uri -> resourceSet.getEObject(uri, true));
-		extensionToFactoryMap.put("drawio", drawioResourceFactory);		
+//		AppDrawioResourceFactory drawioResourceFactory = new AppDrawioResourceFactory(uri -> resourceSet.getEObject(uri, true));
+//		extensionToFactoryMap.put("drawio", drawioResourceFactory);		
 
 		// For handling textual representations
 		TextResourceFactory textResourceFactory = new TextResourceFactory();

@@ -14,9 +14,9 @@ import org.nasdanika.common.Util;
 import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Text;
 import org.nasdanika.html.HTMLFactory;
-import org.nasdanika.html.model.html.HtmlFactory;
-import org.nasdanika.html.model.html.Script;
-import org.nasdanika.html.model.html.Tag;
+import org.nasdanika.models.html.HtmlFactory;
+import org.nasdanika.models.html.Script;
+import org.nasdanika.models.html.Tag;
 import org.nasdanika.ncore.NcoreFactory;
 
 /**
