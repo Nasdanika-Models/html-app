@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.nasdanika.common.Adaptable;
 import org.nasdanika.models.bootstrap.BootstrapElement;
 import org.nasdanika.models.bootstrap.Item;
+import org.nasdanika.models.html.HtmlElement;
 import org.nasdanika.models.app.*;
 import org.nasdanika.ncore.Marked;
 import org.nasdanika.ncore.ModelElement;
@@ -133,7 +134,7 @@ public class AppAdapterFactory extends AdapterFactoryImpl {
 				return createModelElementAdapter();
 			}
 			@Override
-			public Adapter caseHtmlElement(org.nasdanika.models.html.HtmlElement object) {
+			public Adapter caseHtmlElement(HtmlElement object) {
 				return createHtmlElementAdapter();
 			}
 			@Override

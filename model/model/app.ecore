@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="app" nsURI="ecore://app.models.nasdanika.org" nsPrefix="org.nasdanika.html.model.app">
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="app" nsURI="ecore://app.models.nasdanika.org" nsPrefix="org.nasdanika.models.app">
   <eClassifiers xsi:type="ecore:EClass" name="Label" eSuperTypes="../../org.nasdanika.models.bootstrap/model/bootstrap.ecore#//BootstrapElement ../../org.nasdanika.models.bootstrap/model/bootstrap.ecore#//Item">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

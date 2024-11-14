@@ -52,7 +52,7 @@ public interface AppPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_PREFIX = "org.nasdanika.html.model.app";
+	String eNS_PREFIX = "org.nasdanika.models.app";
 
 	/**
 	 * The singleton instance of the package.
