@@ -1,4 +1,4 @@
-bootstrap-page:
+bootstrap.Page:
   cdn: true
   theme: Cerulean
   name: Application Page Template

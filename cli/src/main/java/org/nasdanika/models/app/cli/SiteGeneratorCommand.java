@@ -10,6 +10,10 @@ import java.util.Map.Entry;
 import org.eclipse.emf.common.util.DiagnosticException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.nasdanika.capability.CapabilityLoader;
+import org.nasdanika.capability.ServiceCapabilityFactory;
+import org.nasdanika.capability.ServiceCapabilityFactory.Requirement;
+import org.nasdanika.capability.emf.ResourceSetRequirement;
 import org.nasdanika.cli.DelegatingCommand;
 import org.nasdanika.cli.Description;
 import org.nasdanika.cli.ParentCommands;
@@ -39,6 +43,14 @@ import picocli.CommandLine.ParentCommand;
 @ParentCommands(LabelSupplier.class)
 @Description(icon = "https://img.icons8.com/material-two-tone/20/web.png")
 public class SiteGeneratorCommand extends DelegatingCommand {
+	
+	public SiteGeneratorCommand() {
+		
+	}
+	
+	public SiteGeneratorCommand(CapabilityLoader capabilityLoader) {
+		super(capabilityLoader);
+	}
 	
 	@Parameters(
 			index =  "0",	
@@ -143,11 +155,8 @@ public class SiteGeneratorCommand extends DelegatingCommand {
 			
 			@Override
 			protected ResourceSet createResourceSet(Context context, ProgressMonitor progressMonitor) {
-				ResourceSet resourceSet = super.createResourceSet(context, progressMonitor);
-				throw new UnsupportedOperationException("Use capability and general drawio factory, not app");
-//				resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("drawio", new AppDrawioResourceFactory(uri -> resourceSet.getEObject(uri, true)));
-				// TODO - URI handlers from capability loader. E.g. Maven, GitLab, ...
-//				return resourceSet;
+				Requirement<ResourceSetRequirement, ResourceSet> requirement = ServiceCapabilityFactory.createRequirement(ResourceSet.class);		
+				return getCapabilityLoader().loadOne(requirement, progressMonitor);
 			}
 			
 			@Override

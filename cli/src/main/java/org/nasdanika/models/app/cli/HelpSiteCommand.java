@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.nasdanika.capability.CapabilityLoader;
 import org.nasdanika.common.Context;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.models.app.Action;
@@ -24,6 +25,14 @@ import picocli.CommandLine.Parameters;
 		mixinStandardHelpOptions = true,
 		name = "site")
 public class HelpSiteCommand extends AbstractSiteCommand {
+	
+	public HelpSiteCommand() {
+		
+	}
+	
+	public HelpSiteCommand(CapabilityLoader capabilityLoader) {
+		super(capabilityLoader);
+	}
 	
 	// TODO - root action for header/icon
 	

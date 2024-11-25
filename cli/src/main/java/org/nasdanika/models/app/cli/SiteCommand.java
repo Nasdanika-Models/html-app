@@ -1,6 +1,7 @@
 package org.nasdanika.models.app.cli;
 
 import org.eclipse.emf.common.util.URI;
+import org.nasdanika.capability.CapabilityLoader;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
@@ -11,6 +12,14 @@ import picocli.CommandLine.Parameters;
 		mixinStandardHelpOptions = true,
 		name = "site")
 public class SiteCommand extends AbstractSiteCommand {
+	
+	public SiteCommand() {
+		
+	}
+	
+	public SiteCommand(CapabilityLoader capabilityLoader) {
+		super(capabilityLoader);
+	}
 		
 	@Parameters(
 		index =  "0",	

@@ -21,7 +21,7 @@ public class SiteGeneratorCommandFactory extends SubCommandCapabilityFactory<Sit
 			List<CommandLine> parentPath,
 			Loader loader,
 			ProgressMonitor progressMonitor) {
-		return CompletableFuture.completedStage(new SiteGeneratorCommand());
+		return CompletableFuture.completedStage(new SiteGeneratorCommand(loader.getCapabilityLoader()));
 	}
 
 }

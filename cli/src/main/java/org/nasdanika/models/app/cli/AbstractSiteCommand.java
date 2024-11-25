@@ -10,6 +10,10 @@ import java.util.Map.Entry;
 import org.eclipse.emf.common.util.DiagnosticException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.nasdanika.capability.CapabilityLoader;
+import org.nasdanika.capability.ServiceCapabilityFactory;
+import org.nasdanika.capability.ServiceCapabilityFactory.Requirement;
+import org.nasdanika.capability.emf.ResourceSetRequirement;
 import org.nasdanika.cli.DelegatingCommand;
 import org.nasdanika.common.Context;
 import org.nasdanika.common.NasdanikaException;
@@ -28,6 +32,14 @@ import picocli.CommandLine.Option;
  */
 @Deprecated
 public abstract class AbstractSiteCommand extends DelegatingCommand {
+	
+	public AbstractSiteCommand() {
+		
+	}
+	
+	public AbstractSiteCommand(CapabilityLoader capabilityLoader) {
+		super(capabilityLoader);
+	}
 	
 	protected abstract String getOutput();
 	
@@ -119,11 +131,8 @@ public abstract class AbstractSiteCommand extends DelegatingCommand {
 			
 			@Override
 			protected ResourceSet createResourceSet(Context context, ProgressMonitor progressMonitor) {
-				ResourceSet resourceSet = super.createResourceSet(context, progressMonitor);
-				throw new UnsupportedOperationException("Use capability and general drawio factory, not app");
-//				resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("drawio", new AppDrawioResourceFactory(uri -> resourceSet.getEObject(uri, true)));
-				// TODO - URI handlers from capability loader. E.g. Maven, GitLab, ...
-//				return resourceSet;
+				Requirement<ResourceSetRequirement, ResourceSet> requirement = ServiceCapabilityFactory.createRequirement(ResourceSet.class);		
+				return getCapabilityLoader().loadOne(requirement, progressMonitor);
 			}
 			
 			@Override
