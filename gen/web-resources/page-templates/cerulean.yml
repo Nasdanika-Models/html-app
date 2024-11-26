@@ -23,7 +23,7 @@ bootstrap.Page:
     - https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js
   head:
     # Google analytics
-    content-text: |+2    
+    content.Text: |+2    
       <!-- Global site tag (gtag.js) - Google Analytics -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-9BRJVLK8CC"></script>
       <script>
@@ -34,7 +34,7 @@ bootstrap.Page:
         gtag('config', 'G-9BRJVLK8CC');
       </script>    
   body:
-    app-page:
+    app.Page:
       fluid: true
         
  

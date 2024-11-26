@@ -52,12 +52,17 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.nasdanika.capability.CapabilityLoader;
+import org.nasdanika.capability.ServiceCapabilityFactory;
+import org.nasdanika.capability.ServiceCapabilityFactory.Requirement;
+import org.nasdanika.capability.emf.ResourceSetRequirement;
 import org.nasdanika.common.ConsumerFactory;
 import org.nasdanika.common.Context;
 import org.nasdanika.common.DefaultConverter;
 import org.nasdanika.common.Diagnostic;
 import org.nasdanika.common.DiagnosticException;
 import org.nasdanika.common.NasdanikaException;
+import org.nasdanika.common.PrintStreamProgressMonitor;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Status;
 import org.nasdanika.drawio.ConnectionBase;
@@ -1292,21 +1297,9 @@ public final class Util {
 			Context context, 
 			ProgressMonitor progressMonitor) {
 		
-		ResourceSet resourceSet = new NcoreResourceSet();
-		
-		resourceSet.getURIConverter().getURIHandlers().add(0, new URIHandlerImpl() {
-
-			@Override
-			public boolean canHandle(URI uri) {
-				return uri != null && org.nasdanika.common.Util.CLASSPATH_SCHEME.equals(uri.scheme());
-			}
-
-			@Override
-			public InputStream createInputStream(URI uri, Map<?, ?> options) throws IOException {
-				return DefaultConverter.INSTANCE.toInputStream(uri);
-			}
-			
-		});
+		CapabilityLoader capabilityLoader = new CapabilityLoader();
+		Requirement<ResourceSetRequirement, ResourceSet> requirement = ServiceCapabilityFactory.createRequirement(ResourceSet.class);		
+		ResourceSet resourceSet = capabilityLoader.loadOne(requirement, progressMonitor);
 		
 		EObjectLoader eObjectLoader = new EObjectLoader(null, null, resourceSet);
 		GitMarkerFactory markerFactory = new GitMarkerFactory();
@@ -1334,24 +1327,11 @@ public final class Util {
 		extensionToFactoryMap.put("json", objectLoaderResourceFactory);
 		resourceSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put("data", objectLoaderResourceFactory);
 		
-//		AppDrawioResourceFactory drawioResourceFactory = new AppDrawioResourceFactory(uri -> resourceSet.getEObject(uri, true));
-//		extensionToFactoryMap.put("drawio", drawioResourceFactory);		
-
 		// For handling textual representations
 		TextResourceFactory textResourceFactory = new TextResourceFactory();
 		extensionToFactoryMap.put("txt", textResourceFactory);		
 		extensionToFactoryMap.put("puml", textResourceFactory);								
 		extensionToFactoryMap.put("mermaid", textResourceFactory);		
-		
-		extensionToFactoryMap.put(org.eclipse.emf.ecore.resource.Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
-		
-		resourceSet.getPackageRegistry().put(NcorePackage.eNS_URI, NcorePackage.eINSTANCE);
-		resourceSet.getPackageRegistry().put(ExecPackage.eNS_URI, ExecPackage.eINSTANCE);
-		resourceSet.getPackageRegistry().put(ContentPackage.eNS_URI, ContentPackage.eINSTANCE);
-		resourceSet.getPackageRegistry().put(ResourcesPackage.eNS_URI, ResourcesPackage.eINSTANCE);
-		resourceSet.getPackageRegistry().put(HtmlPackage.eNS_URI, HtmlPackage.eINSTANCE);
-		resourceSet.getPackageRegistry().put(BootstrapPackage.eNS_URI, BootstrapPackage.eINSTANCE);
-		resourceSet.getPackageRegistry().put(AppPackage.eNS_URI, AppPackage.eINSTANCE);
 		 
 		resourceSet.getAdapterFactories().add(new AppAdapterFactory());
 		
