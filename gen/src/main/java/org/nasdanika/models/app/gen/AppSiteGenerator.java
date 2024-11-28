@@ -183,7 +183,7 @@ public class AppSiteGenerator extends SiteGenerator {
 		try (ProgressMonitor progressMonitor = createProgressMonitor()) {				
 			Context context = Context.singleton("model-name", modelName).compose(createContext(progressMonitor));
 			ResourceSet rootActionResourceSet = createActionModelResourceSet(context, progressMonitor);
-			Action root = (Action) rootActionResourceSet.getEObject(rootActionURI, true);
+			Label root = (Label) rootActionResourceSet.getEObject(rootActionURI, true);
 			return generate(
 					root,
 					pageTemplateURI,

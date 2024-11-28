@@ -236,7 +236,6 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 		}
 		
 		return Jsoup.parse(a.getLabel()).text().compareTo(Jsoup.parse(b.getLabel()).text());
-	}	
-	
+	}		
 
 }

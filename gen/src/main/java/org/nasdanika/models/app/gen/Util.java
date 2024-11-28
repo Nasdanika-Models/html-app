@@ -43,7 +43,6 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.URIHandlerImpl;
 import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
@@ -62,7 +61,6 @@ import org.nasdanika.common.DefaultConverter;
 import org.nasdanika.common.Diagnostic;
 import org.nasdanika.common.DiagnosticException;
 import org.nasdanika.common.NasdanikaException;
-import org.nasdanika.common.PrintStreamProgressMonitor;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Status;
 import org.nasdanika.drawio.ConnectionBase;
@@ -71,12 +69,9 @@ import org.nasdanika.emf.EObjectAdaptable;
 import org.nasdanika.emf.persistence.EObjectLoader;
 import org.nasdanika.emf.persistence.GitMarkerFactory;
 import org.nasdanika.emf.persistence.TextResourceFactory;
-import org.nasdanika.exec.ExecPackage;
 import org.nasdanika.exec.content.ContentFactory;
-import org.nasdanika.exec.content.ContentPackage;
 import org.nasdanika.exec.content.Text;
 import org.nasdanika.exec.resources.Container;
-import org.nasdanika.exec.resources.ResourcesPackage;
 import org.nasdanika.html.Button;
 import org.nasdanika.html.HTMLFactory;
 import org.nasdanika.html.Tag;
@@ -96,14 +91,13 @@ import org.nasdanika.models.app.Link;
 import org.nasdanika.models.app.NavigationBar;
 import org.nasdanika.models.app.NavigationPanel;
 import org.nasdanika.models.app.SectionStyle;
-import org.nasdanika.models.bootstrap.Appearance;
-import org.nasdanika.models.bootstrap.BootstrapPackage;
-import org.nasdanika.models.bootstrap.Item;
-import org.nasdanika.models.html.HtmlPackage;
 import org.nasdanika.models.app.emf.NcoreActionBuilder;
-import org.nasdanika.ncore.NcorePackage;
+import org.nasdanika.models.bootstrap.Appearance;
+import org.nasdanika.models.bootstrap.Item;
 import org.nasdanika.ncore.util.NcoreResourceSet;
 import org.nasdanika.ncore.util.NcoreUtil;
+import org.nasdanika.persistence.ConfigurationException;
+import org.nasdanika.persistence.ObjectLoader;
 import org.nasdanika.persistence.ObjectLoaderResourceFactory;
 import org.nasdanika.resources.BinaryEntityContainer;
 import org.xml.sax.SAXException;
@@ -1300,8 +1294,28 @@ public final class Util {
 		CapabilityLoader capabilityLoader = new CapabilityLoader();
 		Requirement<ResourceSetRequirement, ResourceSet> requirement = ServiceCapabilityFactory.createRequirement(ResourceSet.class);		
 		ResourceSet resourceSet = capabilityLoader.loadOne(requirement, progressMonitor);
+
+		Map<String, EPackage> ePackages = new LinkedHashMap<>();
+		for (Object ep: resourceSet.getPackageRegistry().values()) {
+			EPackage ePackage = (EPackage) ep;
+			ePackages.put(NcoreUtil.getNasdanikaAnnotationDetail(ePackage, NcoreUtil.LOAD_KEY, ePackage.getName()), ePackage);
+		}
 		
-		EObjectLoader eObjectLoader = new EObjectLoader(null, null, resourceSet);
+		EObjectLoader eObjectLoader = new EObjectLoader((ObjectLoader) null) {
+			
+			@Override
+			public ResolutionResult resolveEClass(String type) {
+				EClass eClass = (EClass) NcoreUtil.getType(type, ePackages, msg -> new ConfigurationException(msg));
+				return new ResolutionResult(eClass, null);
+			}
+			
+			@Override
+			public ResourceSet getResourceSet() {
+				return resourceSet;
+			}
+			
+		};		
+		
 		GitMarkerFactory markerFactory = new GitMarkerFactory();
 		eObjectLoader.setMarkerFactory(markerFactory);
 		Resource.Factory objectLoaderResourceFactory = new ObjectLoaderResourceFactory() { 

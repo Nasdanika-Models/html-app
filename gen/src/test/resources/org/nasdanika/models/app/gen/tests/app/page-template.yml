@@ -1,4 +1,4 @@
-bootstrap-page:
+bootstrap.Page:
   cdn: true
   theme: Cerulean
   name: Application Page Template
@@ -20,7 +20,7 @@ bootstrap-page:
     - https://cdn.jsdelivr.net/gh/Nasdanika-Models/html-app@master/gen/web-resources/js/components/table.js
     - https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js
   body:
-    app-page:
+    app.Page:
       fluid: true
       navigation-panel:
         style: COLLAPSIBLE_CARDS

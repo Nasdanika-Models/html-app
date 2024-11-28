@@ -38,6 +38,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.nasdanika.core</groupId>
+			<artifactId>mapping</artifactId>
+			<version>${core.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.nasdanika.models.bootstrap</groupId>
 			<artifactId>model</artifactId>
 			<version>2024.11.0</version>
