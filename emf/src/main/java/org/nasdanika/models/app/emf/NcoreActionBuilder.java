@@ -58,7 +58,7 @@ public class NcoreActionBuilder<T extends EObject> extends EObjectActionBuilder<
 		
 	public static final String TARGET_URI_KEY = "target-uri";
 	public static final String ACTION_URI_KEY = "action-uri";
-	public static final String ACTION_UUID_KEY = "action-uuid";
+	public static final String LINK_UUID_KEY = "link-uuid";
 	public static final String SEMANTIC_UUID_KEY = "semantic-uuid";
 	private static final String URI_BASE_SUFFIX = "-base";
 	
@@ -209,7 +209,7 @@ public class NcoreActionBuilder<T extends EObject> extends EObjectActionBuilder<
 								if (uriTargetAction != null) {
 									String uriTargetActionUUID = uriTargetAction.getUuid();
 									if (!Util.isBlank(uriTargetActionUUID)) {
-										modelElement.setProperty(ACTION_UUID_KEY, uriTargetActionUUID);
+										modelElement.setProperty(LINK_UUID_KEY, uriTargetActionUUID);
 									}
 									if (Util.isBlank(modelElement.getTooltip())) {
 										String uriTargetActionTooltip = uriTargetAction.getTooltip();
@@ -254,7 +254,7 @@ public class NcoreActionBuilder<T extends EObject> extends EObjectActionBuilder<
 					} else {
 						String semanticModelElementActionUUID = semanticModelElementAction.getUuid();
 						if (!Util.isBlank(semanticModelElementActionUUID)) {
-							modelElement.setProperty(ACTION_UUID_KEY, semanticModelElementActionUUID);
+							modelElement.setProperty(LINK_UUID_KEY, semanticModelElementActionUUID);
 						}
 						if (Util.isBlank(modelElement.getTooltip())) {
 							String semanticModelElementDescription = semanticModelElementAction.getDescription();
@@ -545,7 +545,7 @@ public class NcoreActionBuilder<T extends EObject> extends EObjectActionBuilder<
 					}
 				};
 				
-				context.put(ACTION_UUID_KEY, actionUUIDPropertyComputer);
+				context.put(LINK_UUID_KEY, actionUUIDPropertyComputer);
 				
 				PropertyComputer actionURIPropertyComputer = new PropertyComputer() {
 					
@@ -664,7 +664,7 @@ public class NcoreActionBuilder<T extends EObject> extends EObjectActionBuilder<
 			ProgressMonitor progressMonitor) {
 		if (element instanceof org.nasdanika.drawio.ModelElement) {
 			org.nasdanika.drawio.ModelElement modelElement = (org.nasdanika.drawio.ModelElement) element;
-			String actionUUID = modelElement.getProperty(ACTION_UUID_KEY);			
+			String actionUUID = modelElement.getProperty(LINK_UUID_KEY);			
 			if (Util.isBlank(actionUUID)) {
 				// For semantic mapping to actions 
 				String semanticUUID =  modelElement.getProperty(SEMANTIC_UUID_KEY);

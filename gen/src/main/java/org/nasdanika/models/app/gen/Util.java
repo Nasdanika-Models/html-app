@@ -503,8 +503,10 @@ public final class Util {
 					}
 				});
 				Label tail = createLabel(action, action, uriResolver, null, "content-panel/breadcrumb", false, false, false);		
-				tail.setActive(true);
-				breadcrumb.add(tail);
+				if (tail != null) {
+					tail.setActive(true);
+					breadcrumb.add(tail);
+				}
 			}
 	
 			if (!isBlank(action.getText()) || !isBlank(action.getIcon())) {
@@ -927,7 +929,7 @@ public final class Util {
 		for (Element element: contentPanelQuery) {
 			String actionUUID = element.attr(DATA_NSD_LABEL_UUID_ATTRIBUTE);
 			if (!org.nasdanika.common.Util.isBlank(actionUUID)) {
-				searchDocument.put(NcoreActionBuilder.ACTION_UUID_KEY, actionUUID);
+				searchDocument.put(NcoreActionBuilder.LINK_UUID_KEY, actionUUID);
 				break;
 			}
 		}

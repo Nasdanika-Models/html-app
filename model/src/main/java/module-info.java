@@ -1,6 +1,6 @@
 import org.nasdanika.capability.CapabilityFactory;
 import org.nasdanika.models.app.util.AppEPackageResourceSetCapabilityFactory;
-import org.nasdanika.models.app.util.LabelConfiguratorCapabilityFactory;
+import org.nasdanika.models.app.util.LabelContributorCapabilityFactory;
 
 module org.nasdanika.models.app {
 		
@@ -13,7 +13,7 @@ module org.nasdanika.models.app {
 	
 	provides CapabilityFactory with 
 		AppEPackageResourceSetCapabilityFactory,
-		LabelConfiguratorCapabilityFactory;
+		LabelContributorCapabilityFactory;
 	
 }
 	
