@@ -387,13 +387,15 @@ public final class Util {
 					header.setTitle(title);
 				}
 				List<EObject> headerItems = header.getItems();
-				rootChildren.listIterator(1).forEachRemaining(rac -> {
-					if (rac instanceof Label) {
-						headerItems.add(createLabel((Label) rac, activeAction, uriResolver, null, "header/navigation", true, false, false));
-					} else {
-						headerItems.add(EcoreUtil.copy(rac));
-					}
-				});
+				if (rootChildren.size() > 1) {
+					rootChildren.listIterator(1).forEachRemaining(rac -> {
+						if (rac instanceof Label) {
+							headerItems.add(createLabel((Label) rac, activeAction, uriResolver, null, "header/navigation", true, false, false));
+						} else {
+							headerItems.add(EcoreUtil.copy(rac));
+						}
+					});
+				}
 			}
 			
 			if (root instanceof Action) {
