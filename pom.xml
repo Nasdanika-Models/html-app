@@ -5,7 +5,39 @@
 	<artifactId>parent</artifactId>
 	<version>2024.11.0</version>
 	<packaging>pom</packaging>
-	<name>Ncore processors, doc generator</name>
+	<name>HTML Application model, processors, doc generator</name>
+	<description>HTML application model, node processors and HTML documentation genertor</description>
+
+	<licenses>
+		<license>
+			<name>Eclipse Public License 2.0</name>
+			<url>https://www.nasdanika.org/builds/master/eclipse-public-license-2.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/Nasdanika-Models/html-app</url>
+	</scm>
+
+	<url>https://github.com/Nasdanika-Models/html-app</url>
+
+	<organization>
+		<name>Nasdanika</name>
+		<url>https://nasdanika.org</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>pvlasov</id>
+			<name>Pavel Vlasov</name>
+			<email>Pavel.Vlasov@nasdanika.org</email>
+			<roles>
+				<role>Lead Developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
 
 	<properties>
 		<core.version>2024.11.1</core.version>
@@ -39,6 +71,62 @@
 	        	        </dependency>
 		            </dependencies>
 		        </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.10.0</version>
+			
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<failOnError>false</failOnError>
+							<additionalOptions>-Xdoclint:none</additionalOptions>
+							<linksource>true</linksource>	
+							<additionalOptions><![CDATA[--allow-script-in-comments]]></additionalOptions>
+							<links>
+								<link>https://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
+								<link>https://picocli.info/apidocs/</link>
+							</links>
+							<offlineLinks>
+                                                                <!-- Core -->
+								<offlineLink>
+									<url>https://docs.nasdanika.org/modules/core/apidocs/</url>
+									<location>${project.parent.basedir}/../core/target/apidocs/</location>
+								</offlineLink>
+							</offlineLinks>
+							<header>
+								<![CDATA[
+								      <script async src="https://www.googletagmanager.com/gtag/js?id=G-9BRJVLK8CC"></script>
+								      <script>
+								        window.dataLayer = window.dataLayer || [];
+								        function gtag(){dataLayer.push(arguments);}
+								        gtag('js', new Date());
+      
+								        gtag('config', 'G-9BRJVLK8CC');
+								      </script>    
+								]]>
+							</header>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
