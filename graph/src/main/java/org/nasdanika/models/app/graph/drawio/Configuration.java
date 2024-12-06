@@ -32,12 +32,19 @@ public class Configuration {
 	public static final String DOC_FORMAT_PROPERTY = "doc-format";
 	public static final String DOC_REF_PROPERTY = "doc-ref";
 	public static final String DOCUMENTATION_PROPERTY = "documentation";
+	public static final String PROTOTYPE_PROPERTY = "prototype";
+	public static final String PROTO_REF_PROPERTY = "proto-ref";
 	public static final String TITLE_PROPERTY = "title";
 	public static final String ICON_PROPERTY = "icon";
+//	public static final String ROLE_PROPERTY = "role";
 	
 	protected String getIconProperty() {
 		return ICON_PROPERTY;
 	}	
+	
+//	protected String getRoleProperty() {
+//		return ICON_PROPERTY;
+//	}	
 	
 	protected String getTitleProperty() {
 		return TITLE_PROPERTY;
@@ -49,6 +56,14 @@ public class Configuration {
 		
 	protected String getDocRefProperty() {
 		return DOC_REF_PROPERTY;
+	}	
+		
+	protected String getPrototypeProperty() {
+		return PROTOTYPE_PROPERTY;
+	}	
+		
+	protected String getProtoRefProperty() {
+		return PROTO_REF_PROPERTY;
 	}	
 	
 	protected String getDocFormatProperty() {

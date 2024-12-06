@@ -57,7 +57,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 		document.accept(consumer, null);
 		Map<Element, ProcessorConfig> configs = processorConfigTransformer.transform(elements, false, progressMonitor);
 		
-		DrawioProcessorFactory processorFactory = createProcessorFactory();
+		DrawioProcessorFactory processorFactory = createProcessorFactory(progressMonitor);
 		ReflectiveProcessorFactoryProvider<WidgetFactory, WidgetFactory, WidgetFactory> rpfp = new ReflectiveProcessorFactoryProvider<>(processorFactory);
 		Map<Element, ProcessorInfo<WidgetFactory>> processors = rpfp.getFactory().createProcessors(configs.values(), false, progressMonitor);
 		
@@ -106,8 +106,8 @@ public class DrawioHtmlAppGenerator extends Configuration {
 		return baseURI;
 	}
 
-	protected DrawioProcessorFactory createProcessorFactory() {
-		return new DrawioProcessorFactory(capabilityLoader) {
+	protected DrawioProcessorFactory createProcessorFactory(ProgressMonitor progressMonitor) {
+		return new DrawioProcessorFactory(capabilityLoader, progressMonitor) {
 			
 			@Override
 			protected String getIconProperty() {

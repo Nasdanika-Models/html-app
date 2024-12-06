@@ -6,22 +6,29 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.jsoup.Jsoup;
 import org.nasdanika.common.DocumentationFactory;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Supplier;
+import org.nasdanika.common.SupplierFactory;
 import org.nasdanika.common.Util;
 import org.nasdanika.drawio.Element;
 import org.nasdanika.drawio.ModelElement;
+import org.nasdanika.emf.persistence.EObjectLoader;
 import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Text;
 import org.nasdanika.graph.processor.ProcessorElement;
 import org.nasdanika.graph.processor.ProcessorInfo;
 import org.nasdanika.graph.processor.Registry;
+import org.nasdanika.models.app.Action;
+import org.nasdanika.models.app.AppFactory;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.graph.WidgetFactory;
 import org.nasdanika.persistence.ConfigurationException;
+import org.nasdanika.persistence.ObjectLoader;
 
 /**
  * Base class for processors
@@ -116,7 +123,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 		Object label = createLabel(progressMonitor);
 		return label == null ? Collections.emptyList() : Collections.singleton((Label) label);
 	}	
-	
+			
 	protected Collection<EObject> getDocumentation(ProgressMonitor progressMonitor) {
 		if (element instanceof ModelElement) {		
 			try {
@@ -236,6 +243,68 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 		}
 		
 		return Jsoup.parse(a.getLabel()).text().compareTo(Jsoup.parse(b.getLabel()).text());
-	}		
+	}	
+
+	@SuppressWarnings("unchecked")
+	protected Label getPrototype(ProgressMonitor progressMonitor) {
+		if (element instanceof ModelElement) {		
+			try {
+				EObjectLoader eObjectLoader = new EObjectLoader((ObjectLoader) null) {
+					
+					@Override
+					public ResolutionResult resolveEClass(String type) {
+						EClass eClass = (EClass) factory.getType(type, (ModelElement) element);
+						return new ResolutionResult(eClass, null);
+					}
+					
+					@Override
+					public ResourceSet getResourceSet() {
+						return factory.getResourceSet();
+					}
+					
+				};
+				
+				ModelElement modelElement = (ModelElement) element;
+				URI baseUri = modelElement.getModel().getPage().getDocument().getURI();
+				String prototypeProperty = factory.getPrototypeProperty();
+				if (!Util.isBlank(prototypeProperty)) {
+					String prototypeSpec = modelElement.getProperty(prototypeProperty);
+					if (!Util.isBlank(prototypeSpec)) {
+						Object obj = eObjectLoader.loadYaml(
+								prototypeSpec, 
+								baseUri, 
+								null, 
+								progressMonitor);
+						
+						if (obj instanceof SupplierFactory) {
+							obj = ((SupplierFactory<Object>) obj).create(factory.getContext()).call(progressMonitor, factory::onDiagnostic);
+						} 
+						
+						return (Label) obj;
+					}
+				}
+				
+				String protoRefProperty = factory.getProtoRefProperty();
+				if (!Util.isBlank(protoRefProperty)) {
+					String protoRefStr = modelElement.getProperty(protoRefProperty);
+					if (!Util.isBlank(protoRefStr)) {
+						URI[] protoRefURI = { URI.createURI(protoRefStr) };
+						if (baseUri != null && !baseUri.isRelative()) {
+							protoRefURI[0] = protoRefURI[0].resolve(baseUri);
+						}
+						
+						return (Label) factory.getResourceSet().getEObject(protoRefURI[0], true);
+					}
+				}
+			} catch (Exception e) {
+				Action errorAction = AppFactory.eINSTANCE.createAction();				
+				Text text = ContentFactory.eINSTANCE.createText(); // Interpolate with element properties?
+				text.setContent("<div class=\"nsd-error\">Error loading prototype: " + e + "</div>");
+				errorAction.getContent().add(text);
+				return errorAction;
+			}
+		}
+		return null;		
+	}	
 
 }

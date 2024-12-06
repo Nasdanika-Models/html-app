@@ -16,6 +16,7 @@ import javax.xml.transform.TransformerException;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.jsoup.Jsoup;
 import org.nasdanika.common.MapCompoundSupplier;
 import org.nasdanika.common.ProgressMonitor;
@@ -227,7 +228,13 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 			return Collections.emptyList();
 		}
 	
-		Label mLabel = documentation.isEmpty() && childConnectionsActionList.isEmpty() ? AppFactory.eINSTANCE.createLabel() : AppFactory.eINSTANCE.createAction();
+		Label prototype = getPrototype(progressMonitor);
+		Label mLabel;
+		if (prototype == null) {				
+			mLabel = documentation.isEmpty() && childConnectionsActionList.isEmpty() ? AppFactory.eINSTANCE.createLabel() : AppFactory.eINSTANCE.createAction();
+		} else {
+			mLabel = EcoreUtil.copy(prototype);
+		}
 		String labelText = Jsoup.parse(label).text();
 		mLabel.setText(labelText);
 		mLabel.getChildren().addAll(childNodesLabelsList);
@@ -238,14 +245,13 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 		}
 		
 		if (mLabel instanceof Action) {
-			((Action) mLabel).getAnonymous().addAll(childConnectionsActionList);
+			((Action) mLabel).getAnonymous().addAll(childConnectionsActionList); // TODO - by role
 			((Action) mLabel).setLocation(uri.toString());
 			childNodesLabelsList.forEach(cl -> cl.rebase(null, uri));		
 			childConnectionsActionList.forEach(cl -> cl.rebase(null, uri));		
 		}		
 		
 		return Collections.singleton(mLabel);			
-	}		
-	
+	}
 
 }
