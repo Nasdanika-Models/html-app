@@ -352,7 +352,7 @@ public class HtmlAppGenerator {
 	 * @param progressMonitor
 	 * @throws IOException
 	 */
-	public void generateHtmlAppModel(
+	public Resource generateHtmlAppModel(
 			Consumer<Diagnostic> diagnosticConsumer,
 			URI actionModelResourceURI,
 			ProgressMonitor progressMonitor) throws IOException {
@@ -361,10 +361,10 @@ public class HtmlAppGenerator {
 				diagnosticConsumer, 
 				progressMonitor);
 		
-		saveLabelMap(labelMap, actionModelResourceURI);
+		return saveLabelMap(labelMap, actionModelResourceURI);
 	}
 	
-	public static void saveLabels(Iterable<Label> labels, URI actionModelResoureURI) throws IOException {
+	public static Resource saveLabels(Iterable<Label> labels, URI actionModelResoureURI) throws IOException {
 		ResourceSet actionModelsResourceSet = new ResourceSetImpl();
 		actionModelsResourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
 		
@@ -372,15 +372,16 @@ public class HtmlAppGenerator {
 		labels.forEach(actionModelResource.getContents()::add);
 		
 		actionModelResource.save(null);
+		return actionModelResource;
 	}	
 	
-	public static void saveLabelMap(Map<EObject, Collection<Label>> labelMap, URI actionModelResoureURI) throws IOException {
+	public static Resource saveLabelMap(Map<EObject, Collection<Label>> labelMap, URI actionModelResoureURI) throws IOException {
 		List<Label> labels = labelMap
 			.values()
 			.stream()
 			.flatMap(Collection::stream)
 			.toList();
-		saveLabels(labels, actionModelResoureURI);
+		return saveLabels(labels, actionModelResoureURI);
 	}	
 
 	/**
@@ -394,12 +395,12 @@ public class HtmlAppGenerator {
 	 * @param progressMonitor
 	 * @throws IOException
 	 */
-	public void generateHtmlAppModel(
+	public Resource generateHtmlAppModel(
 			Consumer<Diagnostic> diagnosticConsumer,
 			File actionModelFile,
 			ProgressMonitor progressMonitor) throws IOException {
 		
-		generateHtmlAppModel(
+		return generateHtmlAppModel(
 				diagnosticConsumer, 
 				URI.createFileURI(actionModelFile.getCanonicalFile().getAbsolutePath()), progressMonitor);
 	}
