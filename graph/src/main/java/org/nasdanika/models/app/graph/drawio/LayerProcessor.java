@@ -1,14 +1,13 @@
 package org.nasdanika.models.app.graph.drawio;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.jsoup.Jsoup;
 import org.nasdanika.common.MapCompoundSupplier;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Supplier;
@@ -20,8 +19,6 @@ import org.nasdanika.drawio.Node;
 import org.nasdanika.graph.processor.ChildProcessors;
 import org.nasdanika.graph.processor.ProcessorElement;
 import org.nasdanika.graph.processor.ProcessorInfo;
-import org.nasdanika.models.app.Action;
-import org.nasdanika.models.app.AppFactory;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.graph.WidgetFactory;
 
@@ -92,43 +89,9 @@ public class LayerProcessor extends BaseProcessor<Layer> {
 		return uri;
 	}
 	
-	protected Collection<Label> createLayerLabels(Map<LayerElement, Collection<Label>> childLabels, ProgressMonitor progressMonitor) {
-		List<Label> childLabelsList = childLabels.entrySet()
-			.stream()
-			.sorted((a,b) -> compareModelElementsBySortKeyAndLabel(a.getKey(), b.getKey()))
-			.flatMap(e -> e.getValue().stream())
-			.toList();		
-				
-		String label = element.getLabel();
-		if (Util.isBlank(label)) {
-			return childLabelsList;
-		}
-		
-		Collection<EObject> documentation = getDocumentation(progressMonitor);
-		int childLabelsSum = childLabels.values()
-				.stream()
-				.mapToInt(Collection::size)
-				.sum();
-		
-		if (documentation.isEmpty() && childLabelsSum == 0) {
-			return Collections.emptyList();
-		}
-
-		Label mLabel = documentation.isEmpty() ? AppFactory.eINSTANCE.createLabel() : AppFactory.eINSTANCE.createAction();
-		mLabel.setText(Jsoup.parse(label).text());
-		mLabel.getChildren().addAll(childLabelsList);
-		configureLabel(mLabel, progressMonitor);
-				
-		if (!documentation.isEmpty() ) {
-			((Action) mLabel).getContent().addAll(documentation);
-		}
-		
-		if (mLabel instanceof Action) {
-			((Action) mLabel).setLocation(uri.toString());						
-			childLabelsList.forEach(cl -> cl.rebase(null, uri));
-		}		
-		
-		return Collections.singleton(mLabel);			
+	protected Collection<Label> createLayerLabels(Map<LayerElement, Collection<Label>> childLabelsMap, ProgressMonitor progressMonitor) {
+		List<Label> childLabels = new ArrayList<>(childLabelsMap.values().stream().flatMap(Collection::stream).toList());
+		return createLabels(childLabels, progressMonitor);
 	}	
 
 }

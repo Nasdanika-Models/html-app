@@ -3,17 +3,22 @@ package org.nasdanika.models.app.graph.drawio;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.URI;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Supplier;
+import org.nasdanika.common.Util;
 import org.nasdanika.drawio.Document;
 import org.nasdanika.drawio.LayerElement;
 import org.nasdanika.drawio.ModelElement;
 import org.nasdanika.drawio.Page;
+import org.nasdanika.drawio.Root;
 import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Text;
 import org.nasdanika.graph.processor.ProcessorElement;
@@ -65,10 +70,25 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 	}
 	
 	protected Collection<Label> createPageLabels(Collection<Label> rootLabels, ProgressMonitor progressMonitor) {
-		Action action = AppFactory.eINSTANCE.createAction();		
-		action.setText(element.getName());
-		action.setLocation(uri.toString());
+		Root root = element.getModel().getRoot();
+		ProcessorInfo<WidgetFactory> rpi = registry.get(root);
+		RootProcessor rootProcessor = (RootProcessor) rpi.getProcessor();
+		Label prototype = rootProcessor.getPrototype(progressMonitor);
+		Action action = prototype instanceof Action ? (Action) prototype : AppFactory.eINSTANCE.createAction();
+		if (Util.isBlank(action.getText())) {
+			action.setText(element.getName());
+		}
+		if (Util.isBlank(action.getLocation())) {
+			action.setLocation(uri.toString());
+		}
+		
+		// By role
+		Map<String, List<Label>> labelsByRole = Util.groupBy(rootLabels, this::getLabelRole);
+		
 		action.getChildren().addAll(rootLabels);
+		
+		
+		
 		rootLabels.forEach(rl -> rl.rebase(null, uri));
 		rootProcessor.configureLabel(action, progressMonitor);
 		Text representationText = ContentFactory.eINSTANCE.createText(); // Interpolate with element properties?

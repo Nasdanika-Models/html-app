@@ -3,7 +3,6 @@ package org.nasdanika.models.app.graph.drawio;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,8 +14,6 @@ import javax.xml.transform.TransformerException;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.jsoup.Jsoup;
 import org.nasdanika.common.MapCompoundSupplier;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Supplier;
@@ -34,8 +31,6 @@ import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Text;
 import org.nasdanika.graph.processor.NodeProcessorInfo;
 import org.nasdanika.graph.processor.ProcessorInfo;
-import org.nasdanika.models.app.Action;
-import org.nasdanika.models.app.AppFactory;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.graph.WidgetFactory;
 
@@ -147,21 +142,13 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 		
 		return ret;
 	}
-	
-	protected Collection<Label> addPageLabels(Collection<Label> labels, Collection<Label> pageLabels) {
-		for (Label label: labels) {
-			label.getChildren().addAll(pageLabels);
-			if (label instanceof Action) {
-				pageLabels.forEach(pageLabel -> pageLabel.rebase(null, uri));		
-			}
-		}
-		return labels;
-	}
 		
 	@SuppressWarnings("resource")
 	@Override
 	public Supplier<Collection<Label>> createLabelsSupplier() {
 		MapCompoundSupplier<ModelElement, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Child labels supplier");
+		
+		System.out.println(element.getLabel());
 
 		String parentProperty = factory.getParentProperty();
 		String targetKey = factory.getTargetKey();
@@ -242,164 +229,28 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 			}			
 		}
 						
-		Supplier<Collection<Label>> labelSupplier = childLabelsSupplier.then(this::createLayerElementLabels);
-		
+		Supplier<Collection<Label>> pageLabelSupplier = Supplier.empty();		
 		if (element.isTargetLink()) {
 			LinkTarget linkTarget = element.getLinkTarget();
 			if (linkTarget instanceof Page) {
 				ProcessorInfo<WidgetFactory> ppi = registry.get(linkTarget);
-				Supplier<Collection<Label>> pageLabelSupplier = ppi.getProcessor().createLabelsSupplier();
-				return labelSupplier.then(pageLabelSupplier.asFunction(this::addPageLabels));
+				pageLabelSupplier = ppi.getProcessor().createLabelsSupplier();
 			}
-		}		
+		}	
 		
-		return labelSupplier;
-	}
-	
-	protected String getRole(ModelElement modelElement) {
-		String roleProperty = factory.getRoleProperty();
-		if (!Util.isBlank(roleProperty)) {
-			String role = modelElement.getProperty(roleProperty);
-			if (!Util.isBlank(role)) {
-				return role;
-			}
-		}
-		
-		return modelElement instanceof Connection ? factory.getAnonymousRole() : factory.getChildRole();
+		return childLabelsSupplier.then(pageLabelSupplier.asFunction(this::createLayerElementLabels));
 	}
 	
 	protected Collection<Label> createLayerElementLabels(
-			Map<ModelElement, Collection<Label>> childLabels, 
+			Map<ModelElement, Collection<Label>> childLabelsMap, 
+			Collection<Label> pageLabels,
 			ProgressMonitor progressMonitor) {
-				
-		String label = element.getLabel();
-		if (Util.isBlank(label)) {
-			// No label - passing up sorted by label
-			return childLabels.entrySet()
-					.stream()
-					.sorted((a,b) -> compareModelElementsBySortKeyAndLabel(a.getKey(), b.getKey()))
-					.flatMap(e -> e.getValue().stream())
-					.toList();		
-		}
-		
-		Collection<EObject> documentation = getDocumentation(progressMonitor);
-		int childLabelsSum = childLabels
-				.values()
-				.stream()
-				.mapToInt(Collection::size)
-				.sum();
-		
-		if (documentation.isEmpty() && childLabelsSum == 0) {
-			// No child labels, no documentation
-			return Collections.emptyList();
-		}
-				
-		// Group by role and sort
-		Map<String, List<Entry<ModelElement, Collection<Label>>>> groupedByRole = Util.groupBy(childLabels.entrySet(), e -> getRole(e.getKey()));
-		groupedByRole.values().forEach(labels -> Collections.sort(labels, (a,b) -> compareModelElementsBySortKeyAndLabel(a.getKey(), b.getKey())));
-		
-//		List<Label> childNodesLabelsList = logicalChildLabels.entrySet()
-//			.stream()
-//			.filter(e -> e.getKey() instanceof Node)
-//			.sorted((a,b) -> compareModelElementsByLabel(a.getKey(), b.getKey()))
-//			.flatMap(e -> e.getValue().stream())
-//			.toList();		
-//		
-//		List<Action> childConnectionsActionList = logicalChildLabels.entrySet()
-//				.stream()
-//				.filter(e -> isLogicalChildConnection(e.getKey()))
-//				.sorted((a,b) -> compareModelElementsByLabel(a.getKey(), b.getKey()))
-//				.flatMap(e -> e.getValue().stream())
-//				.filter(Action.class::isInstance)
-//				.map(Action.class::cast)
-//				.toList();				
-		
-	
-		String childRole = factory.getChildRole();
-		Label prototype = getPrototype(progressMonitor);
-		Label mLabel;
-		if (prototype == null) {		
-			boolean onlyChildRole = !Util.isBlank(childRole) 
-					&& groupedByRole.size() == 1 
-					&& childRole.equals(groupedByRole.keySet().iterator().next());
-			
-			mLabel = documentation.isEmpty() && onlyChildRole ? AppFactory.eINSTANCE.createLabel() : AppFactory.eINSTANCE.createAction();
-		} else {
-			mLabel = EcoreUtil.copy(prototype);
-		}
-		String labelText = Jsoup.parse(label).text();
-		mLabel.setText(labelText);
-		
-		if (!Util.isBlank(childRole)) {
-			List<Entry<ModelElement, Collection<Label>>> children = groupedByRole.remove(childRole);
-			if (children != null) {
-				children.forEach(e -> mLabel.getChildren().addAll(e.getValue()));				
-			}
-		}		
-		
-		configureLabel(mLabel, progressMonitor);
-				
-		if (mLabel instanceof Action) {
-			Action mAction = (Action) mLabel;
-			if (!documentation.isEmpty() ) {
-				mAction.getContent().addAll(documentation);
-			}
-		
-			String anonymousRole = factory.getAnonymousRole();
-			if (!Util.isBlank(anonymousRole)) {
-				List<Entry<ModelElement, Collection<Label>>> anonymous = groupedByRole.remove(anonymousRole);
-				if (anonymous != null) {
-					for (Entry<ModelElement, Collection<Label>> ae: anonymous) {
-						for (Label ael: ae.getValue()) {
-							if (ael instanceof Action) {
-								mAction.getAnonymous().add((Action) ael);
-							} else {
-								addError(mAction, "Not an action, cannot add to anonymous: " + ael.getText());
-							}
-						}
-					}
-				}
-			}
-			
-			String navigationRole = factory.getNavigationRole();
-			if (!Util.isBlank(navigationRole)) {
-				List<Entry<ModelElement, Collection<Label>>> navs = groupedByRole.remove(navigationRole);
-				if (navs != null) {
-					navs.forEach(e -> mAction.getNavigation().addAll(e.getValue()));				
-				}
-			}		
-			
-			String sectionRole = factory.getSectionRole();
-			if (!Util.isBlank(sectionRole)) {
-				List<Entry<ModelElement, Collection<Label>>> sections = groupedByRole.remove(sectionRole);
-				if (sections != null) {
-					for (Entry<ModelElement, Collection<Label>> se: sections) {
-						for (Label sel: se.getValue()) {
-							if (sel instanceof Action) {
-								mAction.getSections().add((Action) sel);
-							} else {
-								addError(mAction, "Not an action, cannot add to sections: " + sel.getText());
-							}
-						}
-					}
-				}
-			}
-			
-			mAction.setLocation(uri.toString());
-			childLabels.values().stream().flatMap(Collection::stream).forEach(cl -> cl.rebase(null, uri));
-			
-			if (!groupedByRole.isEmpty()) {
-				addError(mAction, "Unsupported roles: " + groupedByRole.keySet());				
-			}
-		}		
-		
-		return Collections.singleton(mLabel);			
-	}
 
-	protected void addError(Action action, String error) {
-		Text errorText = ContentFactory.eINSTANCE.createText(); 
-		errorText.setContent("<div class=\"alert alert-danger\" role=\"alert\">" + error + "</div>");
-		action.getContent().add(errorText);
+		List<Label> childLabels = new ArrayList<>(childLabelsMap.values().stream().flatMap(Collection::stream).toList());
+		if (pageLabels != null) {
+			childLabels.addAll(pageLabels);
+		}
+		return createLabels(childLabels, progressMonitor);
 	}
 
 }
