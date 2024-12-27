@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,6 +29,7 @@ import org.nasdanika.drawio.LinkTarget;
 import org.nasdanika.drawio.ModelElement;
 import org.nasdanika.drawio.Node;
 import org.nasdanika.drawio.Page;
+import org.nasdanika.drawio.Root;
 import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Text;
 import org.nasdanika.graph.processor.NodeProcessorInfo;
@@ -136,6 +136,15 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 		}
 				
 		ret.addAll(super.getDocumentation(progressMonitor));
+		
+		// linked documentation (root)
+		if (linkTarget instanceof Page) {
+			Root root = ((Page) linkTarget).getModel().getRoot();
+			ProcessorInfo<WidgetFactory> rpi = registry.get(root);
+			RootProcessor rootProcessor = (RootProcessor) rpi.getProcessor();
+			ret.addAll(rootProcessor.getDocumentation(progressMonitor));			
+		}
+		
 		return ret;
 	}
 	

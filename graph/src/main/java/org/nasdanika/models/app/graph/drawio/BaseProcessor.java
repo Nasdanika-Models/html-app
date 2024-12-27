@@ -16,7 +16,10 @@ import org.nasdanika.common.Supplier;
 import org.nasdanika.common.SupplierFactory;
 import org.nasdanika.common.Util;
 import org.nasdanika.drawio.Element;
+import org.nasdanika.drawio.LinkTarget;
 import org.nasdanika.drawio.ModelElement;
+import org.nasdanika.drawio.Page;
+import org.nasdanika.drawio.Root;
 import org.nasdanika.emf.persistence.EObjectLoader;
 import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Text;
@@ -267,6 +270,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 
 	@SuppressWarnings("unchecked")
 	protected Label getPrototype(ProgressMonitor progressMonitor) {
+		ModelElement modelElement = (ModelElement) element;
 		if (element instanceof ModelElement) {		
 			try {
 				EObjectLoader eObjectLoader = new EObjectLoader((ObjectLoader) null) {
@@ -284,7 +288,6 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 					
 				};
 				
-				ModelElement modelElement = (ModelElement) element;
 				URI baseUri = modelElement.getModel().getPage().getDocument().getURI();
 				String prototypeProperty = factory.getPrototypeProperty();
 				if (!Util.isBlank(prototypeProperty)) {
@@ -322,6 +325,15 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 				text.setContent("<div class=\"nsd-error\">Error loading prototype: " + e + "</div>");
 				errorAction.getContent().add(text);
 				return errorAction;
+			}
+			
+			LinkTarget linkTarget = modelElement.getLinkTarget();
+			// linked documentation (root)
+			if (linkTarget instanceof Page) {
+				Root root = ((Page) linkTarget).getModel().getRoot();
+				ProcessorInfo<WidgetFactory> rpi = registry.get(root);
+				RootProcessor rootProcessor = (RootProcessor) rpi.getProcessor();
+				return rootProcessor.getPrototype(progressMonitor);
 			}
 		}
 		return null;		
