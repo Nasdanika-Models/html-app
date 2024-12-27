@@ -502,8 +502,12 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 			if (!documentation.isEmpty() ) {
 				mAction.getContent().addAll(documentation);
 			}
-			if (Util.isBlank(mAction.getLocation())) { // Link?
-				mAction.setLocation(uri.toString());
+			String sectionRole = factory.getSectionRole();
+			String labelRole = getLabelRole(mLabel);
+			if (Util.isBlank(sectionRole) || !sectionRole.equals(labelRole)) {
+				if (Util.isBlank(mAction.getLocation())) { // Link?
+					mAction.setLocation(uri.toString());
+				}
 			}
 		}		
 		addChildLabels(mLabel, childLabels, progressMonitor);

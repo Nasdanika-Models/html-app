@@ -70,8 +70,6 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			.map(DrawioHtmlAppGenerator::getLinkTargetRecursive)
 			.forEach(entry ->  ((LinkTargetProcessor<LinkTarget>) processors.get(entry.getValue()).getProcessor()).addReferrer(entry.getKey()));
 		
-		System.out.println(processors.size());
-		
 		DocumentProcessor docProcessor = (DocumentProcessor) processors.get(document).getProcessor();
 				
 		URI baseURI = getBaseURI();

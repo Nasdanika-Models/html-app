@@ -147,8 +147,6 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 	@Override
 	public Supplier<Collection<Label>> createLabelsSupplier() {
 		MapCompoundSupplier<ModelElement, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Child labels supplier");
-		
-		System.out.println(element.getLabel());
 
 		String parentProperty = factory.getParentProperty();
 		String targetKey = factory.getTargetKey();

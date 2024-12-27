@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.URI;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Supplier;
@@ -81,14 +80,8 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 		if (Util.isBlank(action.getLocation())) {
 			action.setLocation(uri.toString());
 		}
-		
-		// By role
-		Map<String, List<Label>> labelsByRole = Util.groupBy(rootLabels, this::getLabelRole);
-		
-		action.getChildren().addAll(rootLabels);
-		
-		
-		
+
+		addChildLabels(action, rootLabels, progressMonitor);		
 		rootLabels.forEach(rl -> rl.rebase(null, uri));
 		rootProcessor.configureLabel(action, progressMonitor);
 		Text representationText = ContentFactory.eINSTANCE.createText(); // Interpolate with element properties?
@@ -159,10 +152,15 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 			if (sourceElementProcessorInfo != null) {
 				WidgetFactory sourceElementProcessor = sourceElementProcessorInfo.getProcessor();
 				if (sourceElementProcessor instanceof BaseProcessor) {
-					URI sourceURI = ((BaseProcessor<?>) sourceElementProcessor).getActionURI(progressMonitor);
-					if (sourceURI != null && uri != null) {
-						URI linkURI = sourceURI.deresolve(uri, true, true, true);
-						representationElement.setLink(linkURI.toString());
+					BaseProcessor<?> baseProcessor = (BaseProcessor<?>) sourceElementProcessor;
+					String role = baseProcessor.getRole();
+					String sectionRole = factory.getSectionRole();
+					if (Util.isBlank(sectionRole) || !sectionRole.equals(role)) {
+						URI sourceURI = baseProcessor.getActionURI(progressMonitor);
+						if (sourceURI != null && uri != null) {
+							URI linkURI = sourceURI.deresolve(uri, true, true, true);
+							representationElement.setLink(linkURI.toString());
+						}
 					}
 				}
 			}
