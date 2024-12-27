@@ -340,12 +340,13 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 	protected int compareLabelsBySortKeyAndText(Label a, Label b) {
 		String aKey = getLabelSortKey(a);
 		String bKey = getLabelSortKey(b);
+		System.out.println(aKey + " ~~ " + bKey);
 		if (Util.isBlank(aKey)) {
 			if (!Util.isBlank(bKey)) {
 				return 1;
 			}
 		} else if (Util.isBlank(bKey)) {
-			if (!Util.isBlank(bKey)) {
+			if (!Util.isBlank(aKey)) {
 				return -1;
 			}				
 		} else {
