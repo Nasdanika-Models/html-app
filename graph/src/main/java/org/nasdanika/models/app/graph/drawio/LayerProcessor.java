@@ -95,7 +95,7 @@ public class LayerProcessor extends BaseProcessor<Layer> {
 	protected Collection<Label> createLayerLabels(Map<LayerElement, Collection<Label>> childLabels, ProgressMonitor progressMonitor) {
 		List<Label> childLabelsList = childLabels.entrySet()
 			.stream()
-			.sorted((a,b) -> compareModelElementsByLabel(a.getKey(), b.getKey()))
+			.sorted((a,b) -> compareModelElementsBySortKeyAndLabel(a.getKey(), b.getKey()))
 			.flatMap(e -> e.getValue().stream())
 			.toList();		
 				

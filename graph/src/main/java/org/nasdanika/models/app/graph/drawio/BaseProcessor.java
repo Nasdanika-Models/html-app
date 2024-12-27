@@ -207,7 +207,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 	/**
 	 * Set icon, tooltip, ...
 	 * @param label
-	 * @param progressMonitor TODO
+	 * @param progressMonitor 
 	 */
 	public void configureLabel(Label label, ProgressMonitor progressMonitor) {
 		if (element instanceof ModelElement) {
@@ -234,7 +234,27 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 		}
 	}
 		
-	public static int compareModelElementsByLabel(ModelElement a, ModelElement b) {
+	protected int compareModelElementsBySortKeyAndLabel(ModelElement a, ModelElement b) {
+		String sortKeyProperty = factory.getSortKeyProperty();
+		if (!Util.isBlank(sortKeyProperty)) {
+			String aKey = a.getProperty(sortKeyProperty);
+			String bKey = b.getProperty(sortKeyProperty);
+			if (Util.isBlank(aKey)) {
+				if (!Util.isBlank(bKey)) {
+					return 1;
+				}
+			} else if (Util.isBlank(bKey)) {
+				if (!Util.isBlank(bKey)) {
+					return -1;
+				}				
+			} else {
+				int cmp = aKey.compareTo(bKey);
+				if (cmp != 0) {
+					return cmp;
+				}
+			}
+				
+		}
 		if (Util.isBlank(a.getLabel())) {
 			return Util.isBlank(b.getLabel()) ? a.hashCode() - b.hashCode() : 1;
 		}

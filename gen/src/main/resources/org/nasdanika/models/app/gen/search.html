@@ -74,7 +74,7 @@
 					searchResults: function() {
 						if (this.filter) {
 							let searchResult = this.searchIndex.search(this.filter);
-							let actionUuids = searchResult.map(match => searchDocuments[match.ref]['action-uuid']).join(" ");
+							let actionUuids = searchResult.map(match => searchDocuments[match.ref]['link-uuid']).join(" ");
 							setTimeout(() => {
 								let treeSearchCallback = $('#nsd-site-map-tree').jstree(true).search;
 								if (treeSearchCallback) {

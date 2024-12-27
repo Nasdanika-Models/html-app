@@ -20,7 +20,7 @@ window.nsdJsTreeSearchCallback = function(str, node) {
 			  for (const key in searchDocuments) {
 				  let doc = searchDocuments[key];
 				this.add({
-					id: doc['action-uuid'],
+					id: doc['link-uuid'],
 					title: doc.title,
 					path: doc.path,
 					content: doc.content

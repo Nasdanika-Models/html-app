@@ -36,15 +36,34 @@ public class Configuration {
 	public static final String PROTO_REF_PROPERTY = "proto-ref";
 	public static final String TITLE_PROPERTY = "title";
 	public static final String ICON_PROPERTY = "icon";
-//	public static final String ROLE_PROPERTY = "role";
+	public static final String ROLE_PROPERTY = "role";
+	public static final String PARENT_PROPERTY = "parent";
+	
+	public static final String SOURCE_KEY = "source";
+	public static final String TARGET_KEY = "target";
+
+	public static final String ANONYMOUS_ROLE = "anonymous";
+	public static final String CHILD_ROLE = "child";
+	public static final String NAVIGATION_ROLE = "navigation";
+	public static final String SECTION_ROLE = "section";
+	
+	public static final String SORT_KEY_PROPERTY = "sort-key";	
 	
 	protected String getIconProperty() {
 		return ICON_PROPERTY;
 	}	
+		
+	protected String getSortKeyProperty() {
+		return SORT_KEY_PROPERTY;
+	}		
 	
-//	protected String getRoleProperty() {
-//		return ICON_PROPERTY;
-//	}	
+	protected String getRoleProperty() {
+		return ROLE_PROPERTY;
+	}	
+	
+	protected String getParentProperty() {
+		return PARENT_PROPERTY;
+	}	
 	
 	protected String getTitleProperty() {
 		return TITLE_PROPERTY;
@@ -68,6 +87,30 @@ public class Configuration {
 	
 	protected String getDocFormatProperty() {
 		return DOC_FORMAT_PROPERTY; 
+	}		
+	
+	protected String getSourceKey() {
+		return SOURCE_KEY; 
+	}		
+	
+	protected String getTargetKey() {
+		return TARGET_KEY; 
+	}		
+	
+	protected String getAnonymousRole() {
+		return ANONYMOUS_ROLE; 
+	}		
+	
+	protected String getChildRole() {
+		return CHILD_ROLE; 
+	}		
+	
+	protected String getNavigationRole() {
+		return NAVIGATION_ROLE; 
+	}		
+	
+	protected String getSectionRole() {
+		return SECTION_ROLE; 
 	}		
 	
 	/**

@@ -24,6 +24,10 @@ public class LinkTargetProcessor<T extends LinkTarget> extends BaseProcessor<T> 
 
 	protected Collection<ModelElement> referrers = new ArrayList<>();	
 	
+	/**
+	 * @param modelElement
+	 * @return true if the argument is a connection which shall be a logical child of this element.
+	 */
 	protected boolean isLogicalChildConnection(ModelElement modelElement) {
 		if (modelElement instanceof Connection) {
 			Node source = ((Connection) modelElement).getSource();

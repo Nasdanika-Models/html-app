@@ -148,27 +148,92 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 		}
 		return labels;
 	}
-	
-	
+		
 	@SuppressWarnings("resource")
 	@Override
 	public Supplier<Collection<Label>> createLabelsSupplier() {
 		MapCompoundSupplier<ModelElement, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Child labels supplier");
-		for (Entry<ModelElement, ProcessorInfo<WidgetFactory>> ce: childInfos.entrySet()) {
+
+		String parentProperty = factory.getParentProperty();
+		String targetKey = factory.getTargetKey();
+		String sourceKey = factory.getSourceKey();
+
+		// Own child nodes not linked to other nodes
+		C: for (Entry<ModelElement, ProcessorInfo<WidgetFactory>> ce: childInfos.entrySet()) {
 			ModelElement child = ce.getKey();
 			if (child instanceof Connection && ((Connection) child).getSource() != null) {
 				continue;
 			}
+			if (child instanceof Node) {
+				Node childNode = (Node) child;
+				if (!Util.isBlank(parentProperty)) {
+					if (!Util.isBlank(targetKey)) {
+						for (Connection cnoc: childNode.getOutgoingConnections()) {
+							String cParent = cnoc.getProperty(parentProperty);
+							if (targetKey.equals(cParent)) {
+								continue C; // Logical child of connection's target
+							}
+						}
+					}
+					if (!Util.isBlank(sourceKey)) {
+						for (Connection cnoc: childNode.getIncomingConnections()) {
+							String cParent = cnoc.getProperty(parentProperty);
+							if (sourceKey.equals(cParent)) {
+								continue C; // Logical child of connection's source
+							}
+						}
+					}
+				}
+				
+			}
 			childLabelsSupplier.put(child, ce.getValue().getProcessor().createLabelsSupplier());
 		}
-		MapCompoundSupplier<Connection, Collection<Label>> outgoingConnectionsLabelsSupplier = new MapCompoundSupplier<>("Outgoing connections labels supplier");
+		
+		// Connections without parent property
 		for (Entry<Connection, CompletableFuture<ConnectionProcessor>> ce: outgoingEndpoints.entrySet()) {
-			outgoingConnectionsLabelsSupplier.put(ce.getKey(), ce.getValue().join().createLabelsSupplier());
+			Connection conn = ce.getKey();
+			if (!Util.isBlank(parentProperty) &&  !Util.isBlank(conn.getProperty(parentProperty))) {
+				continue;
+			}
+			if (isLogicalChildConnection(conn)) {
+				childLabelsSupplier.put(ce.getKey(), ce.getValue().join().createLabelsSupplier());
+			}
+		}
+		
+		// Nodes linked by connections with parent property
+		if (!Util.isBlank(parentProperty) && element instanceof Node) {
+			Node node = (Node) element;
+			if (!Util.isBlank(sourceKey)) {
+				for (Connection oc: node.getOutgoingConnections()) {
+					Node target = oc.getTarget();
+					if (sourceKey.equals(oc.getProperty(parentProperty)) && target != null) {
+						ProcessorInfo<WidgetFactory> childInfo = registry.get(target);
+						if (childInfo != null) {
+							WidgetFactory processor = childInfo.getProcessor();
+							if (processor != null) {
+								childLabelsSupplier.put(target, processor.createLabelsSupplier());
+							}
+						}
+					}
+				}
+			}
+			if (!Util.isBlank(targetKey)) {
+				for (Connection ic: node.getIncomingConnections()) {
+					Node source = ic.getSource();
+					if (targetKey.equals(ic.getProperty(parentProperty)) && source != null) {
+						ProcessorInfo<WidgetFactory> childInfo = registry.get(source);
+						if (childInfo != null) {
+							WidgetFactory processor = childInfo.getProcessor();
+							if (processor != null) {
+								childLabelsSupplier.put(source, processor.createLabelsSupplier());
+							}
+						}
+					}
+				}
+			}			
 		}
 						
-		Supplier<Collection<Label>> labelSupplier = childLabelsSupplier
-				.then(outgoingConnectionsLabelsSupplier.asFunction(this::logicalChildrenLabels))
-				.then(this::createLayerElementLabels);
+		Supplier<Collection<Label>> labelSupplier = childLabelsSupplier.then(this::createLayerElementLabels);
 		
 		if (element.isTargetLink()) {
 			LinkTarget linkTarget = element.getLinkTarget();
@@ -182,76 +247,150 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 		return labelSupplier;
 	}
 	
-	protected Map<ModelElement, Collection<Label>> logicalChildrenLabels(
-			Map<ModelElement, Collection<Label>> childLabels, 
-			Map<Connection,Collection<Label>> connectionLabels) {
+	protected String getRole(ModelElement modelElement) {
+		String roleProperty = factory.getRoleProperty();
+		if (!Util.isBlank(roleProperty)) {
+			String role = modelElement.getProperty(roleProperty);
+			if (!Util.isBlank(role)) {
+				return role;
+			}
+		}
 		
-		Map<ModelElement, Collection<Label>> ret = new HashMap<>(childLabels);
-		ret.putAll(connectionLabels);
-		return ret;
+		return modelElement instanceof Connection ? factory.getAnonymousRole() : factory.getChildRole();
 	}
 	
 	protected Collection<Label> createLayerElementLabels(
-			Map<ModelElement, Collection<Label>> logicalChildLabels, 
+			Map<ModelElement, Collection<Label>> childLabels, 
 			ProgressMonitor progressMonitor) {
-		
-		List<Label> childNodesLabelsList = logicalChildLabels.entrySet()
-			.stream()
-			.filter(e -> e.getKey() instanceof Node)
-			.sorted((a,b) -> compareModelElementsByLabel(a.getKey(), b.getKey()))
-			.flatMap(e -> e.getValue().stream())
-			.toList();		
-		
-		List<Action> childConnectionsActionList = logicalChildLabels.entrySet()
-				.stream()
-				.filter(e -> isLogicalChildConnection(e.getKey()))
-				.sorted((a,b) -> compareModelElementsByLabel(a.getKey(), b.getKey()))
-				.flatMap(e -> e.getValue().stream())
-				.filter(Action.class::isInstance)
-				.map(Action.class::cast)
-				.toList();				
-		
+				
 		String label = element.getLabel();
 		if (Util.isBlank(label)) {
-			List<Label> ret = new ArrayList<>(childNodesLabelsList);
-			ret.addAll(childConnectionsActionList);
-			return ret;
+			// No label - passing up sorted by label
+			return childLabels.entrySet()
+					.stream()
+					.sorted((a,b) -> compareModelElementsBySortKeyAndLabel(a.getKey(), b.getKey()))
+					.flatMap(e -> e.getValue().stream())
+					.toList();		
 		}
 		
 		Collection<EObject> documentation = getDocumentation(progressMonitor);
-		int childLabelsSum = logicalChildLabels.values()
+		int childLabelsSum = childLabels
+				.values()
 				.stream()
 				.mapToInt(Collection::size)
 				.sum();
 		
 		if (documentation.isEmpty() && childLabelsSum == 0) {
+			// No child labels, no documentation
 			return Collections.emptyList();
 		}
+				
+		// Group by role and sort
+		Map<String, List<Entry<ModelElement, Collection<Label>>>> groupedByRole = Util.groupBy(childLabels.entrySet(), e -> getRole(e.getKey()));
+		groupedByRole.values().forEach(labels -> Collections.sort(labels, (a,b) -> compareModelElementsBySortKeyAndLabel(a.getKey(), b.getKey())));
+		
+//		List<Label> childNodesLabelsList = logicalChildLabels.entrySet()
+//			.stream()
+//			.filter(e -> e.getKey() instanceof Node)
+//			.sorted((a,b) -> compareModelElementsByLabel(a.getKey(), b.getKey()))
+//			.flatMap(e -> e.getValue().stream())
+//			.toList();		
+//		
+//		List<Action> childConnectionsActionList = logicalChildLabels.entrySet()
+//				.stream()
+//				.filter(e -> isLogicalChildConnection(e.getKey()))
+//				.sorted((a,b) -> compareModelElementsByLabel(a.getKey(), b.getKey()))
+//				.flatMap(e -> e.getValue().stream())
+//				.filter(Action.class::isInstance)
+//				.map(Action.class::cast)
+//				.toList();				
+		
 	
+		String childRole = factory.getChildRole();
 		Label prototype = getPrototype(progressMonitor);
 		Label mLabel;
-		if (prototype == null) {				
-			mLabel = documentation.isEmpty() && childConnectionsActionList.isEmpty() ? AppFactory.eINSTANCE.createLabel() : AppFactory.eINSTANCE.createAction();
+		if (prototype == null) {		
+			boolean onlyChildRole = !Util.isBlank(childRole) 
+					&& groupedByRole.size() == 1 
+					&& childRole.equals(groupedByRole.keySet().iterator().next());
+			
+			mLabel = documentation.isEmpty() && onlyChildRole ? AppFactory.eINSTANCE.createLabel() : AppFactory.eINSTANCE.createAction();
 		} else {
 			mLabel = EcoreUtil.copy(prototype);
 		}
 		String labelText = Jsoup.parse(label).text();
 		mLabel.setText(labelText);
-		mLabel.getChildren().addAll(childNodesLabelsList);
+		
+		if (!Util.isBlank(childRole)) {
+			List<Entry<ModelElement, Collection<Label>>> children = groupedByRole.remove(childRole);
+			if (children != null) {
+				children.forEach(e -> mLabel.getChildren().addAll(e.getValue()));				
+			}
+		}		
+		
 		configureLabel(mLabel, progressMonitor);
 				
-		if (!documentation.isEmpty() ) {
-			((Action) mLabel).getContent().addAll(documentation);
-		}
-		
 		if (mLabel instanceof Action) {
-			((Action) mLabel).getAnonymous().addAll(childConnectionsActionList); // TODO - by role
-			((Action) mLabel).setLocation(uri.toString());
-			childNodesLabelsList.forEach(cl -> cl.rebase(null, uri));		
-			childConnectionsActionList.forEach(cl -> cl.rebase(null, uri));		
+			Action mAction = (Action) mLabel;
+			if (!documentation.isEmpty() ) {
+				mAction.getContent().addAll(documentation);
+			}
+		
+			String anonymousRole = factory.getAnonymousRole();
+			if (!Util.isBlank(anonymousRole)) {
+				List<Entry<ModelElement, Collection<Label>>> anonymous = groupedByRole.remove(anonymousRole);
+				if (anonymous != null) {
+					for (Entry<ModelElement, Collection<Label>> ae: anonymous) {
+						for (Label ael: ae.getValue()) {
+							if (ael instanceof Action) {
+								mAction.getAnonymous().add((Action) ael);
+							} else {
+								addError(mAction, "Not an action, cannot add to anonymous: " + ael.getText());
+							}
+						}
+					}
+				}
+			}
+			
+			String navigationRole = factory.getNavigationRole();
+			if (!Util.isBlank(navigationRole)) {
+				List<Entry<ModelElement, Collection<Label>>> navs = groupedByRole.remove(navigationRole);
+				if (navs != null) {
+					navs.forEach(e -> mAction.getNavigation().addAll(e.getValue()));				
+				}
+			}		
+			
+			String sectionRole = factory.getSectionRole();
+			if (!Util.isBlank(sectionRole)) {
+				List<Entry<ModelElement, Collection<Label>>> sections = groupedByRole.remove(sectionRole);
+				if (sections != null) {
+					for (Entry<ModelElement, Collection<Label>> se: sections) {
+						for (Label sel: se.getValue()) {
+							if (sel instanceof Action) {
+								mAction.getSections().add((Action) sel);
+							} else {
+								addError(mAction, "Not an action, cannot add to sections: " + sel.getText());
+							}
+						}
+					}
+				}
+			}
+			
+			mAction.setLocation(uri.toString());
+			childLabels.values().stream().flatMap(Collection::stream).forEach(cl -> cl.rebase(null, uri));
+			
+			if (!groupedByRole.isEmpty()) {
+				addError(mAction, "Unsupported roles: " + groupedByRole.keySet());				
+			}
 		}		
 		
 		return Collections.singleton(mLabel);			
+	}
+
+	protected void addError(Action action, String error) {
+		Text errorText = ContentFactory.eINSTANCE.createText(); 
+		errorText.setContent("<div class=\"alert alert-danger\" role=\"alert\">" + error + "</div>");
+		action.getContent().add(errorText);
 	}
 
 }

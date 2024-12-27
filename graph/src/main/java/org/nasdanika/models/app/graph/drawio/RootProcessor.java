@@ -38,7 +38,7 @@ public class RootProcessor extends BaseProcessor<Root> {
 	protected Collection<Label> createRootLabels(Map<Layer, Collection<Label>> childLabels, ProgressMonitor progressMonitor) {
 		return childLabels.entrySet()
 			.stream()
-			.sorted((a,b) -> compareModelElementsByLabel(a.getKey(), b.getKey()))
+			.sorted((a,b) -> compareModelElementsBySortKeyAndLabel(a.getKey(), b.getKey()))
 			.flatMap(e -> e.getValue().stream())
 			.toList();
 	}
