@@ -47,7 +47,9 @@ public class Configuration {
 	public static final String NAVIGATION_ROLE = "navigation";
 	public static final String SECTION_ROLE = "section";
 	
-	public static final String SORT_KEY_PROPERTY = "sort-key";	
+	public static final String SORT_KEY_PROPERTY = "sort-key";
+	
+	public static final String INDEX_NAME = "index.html";
 	
 	protected String getIconProperty() {
 		return ICON_PROPERTY;
@@ -112,6 +114,10 @@ public class Configuration {
 	protected String getSectionRole() {
 		return SECTION_ROLE; 
 	}		
+	
+	protected String getIndexName() {
+		return INDEX_NAME;
+	}
 	
 	/**
 	 * Override to implement filtering of representation elements

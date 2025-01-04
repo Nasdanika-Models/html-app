@@ -49,6 +49,11 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 				return bURI;
 			}
 			
+			@Override
+			protected String getIndexName() {
+				return DrawioHtmlAppGeneratorCommand.this.indexName;
+			}
+			
 		};
 	}
 	
@@ -56,6 +61,11 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 		names = {"-b", "--base-uri"},
 		description = "Base URI. E.g. 'pages/'")
 	private String base;
+	
+	@Option(
+		names = {"-x", "--index"},
+		description = "Indext file name, defaults to ${DEFAULT-VALUE}")
+	private String indexName = "index.html";
 
 	@Override
 	protected Collection<Label> getLabels(ProgressMonitor progressMonitor) {

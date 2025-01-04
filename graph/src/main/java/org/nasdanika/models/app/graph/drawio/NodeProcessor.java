@@ -41,7 +41,7 @@ public class NodeProcessor extends LayerElementProcessor<Node> {
 	@Override
 	public void setElement(Node element) {
 		super.setElement(element);
-		uri = URI.createURI(element.getId() + "/index.html");
+		uri = URI.createURI(element.getId() + "/" + getIndexName());
 	}
 	
 	@Override

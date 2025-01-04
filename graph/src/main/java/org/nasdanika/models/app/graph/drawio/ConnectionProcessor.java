@@ -18,7 +18,7 @@ public class ConnectionProcessor extends LayerElementProcessor<Connection> {
 	@Override
 	public void setElement(Connection element) {
 		super.setElement(element);
-		uri = URI.createURI(element.getId() + "/index.html");
+		uri = URI.createURI(element.getId() + getIndexName());
 	}
 	
 	@Override

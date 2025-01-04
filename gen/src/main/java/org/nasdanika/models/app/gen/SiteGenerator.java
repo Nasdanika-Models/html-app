@@ -229,7 +229,7 @@ public class SiteGenerator {
 					.asInputStreamSupplierFactory(pageEResource.getContents());
 			try (InputStream contentStream = contentFactory.create(context).call(progressMonitor, diagnosticConsumer,
 					Status.FAIL, Status.ERROR)) {
-				Files.copy(contentStream, new File(pageFile.getCanonicalPath().replace(".xml", ".html")).toPath(),
+				Files.copy(contentStream, new File(pageFile.getCanonicalPath().replace(".xml", getExtension())).toPath(),
 						StandardCopyOption.REPLACE_EXISTING);
 				progressMonitor.worked(1, "[Page xml -> html] " + pageFile.getName());
 			}
@@ -240,6 +240,10 @@ public class SiteGenerator {
 		}
 
 		return modelResource;
+	}
+
+	protected String getExtension() {
+		return ".html";
 	}
 
 	protected BiFunction<Label, URI, URI> semanticInfoURIResolver(BiFunction<Label, URI, URI> uriResolver) {
@@ -355,7 +359,7 @@ public class SiteGenerator {
 			pageEResource.save(null);
 
 			org.nasdanika.exec.content.Resource pageResource = ContentFactory.eINSTANCE.createResource();
-			pageResource.setLocation("pages/" + page.getUuid() + ".html");
+			pageResource.setLocation("pages/" + page.getUuid() + getExtension());
 			progressMonitor.worked(1, "[Page content] " + page.getName() + " -> " + pageResource.getLocation());
 			return ECollections.singletonEList(pageResource);
 		} catch (IOException e) {
@@ -1130,7 +1134,7 @@ public class SiteGenerator {
 		File contentDir = new File(resourceWorkDir, "content");
 		contentDir.mkdirs();
 
-		String fileName = action.getUuid() + ".html";
+		String fileName = action.getUuid() + getExtension();
 		SupplierFactory<InputStream> contentFactory = org.nasdanika.common.Util
 				.asInputStreamSupplierFactory(action.getContent());
 		try (InputStream contentStream = contentFactory.create(actionContentContext).call(progressMonitor, diagnosticConsumer, Status.FAIL, Status.ERROR)) {
@@ -1437,6 +1441,11 @@ public class SiteGenerator {
 				});
 
 		HTMLProcessor htmlProcessor = new HTMLProcessor() {
+			
+			@Override
+			public boolean isHTML(File file, String path) {
+				return file != null && file.isFile() && path != null && path.toLowerCase().endsWith(getExtension()); 
+			}			
 
 			@Override
 			public boolean process(File file, String path, Document document) {
@@ -1456,11 +1465,17 @@ public class SiteGenerator {
 	}
 
 	protected boolean isSiteMap(File file, String path) {
-		return path.endsWith(".html");
+		return path.endsWith(getExtension());
 	}
 
+	/**
+	 * Whether to include in search
+	 * @param file
+	 * @param path
+	 * @return
+	 */
 	protected boolean isSearch(File file, String path) {
-		return path.endsWith(".html") && !"search.html".equals(path);
+		return path.endsWith(getExtension()) && !("search" + getExtension()).equals(path);
 	}
 
 	// --- Utility methods

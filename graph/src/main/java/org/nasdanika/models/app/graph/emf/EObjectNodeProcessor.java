@@ -131,8 +131,12 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 		this.config = config;
 		this.context = context;
 		this.prototypeProvider = prototypeProvider;
-		this.uri = URI.createURI("index.html");
+		this.uri = URI.createURI(getIndexName());
 		// Create facets in sub-classes
+	}
+
+	protected String getIndexName() {
+		return "index.html";
 	}
 	
 	public URI getUri() {

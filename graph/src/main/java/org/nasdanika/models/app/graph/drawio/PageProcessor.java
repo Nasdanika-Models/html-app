@@ -3,8 +3,6 @@ package org.nasdanika.models.app.graph.drawio;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -43,7 +41,7 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 	@Override
 	public void setElement(Page element) {
 		super.setElement(element);
-		uri = URI.createURI("index.html");
+		uri = URI.createURI(getIndexName());
 	}
 	
 	/**

@@ -517,5 +517,8 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 		return Collections.singleton(mLabel);			
 	}	
 	
+	protected String getIndexName() {
+		return factory.getIndexName();
+	}
 	
 }

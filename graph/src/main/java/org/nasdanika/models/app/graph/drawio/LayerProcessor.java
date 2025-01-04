@@ -66,7 +66,7 @@ public class LayerProcessor extends BaseProcessor<Layer> {
 	@Override
 	public void setElement(Layer element) {
 		super.setElement(element);
-		uri = URI.createURI(Util.isBlank(element.getLabel()) ? "index.html" : element.getId() + "/index.html");
+		uri = URI.createURI(Util.isBlank(element.getLabel()) ? getIndexName() : element.getId() + "/" + getIndexName());
 	}
 	
 	@Override
