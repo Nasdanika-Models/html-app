@@ -122,6 +122,14 @@ public class SiteGeneratorCommand extends DelegatingCommand {
 				"default is 0"	
 			})
 	private int pageErrors;
+		
+	@Option(
+		names = {"-x", "--extension"},
+		description = { 
+			"Extension of files to include in search and site map",
+			"defaults to ${DEFAULT-VALUE}" 				
+		})
+	private String extension = "html";
 
 	@Override
 	protected SupplierFactory<Integer> getSupplierFactory() {
@@ -147,11 +155,16 @@ public class SiteGeneratorCommand extends DelegatingCommand {
 			}
 			
 		};
-	}
+	}	
 	
 	protected int generate(Context context, ProgressMonitor progressMonitor) throws IOException, DiagnosticException {
 		
 		AppSiteGenerator actionSiteGenerator = new AppSiteGenerator() {
+			
+			@Override
+			protected String getExtension() {
+				return "." + SiteGeneratorCommand.this.extension;
+			}
 			
 			@Override
 			protected ResourceSet createResourceSet(Context context, ProgressMonitor progressMonitor) {
