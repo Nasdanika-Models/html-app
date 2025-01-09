@@ -3,6 +3,7 @@ package org.nasdanika.models.app.gen;
 import static org.nasdanika.common.Util.isBlank;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -108,6 +109,7 @@ import com.redfin.sitemapgenerator.WebSitemapUrl;
 
 public final class Util {
 	
+	private static final String SEARCH_CONFIG_TOKEN = "search-config";
 	public static final String DATA_NSD_LABEL_UUID_ATTRIBUTE = "data-nsd-label-uuid";
 
 	// Util
@@ -678,7 +680,7 @@ public final class Util {
 			}
 		}
 		
-		for (Entry<String, EObject> ae: source.getAttributes().entrySet()) {		
+		for (Entry<String, EObject> ae: source.getAttributes().entrySet()) {
 			label.getAttributes().put(ae.getKey(), EcoreUtil.copy(ae.getValue()));
 		}
 		
@@ -841,8 +843,8 @@ public final class Util {
 		}
 	}
 	
-	public static JSONObject createSearchDocument(String path, File file, Consumer<Exception> errorConsumer) throws IOException {
-		return createSearchDocument(path, file, null, null, errorConsumer);
+	public static JSONObject createSearchDocument(File file, String path, Consumer<Exception> errorConsumer) throws IOException {
+		return createSearchDocument(file, path, null, null, errorConsumer);
 	}
 	
 	/**
@@ -856,21 +858,16 @@ public final class Util {
 	 * @throws IOException
 	 */
 	public static JSONObject createSearchDocument(
-			String path, 
 			File file, 
+			String path, 
 			Consumer<? super Element> contentConsumer, 
-			BiFunction<String, Document, Boolean> processor,
+			BiConsumer<File, String> processor,
 			Consumer<Exception> errorConsumer) throws IOException {
 		
-		Document document = Jsoup.parse(file, "UTF-8");
-		if (processor != null && processor.apply(path, document)) {
-			Document.OutputSettings outputSettings = new Document.OutputSettings();
-			outputSettings.prettyPrint(false);
-			document.outputSettings(outputSettings);
-			try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8")) {
-				writer.write(document.html());
-			}
+		if (processor != null) {
+			processor.accept(file, path);
 		}
+		Document document = Jsoup.parse(file, "UTF-8");
 		Elements contentPanelQuery = document.select("body > div > div.row.nsd-app-content-row > div.col.nsd-app-content-panel");							                                              
 		if (contentPanelQuery.isEmpty()) {
 			return null;
@@ -1116,26 +1113,45 @@ public final class Util {
 	 * @param doc
 	 * @return
 	 */
-	public static boolean configureSearch(
+	public static void configureSearch(
+			File file,
 			String path, 
-			Document doc,
 			String searchDocumentsPath,
 			Supplier<InputStream> searchScriptSupplier) {
-		Element head = doc.head();
+		
 		URI base = URI.createURI("temp://" + UUID.randomUUID() + "/");
 		URI searchScriptURI = URI.createURI(searchDocumentsPath).resolve(base);
 		URI thisURI = URI.createURI(path).resolve(base);
 		URI relativeSearchScriptURI = searchScriptURI.deresolve(thisURI, true, true, true);
-		head.append(System.lineSeparator() + "<script src=\"" + relativeSearchScriptURI + "\"></script>" + System.lineSeparator());
-		head.append(System.lineSeparator() + "<script src=\"https://cdn.jsdelivr.net/gh/olivernn/lunr.js@v2.3.9/lunr.js\"></script>" + System.lineSeparator());
-				
+		StringBuilder searchConfigBuilder = new StringBuilder(" Start search configuration -->");
+		searchConfigBuilder.append(System.lineSeparator() + "<script src=\"" + relativeSearchScriptURI + "\"></script>" + System.lineSeparator());
+		searchConfigBuilder.append(System.lineSeparator() + "<script src=\"https://cdn.jsdelivr.net/gh/olivernn/lunr.js@v2.3.9/lunr.js\"></script>" + System.lineSeparator());				
 		try (InputStream in = searchScriptSupplier.get()) {
-			head.append(System.lineSeparator() + "<script>" + System.lineSeparator() + DefaultConverter.INSTANCE.toString(in) + System.lineSeparator() + "</script>" + System.lineSeparator());
-		} catch (Exception e) {
-			e.printStackTrace();
+			searchConfigBuilder.append(System.lineSeparator() + "<script>" + System.lineSeparator() + DefaultConverter.INSTANCE.toString(in) + System.lineSeparator() + "</script>" + System.lineSeparator());
+		} catch (IOException e) {
+			throw new NasdanikaException("Error generating search config " + file.getAbsolutePath() + ": " + e, e);
+		}		
+		searchConfigBuilder.append("<!-- End search configuration ");
+		
+		String contents;
+		try (InputStream in = new FileInputStream(file)) {
+			contents = DefaultConverter.INSTANCE.toString(in);
+		} catch (IOException e) {
+			throw new NasdanikaException("Error reading " + file.getAbsolutePath() + ": " + e, e);
 		}
 		
-		return true;
+		String interpolatedContents = org.nasdanika.common.Util.interpolate(contents, token -> {
+			if (SEARCH_CONFIG_TOKEN.equals(token)) {
+				return searchConfigBuilder.toString();
+			}
+			return null;				
+		});			
+				
+		try (Writer writer = new FileWriter(file)) {
+			writer.write(interpolatedContents);
+		} catch (IOException e) {
+			throw new NasdanikaException("Error writing " + file.getAbsolutePath() + ": " + e, e);
+		}
 	}
 	
 	/**
@@ -1144,13 +1160,13 @@ public final class Util {
 	 * @param doc
 	 * @return
 	 */
-	public static boolean configureSearch(
+	public static void configureSearch(
+			File file,
 			String path, 
-			Document doc,
 			String searchDocumentsPath) {
-		return configureSearch(
+		configureSearch(
+				file, 
 				path, 
-				doc, 
 				searchDocumentsPath, 
 				() -> Util.class.getResourceAsStream("search.js"));
 	}
@@ -1168,7 +1184,7 @@ public final class Util {
 			ChangeFreq changeFrequency,
 			BiPredicate<File, String> searchPredicate,
 			BiConsumer<String,String> errorConsumer,
-			BiFunction<String, Document, Boolean> searchConfigurator) throws IOException {
+			BiConsumer<File, String> searchConfigurator) throws IOException {
 		
 		// Site map and search index
 		JSONObject searchDocuments = new JSONObject();
@@ -1195,8 +1211,8 @@ public final class Util {
 						Consumer<? super Element> inspector = createInspector(predicate, error -> errorConsumer.accept(path, error));
 						
 						JSONObject searchDocument = createSearchDocument(
-								path, 
 								file, 
+								path, 
 								inspector, 
 								searchConfigurator, 
 								e -> errorConsumer.accept(path, "Error creating search document: " + e));
@@ -1235,7 +1251,7 @@ public final class Util {
 				changeFrequency, 
 				searchPredicate, 
 				errorConsumer, 
-				(path, doc) -> configureSearch(path, doc, searchDocumentsPath, searchScriptSupplier));
+				(file, path) -> configureSearch(file, path, searchDocumentsPath, searchScriptSupplier));
 	}
 		
 	/**
@@ -1265,7 +1281,7 @@ public final class Util {
 				changeFrequency, 
 				searchPredicate, 
 				errorConsumer, 
-				(path, doc) -> configureSearch(path, doc, searchDocumentsPath));
+				(file, path) -> configureSearch(file, path, searchDocumentsPath));
 	}
 	
 	public static void generateSitemapAndSearch(

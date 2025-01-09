@@ -1434,7 +1434,12 @@ public class SiteGenerator {
 
 		org.nasdanika.common.Util.copy(new File(workDir, containerName), outputDir, true, cleanPredicate, null);
 
-		Util.generateSitemapAndSearch(outputDir, siteMapDomain, this::isSiteMap, getChangeFrequency(), this::isSearch,
+		Util.generateSitemapAndSearch(
+				outputDir, 
+				siteMapDomain, 
+				this::isSiteMap, 
+				getChangeFrequency(), 
+				this::isSearch,
 				(path, error) -> {
 					progressMonitor.worked(Status.ERROR, 1, "[" + path + "] " + error);
 					errors.computeIfAbsent(path, p -> new ArrayList<>()).add(error);
