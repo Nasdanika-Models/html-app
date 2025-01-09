@@ -189,6 +189,11 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			protected int getIconSize() {
 				return DrawioHtmlAppGenerator.this.getIconSize();
 			}
+			
+			@Override
+			protected String getIndexName() {
+				return DrawioHtmlAppGenerator.this.getIndexName();
+			}
 
 			/**
 			 * Override to create additional content from a representation (page).

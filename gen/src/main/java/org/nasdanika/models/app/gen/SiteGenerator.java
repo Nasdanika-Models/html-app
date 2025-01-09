@@ -1480,7 +1480,7 @@ public class SiteGenerator {
 	 * @return
 	 */
 	protected boolean isSearch(File file, String path) {
-		return path.endsWith(getExtension()) && !("search" + getExtension()).equals(path);
+		return path.endsWith(getExtension()) && !("search" + getExtension()).equals(path) && !("glossary" + getExtension()).equals(path);
 	}
 
 	// --- Utility methods

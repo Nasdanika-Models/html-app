@@ -126,8 +126,8 @@ public class SiteGeneratorCommand extends DelegatingCommand {
 	@Option(
 		names = {"-x", "--extension"},
 		description = { 
-			"Extension of files to include in search and site map",
-			"defaults to ${DEFAULT-VALUE}" 				
+			"Extension of files to include in search",
+			"and site map. Defaults to ${DEFAULT-VALUE}" 				
 		})
 	private String extension = "html";
 
