@@ -156,7 +156,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 							.findAny();
 						
 						if (dfo.isPresent()) {
-							return dfo.get().createDocumentation(doc, baseUri, progressMonitor);
+							return dfo.get().createDocumentation(element, doc, baseUri, progressMonitor);
 						}
 						
 						throw new ConfigurationException("Unsupported documentation format: '" + docFormatStr[0] + "'", modelElement);
@@ -200,7 +200,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 							}
 						}
 						
-						return docFactory.createDocumentation(docRefURI[0], progressMonitor);				
+						return docFactory.createDocumentation(element, docRefURI[0], progressMonitor);				
 					}
 				}
 			} catch (Exception e) {
