@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import org.eclipse.emf.common.util.URI;
 import org.nasdanika.capability.CapabilityLoader;
 import org.nasdanika.capability.ServiceCapabilityFactory;
+import org.nasdanika.cli.Description;
 import org.nasdanika.cli.ParentCommands;
 import org.nasdanika.common.Diagnostic;
 import org.nasdanika.common.Invocable;
@@ -35,6 +36,7 @@ import picocli.CommandLine.ParentCommand;
 		mixinStandardHelpOptions = true,
 		name = "html-app")
 @ParentCommands(Document.Supplier.class)
+@Description(icon = "https://docs.nasdanika.org/images/html-application.svg")
 public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorCommand {
 	
 	public DrawioHtmlAppGeneratorCommand(CapabilityLoader capabilityLoader) {

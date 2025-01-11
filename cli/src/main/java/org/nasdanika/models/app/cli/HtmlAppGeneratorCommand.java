@@ -30,7 +30,7 @@ import picocli.CommandLine.ParentCommand;
 		mixinStandardHelpOptions = true,
 		name = "html-app")
 @ParentCommands(EObjectSupplier.class)
-@Description(icon = "https://img.icons8.com/external-flatart-icons-outline-flatarticons/20/external-html-programming-and-coding-flatart-icons-outline-flatarticons-5.png")
+@Description(icon = "https://docs.nasdanika.org/images/html-application.svg")
 public class HtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorCommand {
 	
 	@ParentCommand
