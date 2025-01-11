@@ -21,7 +21,7 @@ public class DrawioHtmlAppGeneratorCommandFactory extends SubCommandCapabilityFa
 			List<CommandLine> parentPath,
 			Loader loader,
 			ProgressMonitor progressMonitor) {
-		return CompletableFuture.completedStage(new DrawioHtmlAppGeneratorCommand());
+		return CompletableFuture.completedStage(new DrawioHtmlAppGeneratorCommand(loader.getCapabilityLoader()));
 	}
 
 }

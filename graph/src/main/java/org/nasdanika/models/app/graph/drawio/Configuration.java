@@ -19,7 +19,7 @@ import org.nasdanika.models.app.graph.WidgetFactory;
 /**
  * Base class for processor configuration/customization classes.
  */
-public class Configuration {
+public class Configuration implements RepresentationElementFilter {
 	/**
 	 * Icons size for UI generation - jsTree displays icons up to 24x24 pixels, leaving 4 pixes for padding
 	 */
@@ -125,7 +125,8 @@ public class Configuration {
 	 * @param registry
 	 * @param progressMonitor
 	 */
-	protected void filterRepresentationElement(
+	@Override
+	public void filterRepresentationElement(
 			ModelElement sourceElement,
 			ModelElement representationElement,
 			Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory>> registry,

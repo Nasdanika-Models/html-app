@@ -8,6 +8,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.nasdanika.capability.CapabilityLoader;
 import org.nasdanika.cli.CommandGroup;
 import org.nasdanika.cli.ResourceSetMixIn;
 import org.nasdanika.common.ProgressMonitor;
@@ -27,7 +28,15 @@ import picocli.CommandLine.Option;
 public abstract class AbstractHtmlAppGeneratorCommand extends CommandGroup implements LabelSupplier {
 		
 	protected abstract Collection<Label> getLabels(ProgressMonitor progressMonitor);
-	
+			
+	protected AbstractHtmlAppGeneratorCommand() {
+		super();
+	}
+
+	protected AbstractHtmlAppGeneratorCommand(CapabilityLoader capabilityLoader) {
+		super(capabilityLoader);
+	}
+
 	@Mixin
 	private ResourceSetMixIn resourceSetMixIn;
 	

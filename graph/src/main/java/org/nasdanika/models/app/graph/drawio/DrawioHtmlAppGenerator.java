@@ -139,7 +139,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			 * @param progressMonitor
 			 */
 			@Override
-			protected void filterRepresentationElement(
+			public void filterRepresentationElement(
 					ModelElement sourceElement,
 					ModelElement representationElement,
 					Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory>> registry,
