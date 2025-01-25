@@ -365,6 +365,32 @@ public final class Util {
 		}
 	}
 	
+	public static org.nasdanika.models.bootstrap.Page generateActionPage(
+			Label root, 
+			Label principal, 
+			Action activeAction, 
+			List<Label> actionPath,
+			org.nasdanika.models.bootstrap.Page pageTemplate,
+			BiFunction<Label, URI, URI> uriResolver, 
+			ActionContentProvider actionContentProvider,	
+			ProgressMonitor progressMonitor) {
+		
+		org.nasdanika.models.bootstrap.Page bootstrapPage = EcoreUtil.copy(pageTemplate);
+		String activeActionText = activeAction.getText();
+		if (!org.nasdanika.common.Util.isBlank(activeActionText)) {
+			bootstrapPage.setName(Jsoup.parse(activeActionText).text());
+		}
+		if (bootstrapPage.getBody().isEmpty()) {
+			bootstrapPage.getBody().add(AppFactory.eINSTANCE.createPage());
+		}
+		for (EObject be: bootstrapPage.getBody()) {
+			if (be instanceof org.nasdanika.models.app.Page) {
+				buildAppPage(root, principal, activeAction, actionPath, (org.nasdanika.models.app.Page) be, uriResolver, actionContentProvider, progressMonitor);						
+			}
+		}
+		return bootstrapPage;
+	}
+	
 	private static void buildAppPage(
 			Label root, 
 			Label principal, 
