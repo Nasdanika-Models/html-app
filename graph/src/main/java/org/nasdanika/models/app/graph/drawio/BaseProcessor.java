@@ -340,7 +340,6 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 	protected int compareLabelsBySortKeyAndText(Label a, Label b) {
 		String aKey = getLabelSortKey(a);
 		String bKey = getLabelSortKey(b);
-		System.out.println(aKey + " ~~ " + bKey);
 		if (Util.isBlank(aKey)) {
 			if (!Util.isBlank(bKey)) {
 				return 1;
@@ -451,6 +450,12 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 		}
 		return null;
 	}	
+	
+	protected boolean hasNonChildRoles;
+	
+	protected boolean hasNonChildRoles() {
+		return hasNonChildRoles;
+	}
 		
 	/**
 	 * Common functionality for layer and layer element
@@ -458,8 +463,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 	 * @param progressMonitor
 	 * @return
 	 */
-	protected Collection<Label> createLabels(List<Label> childLabels, ProgressMonitor progressMonitor) {
-		
+	protected Collection<Label> createLabels(List<Label> childLabels, ProgressMonitor progressMonitor) {		
 		String label = element instanceof ModelElement ? ((ModelElement) element).getLabel() : null;
 		if (Util.isBlank(label)) {
 			return childLabels;
@@ -472,18 +476,11 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 			return Collections.emptyList();
 		}
 							
-		String childRole = factory.getChildRole();
 		Label prototype = getPrototype(progressMonitor);
 		Label mLabel;
 		if (prototype == null) {		
-			boolean onlyChildRole = true;
-			for (Label childLabel: childLabels) {
-				if (!childRole.equals(getLabelRole(childLabel))) {
-					onlyChildRole = false;
-					break;
-				}
-			}
-			mLabel = documentation.isEmpty() && onlyChildRole ? AppFactory.eINSTANCE.createLabel() : AppFactory.eINSTANCE.createAction();
+			hasNonChildRoles = hasNonChildRoles(childLabels);
+			mLabel = documentation.isEmpty() && !hasNonChildRoles ? AppFactory.eINSTANCE.createLabel() : AppFactory.eINSTANCE.createAction();
 		} else {
 			mLabel = EcoreUtil.copy(prototype);
 		}
@@ -512,9 +509,25 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 			}
 		}		
 		addChildLabels(mLabel, childLabels, progressMonitor);
-		childLabels.forEach(cl -> cl.rebase(null, uri));			
+		if (mLabel instanceof Action) {
+			Action mAction = (Action) mLabel;
+			if (!Util.isBlank(mAction.getLocation())) {
+				URI mActionLocation = URI.createURI(mAction.getLocation());
+				childLabels.forEach(cl -> cl.rebase(null, mActionLocation));
+			}
+		}
 		
 		return Collections.singleton(mLabel);			
+	}
+
+	protected boolean hasNonChildRoles(List<Label> childLabels) {
+		String childRole = factory.getChildRole();
+		for (Label childLabel: childLabels) {
+			if (!childRole.equals(getLabelRole(childLabel))) {
+				return true;
+			}
+		}
+		return false;
 	}	
 	
 	protected String getIndexName() {

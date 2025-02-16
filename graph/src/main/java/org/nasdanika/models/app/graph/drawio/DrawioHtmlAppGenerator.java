@@ -78,7 +78,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 		Supplier<Collection<Label>> labelsSupplier = docProcessor.createLabelsSupplier();
 		return labelsSupplier.then(labels -> {
 			for (Label label: labels) {
-				label.rebase(null, getRebaseURI());
+				label.rebase(null, baseURI);
 			}
 			
 			return labels;

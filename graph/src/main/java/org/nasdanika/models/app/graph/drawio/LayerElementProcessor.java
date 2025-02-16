@@ -82,7 +82,8 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 			}
 		}
 		
-		if (super.getDocumentation(progressMonitor).isEmpty()) {
+		Collection<EObject> documentation = super.getDocumentation(progressMonitor);
+		if (Util.isBlank(element.getLabel()) || (documentation.isEmpty() && !hasNonChildRoles())) {			
 			return null;
 		}
 		return uri;
