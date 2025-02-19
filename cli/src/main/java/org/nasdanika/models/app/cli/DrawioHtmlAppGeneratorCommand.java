@@ -36,7 +36,11 @@ import picocli.CommandLine.ParentCommand;
 		mixinStandardHelpOptions = true,
 		name = "html-app")
 @ParentCommands(Document.Supplier.class)
-@Description(icon = "https://docs.nasdanika.org/images/html-application.svg")
+@Description(
+		icon = "https://docs.nasdanika.org/images/html-application.svg",
+		value = """
+				TODO...
+				""")
 public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorCommand {
 	
 	public DrawioHtmlAppGeneratorCommand(CapabilityLoader capabilityLoader) {
@@ -93,7 +97,7 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 	
 	@Option(
 		names = {"-x", "--index"},
-		description = "Indext file name, defaults to ${DEFAULT-VALUE}")
+		description = "Index file name, defaults to ${DEFAULT-VALUE}")
 	private String indexName = "index.html";
 		
 	@Option(			

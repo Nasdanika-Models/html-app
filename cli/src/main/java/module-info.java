@@ -15,6 +15,7 @@ module org.nasdanika.models.app.cli {
 	requires spring.core;
 	requires org.eclipse.emf.ecore.xmi;
 	requires org.nasdanika.models.app.graph;
+	requires org.apache.commons.text;
 	
 	opens org.nasdanika.models.app.cli to info.picocli;
 	
