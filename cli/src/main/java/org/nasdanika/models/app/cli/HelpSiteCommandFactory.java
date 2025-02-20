@@ -23,7 +23,7 @@ public class HelpSiteCommandFactory extends SubCommandCapabilityFactory<HelpSite
 		if (parentPath != null && parentPath.size() > 1) {
 			Object userObj = parentPath.get(parentPath.size() - 1).getCommandSpec().userObject();
 			if (userObj instanceof HelpCommand) {
-				return CompletableFuture.completedStage(new HelpSiteCommand(((HelpCommand) userObj).getRoot()));
+				return CompletableFuture.completedStage(new HelpSiteCommand(((HelpCommand) userObj).getRoot(), loader.getCapabilityLoader()));
 			}
 		}
 		return null;

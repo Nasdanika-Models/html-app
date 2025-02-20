@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import org.apache.commons.text.StringEscapeUtils;
@@ -19,8 +21,12 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.nasdanika.cli.Description;
 import org.nasdanika.cli.HelpCommand;
 import org.nasdanika.cli.ParentCommands;
+import org.nasdanika.common.Context;
 import org.nasdanika.common.DefaultConverter;
+import org.nasdanika.common.DocumentationFactory;
 import org.nasdanika.common.MarkdownHelper;
+import org.nasdanika.common.NullProgressMonitor;
+import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Util;
 import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Text;
@@ -36,6 +42,7 @@ import picocli.CommandLine.Model.ISetter;
 import picocli.CommandLine.Model.OptionSpec;
 import picocli.CommandLine.Model.PositionalParamSpec;
 import picocli.CommandLine.Option;
+
 
 @ParentCommands(HelpCommand.class)
 public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
@@ -56,7 +63,11 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 
 	@Override
 	public void write(OutputStream out) throws IOException {
-		Action rootAction = createCommandLineAction(rootCommand);
+		Action rootAction = createCommandLineAction(
+				rootCommand,
+				Context.EMPTY_CONTEXT,
+				Collections.emptySet(),
+				new NullProgressMonitor()); // TODO - from parent's capability loader
 		ResourceSet actionModelsResourceSet = new ResourceSetImpl();
 		actionModelsResourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
 		
@@ -88,7 +99,11 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		return description == null ? null : new DescriptionRecord(annotatedElement, description);
 	}
 	
-	private static Action argSpecAction(ArgSpec argSpec) throws IOException {
+	private static Action argSpecAction(
+			ArgSpec argSpec, 
+			Context context,
+			Collection<DocumentationFactory> documentationFactories,
+			ProgressMonitor progressMonitor) throws IOException {
 		DescriptionRecord descriptionRecord = getDescriptionRecord(argSpec);
 		if (descriptionRecord == null) {
 			return null;
@@ -102,35 +117,54 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		if (!Util.isBlank(tooltip)) {
 			action.setTooltip(tooltip);
 		}
-		StringBuilder builder = new StringBuilder();
-		String markdown = descriptionRecord.description().value();
-		if (Util.isBlank(markdown)) {
-			String dResource = descriptionRecord.description().resource();
-			if (!Util.isBlank(dResource)) {
-				Member member = (Member) descriptionRecord.annotatedElement();
-				InputStream dStream = member.getDeclaringClass().getResourceAsStream(dResource);
-				if (dStream != null) {
-					markdown = DefaultConverter.INSTANCE.toString(dStream);
-				} else {
-					markdown = "Resource not found: ``" + dResource + "`` by class ``" + member.getDeclaringClass().getName() + "``";
+		
+		boolean handled = generateDocumentation(
+				action, 
+				descriptionRecord.description(), 
+				((Member) descriptionRecord.annotatedElement()).getDeclaringClass(), 
+				context, 
+				documentationFactories,
+				progressMonitor);				
+		
+		if (!handled) {
+			if (Util.isBlank(descriptionRecord.description().format()) || Description.MARKDOWN_FORMAT.equals(descriptionRecord.description().format())) {		
+				StringBuilder builder = new StringBuilder();
+				String markdown = descriptionRecord.description().value();
+				if (Util.isBlank(markdown)) {
+					String dResource = descriptionRecord.description().resource();
+					if (!Util.isBlank(dResource)) {
+						Member member = (Member) descriptionRecord.annotatedElement();
+						InputStream dStream = member.getDeclaringClass().getResourceAsStream(dResource);
+						if (dStream != null) {
+							markdown = DefaultConverter.INSTANCE.toString(dStream);
+						} else {
+							markdown = "Resource not found: ``" + dResource + "`` by class ``" + member.getDeclaringClass().getName() + "``";
+						}
+					}
 				}
+				
+				builder
+					.append("<div class=\"markdown-body\">")
+					.append(System.lineSeparator())
+					.append(MarkdownHelper.INSTANCE.markdownToHtml(markdown))
+					.append(System.lineSeparator())
+					.append("</div>")
+					.append(System.lineSeparator());				
+				
+				addContent(action, builder.toString());
+			} else {
+				addContent(action, "Unsupported description format: " + descriptionRecord.description().format()); 				
 			}
 		}
-		
-		builder
-			.append("<div class=\"markdown-body\">")
-			.append(System.lineSeparator())
-			.append(MarkdownHelper.INSTANCE.markdownToHtml(markdown))
-			.append(System.lineSeparator())
-			.append("</div>")
-			.append(System.lineSeparator());				
-		
-		addContent(action, builder.toString());
 		
 		return action;
 	}
 	
-	public static Action createCommandLineAction(CommandLine commandLine) throws IOException {		
+	public static Action createCommandLineAction(
+			CommandLine commandLine,
+			Context context,
+			Collection<DocumentationFactory> documentationFactories,
+			ProgressMonitor progressMonitor) throws IOException {		
 		CommandSpec commandSpec = commandLine.getCommandSpec();
 		Action action = createAction();
 		action.setText(commandSpec.name());
@@ -147,7 +181,8 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 			builder.append("</td></tr></table>").append(System.lineSeparator());
 		}
 
-		builder.append(HelpCommand.usageToHTML(commandLine));
+		builder.append(HelpCommand.usageToHTML(commandLine));		
+		addContent(action, builder.toString());
 
 		// Description 
 		Object userObject = commandSpec.userObject();
@@ -163,41 +198,63 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 				if (!Util.isBlank(tooltip)) {
 					action.setTooltip(tooltip);
 				}
-				String markdown = description.value();
-				if (Util.isBlank(markdown)) {
-					String dResource = description.resource();
-					if (Util.isBlank(dResource)) {
-						dResource = clazz.getName().substring(clazz.getName().lastIndexOf('.') + 1) + ".md";						
-					}
-					InputStream dStream = clazz.getResourceAsStream(dResource);
-					if (dStream != null) {
-						markdown = DefaultConverter.INSTANCE.toString(dStream);
+				
+				boolean handled = generateDocumentation(
+						action, 
+						description, 
+						clazz, 
+						context, 
+						documentationFactories,
+						progressMonitor);				
+				
+				if (!handled) {
+					if (Util.isBlank(description.format()) || Description.MARKDOWN_FORMAT.equals(description.format())) {
+						String markdown = description.value();
+						if (Util.isBlank(markdown)) {
+							String dResource = description.resource();
+							if (Util.isBlank(dResource)) {
+								dResource = clazz.getName().substring(clazz.getName().lastIndexOf('.') + 1) + ".md";						
+							}
+							InputStream dStream = clazz.getResourceAsStream(dResource);
+							if (dStream != null) {
+								markdown = DefaultConverter.INSTANCE.toString(dStream);
+							}
+						}
+						
+						StringBuilder markdownBuilder = new StringBuilder("<div class=\"markdown-body\">")
+							.append(System.lineSeparator())
+							.append(MarkdownHelper.INSTANCE.markdownToHtml(markdown))
+							.append(System.lineSeparator())
+							.append("</div>")
+							.append(System.lineSeparator());
+						addContent(action, markdownBuilder.toString());
+					} else {
+						addContent(action, "Unsupported description format: " + description.format()); 
 					}
 				}
-				
-				builder
-					.append("<div class=\"markdown-body\">")
-					.append(System.lineSeparator())
-					.append(MarkdownHelper.INSTANCE.markdownToHtml(markdown))
-					.append(System.lineSeparator())
-					.append("</div>")
-					.append(System.lineSeparator());				
 			}
 		}
 		
-		addContent(action, builder.toString());
-		
 		EList<EObject> children = action.getChildren();
 		for (CommandLine subCommand: commandLine.getSubcommands().values().stream().sorted((a,b) -> a.getCommandName().compareTo(b.getCommandName())).collect(Collectors.toList())) {
-			children.add(createCommandLineAction(subCommand));
+			children.add(createCommandLineAction(
+					subCommand, 
+					context,
+					documentationFactories, 
+					progressMonitor));
 		}
 		
 		Action parametersSection = null;		
 		for (PositionalParamSpec param: commandSpec.positionalParameters()) {
-			Action paramAction = argSpecAction(param);
+			Action paramAction = argSpecAction(
+					param,
+					context,
+					documentationFactories,
+					progressMonitor);
+			
 			if (paramAction != null) {
 				paramAction.setText(StringEscapeUtils.escapeHtml4(param.paramLabel()));
-				paramAction.setLocation("param_" + param.paramLabel());
+				paramAction.setName("param_" + StringEscapeUtils.escapeHtml4(param.paramLabel()));
 				if (parametersSection == null) {
 					parametersSection = createAction();
 					parametersSection.setText("Parameters");
@@ -209,10 +266,15 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		
 		Action optionsSection = null;
 		for (OptionSpec opt: commandSpec.options().stream().sorted((a, b) -> a.shortestName().compareToIgnoreCase(b.shortestName())).toList()) {
-			Action optAction = argSpecAction(opt);
+			Action optAction = argSpecAction(
+					opt,
+					context,
+					documentationFactories,
+					progressMonitor);
+			
 			if (optAction != null) {				
 				optAction.setText(StringEscapeUtils.escapeHtml4(String.join(", ", opt.names())));
-				optAction.setLocation("opt_" + opt.shortestName());
+				optAction.setName("opt_" + StringEscapeUtils.escapeHtml4(opt.shortestName()));
 				if (optionsSection == null) {
 					optionsSection = createAction();
 					optionsSection.setText("Options");
@@ -223,6 +285,55 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		}				
 
 		return action;
+	}
+
+	protected static boolean generateDocumentation(
+			Action action, 
+			Description description,
+			Class<? extends Object> clazz, 
+			Context context, 
+			Collection<DocumentationFactory> documentationFactories,
+			ProgressMonitor progressMonitor) {
+		if (documentationFactories != null) {
+			String doc = description.value();
+			if (Util.isBlank(doc)) {
+				// Doc is blank, using resource
+				String resource = description.resource();
+				if (!Util.isBlank(resource)) {
+					URI baseURI = Util.createClassURI(clazz);
+					URI resourceURI = URI.createURI(resource).resolve(baseURI);
+					for (DocumentationFactory docFactory: documentationFactories) {						
+						if (docFactory.canHandle(resourceURI)) {
+							Collection<EObject> docObjs = docFactory.createDocumentation(
+									context, 
+									resourceURI, 
+									progressMonitor);							
+							action.getContent().addAll(docObjs);								
+							return true;
+						}
+					}												
+				}
+			} else {
+				String format = description.format();
+				if (Util.isBlank(format)) {
+					format = Description.MARKDOWN_FORMAT;
+				}
+				for (DocumentationFactory docFactory: documentationFactories) {						
+					if (docFactory.canHandle(format)) {
+						Collection<EObject> docObjs = docFactory.createDocumentation(
+								context, 
+								doc, 
+								format, 
+								Util.createClassURI(clazz), 
+								progressMonitor);
+						
+						action.getContent().addAll(docObjs);								
+						return true;
+					}
+				}						
+			}					
+		}
+		return false;
 	}
 
 	protected static Action createAction() {

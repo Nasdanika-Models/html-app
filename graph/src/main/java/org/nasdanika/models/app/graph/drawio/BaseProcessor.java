@@ -156,7 +156,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 							.findAny();
 						
 						if (dfo.isPresent()) {
-							return dfo.get().createDocumentation(element, doc, baseUri, progressMonitor);
+							return dfo.get().createDocumentation(element, doc, docFormatStr[0], baseUri, progressMonitor);
 						}
 						
 						throw new ConfigurationException("Unsupported documentation format: '" + docFormatStr[0] + "'", modelElement);
