@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.text.StringEscapeUtils;
@@ -21,7 +25,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.nasdanika.cli.Description;
 import org.nasdanika.cli.HelpCommand;
 import org.nasdanika.cli.ParentCommands;
-import org.nasdanika.common.Context;
 import org.nasdanika.common.DefaultConverter;
 import org.nasdanika.common.DocumentationFactory;
 import org.nasdanika.common.MarkdownHelper;
@@ -34,6 +37,8 @@ import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.AppFactory;
 
 import picocli.CommandLine;
+import picocli.CommandLine.Help;
+import picocli.CommandLine.IHelpSectionRenderer;
 import picocli.CommandLine.Model.ArgSpec;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Model.IAnnotatedElementProvider;
@@ -41,6 +46,7 @@ import picocli.CommandLine.Model.IGetter;
 import picocli.CommandLine.Model.ISetter;
 import picocli.CommandLine.Model.OptionSpec;
 import picocli.CommandLine.Model.PositionalParamSpec;
+import picocli.CommandLine.Model.UsageMessageSpec;
 import picocli.CommandLine.Option;
 
 
@@ -65,7 +71,6 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 	public void write(OutputStream out) throws IOException {
 		Action rootAction = createCommandLineAction(
 				rootCommand,
-				Context.EMPTY_CONTEXT,
 				Collections.emptySet(),
 				new NullProgressMonitor()); // TODO - from parent's capability loader
 		ResourceSet actionModelsResourceSet = new ResourceSetImpl();
@@ -101,7 +106,6 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 	
 	private static Action argSpecAction(
 			ArgSpec argSpec, 
-			Context context,
 			Collection<DocumentationFactory> documentationFactories,
 			ProgressMonitor progressMonitor) throws IOException {
 		DescriptionRecord descriptionRecord = getDescriptionRecord(argSpec);
@@ -122,7 +126,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 				action, 
 				descriptionRecord.description(), 
 				((Member) descriptionRecord.annotatedElement()).getDeclaringClass(), 
-				context, 
+				argSpec, 
 				documentationFactories,
 				progressMonitor);				
 		
@@ -160,12 +164,139 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		return action;
 	}
 	
+	/**
+	 * Renders command list with links to commands
+	 * @param help
+	 * @return
+	 */
+	private static String renderCommandList(Help help) {
+		Map<String, Help> subcommands = help.subcommands();
+		if (subcommands.isEmpty()) {
+			return "";
+		}
+
+		StringBuilder listBuilder = new StringBuilder("<ul>");
+        for (Map.Entry<String, Help> entry : subcommands.entrySet()) {
+            Help subCommandHelp = entry.getValue();
+            UsageMessageSpec usage = subCommandHelp.commandSpec().usageMessage();
+            String[] uHeader = usage.header();
+            String header;
+            if (uHeader == null || uHeader.length == 0) {
+            	String[] uDescription = usage.description();
+            	if (uDescription == null || uDescription.length == 0) {
+            		header = "";
+            	} else {
+            		header = uDescription[0];
+            	}
+            } else {
+            	header = usage.header()[0];
+            }
+            
+            listBuilder
+            	.append("<li>")
+            	.append("<a href=\"")
+            	.append(entry.getKey())
+            	.append("/index.html\">")
+            	.append(subCommandHelp.commandNamesText(", "))
+            	.append("</a> - ")
+            	.append(header)
+            	.append("</li>");
+        }
+        return listBuilder.append("</ul>").toString();
+    }	
+	
+//	private static String renderOptionList(Help help) {		
+//		result = help.renhelp.createDefaultLayout();
+//		
+//		Layout linkingLayout = new Layout(defaultLayout.colorScheme(), defaultLayout.textTable()) {
+//			
+//		};
+//		
+//		
+//		String optionList = help.optionList(
+//			defaultLayout, 
+//			help.createDefaultOptionSort(),
+//			help.parameterLabelRenderer());
+//		
+//		optionList = StringEscapeUtils.escapeHtml4(optionList);
+//		
+//		for (OptionSpec opt: help.commandSpec().options()) {
+//			String label = opt.shortestName();
+//			System.out.println(label);
+//		}
+//		
+//		return optionList;
+//	}
+	
+	private static class EscapingHelpSectionRenderer implements IHelpSectionRenderer {
+		
+		private IHelpSectionRenderer renderer;
+
+		EscapingHelpSectionRenderer(IHelpSectionRenderer renderer) {
+			this.renderer = renderer;
+		}
+
+		@Override
+		public String render(Help help) {
+ 			String result = renderer.render(help); 	
+			return StringEscapeUtils.escapeHtml4(result);
+		}
+		
+		static EscapingHelpSectionRenderer wrap(IHelpSectionRenderer renderer) {
+			if (renderer instanceof EscapingHelpSectionRenderer) {
+				return (EscapingHelpSectionRenderer) renderer;
+			}
+			return new EscapingHelpSectionRenderer(renderer);
+		}
+		
+	}
+			
+	private static IHelpSectionRenderer filter(String key, IHelpSectionRenderer renderer) {
+ 		switch (key) {
+ 		// Links to commands
+ 		case CommandLine.Model.UsageMessageSpec.SECTION_KEY_COMMAND_LIST:
+ 			return ActionHelpMixIn::renderCommandList;
+// 		case CommandLine.Model.UsageMessageSpec.SECTION_KEY_OPTION_LIST:
+// 			return renderer::render; // No escaping
+// 	 		case CommandLine.Model.UsageMessageSpec.SECTION_KEY_PARAMETER_LIST:
+// 			return ActionHelpMixIn::renderParameterList;
+ 		}
+ 		return EscapingHelpSectionRenderer.wrap(renderer);
+	}
+	
 	public static Action createCommandLineAction(
 			CommandLine commandLine,
-			Context context,
 			Collection<DocumentationFactory> documentationFactories,
 			ProgressMonitor progressMonitor) throws IOException {		
 		CommandSpec commandSpec = commandLine.getCommandSpec();
+
+//		commandLine.setHelpFactory((cSpec, colorScheme) -> {
+//			return new Help(cSpec, colorScheme) {
+//			
+//				@Override
+//		        public IOptionRenderer createDefaultOptionRenderer() {
+//					IOptionRenderer optRenderer = super.createDefaultOptionRenderer();
+//					
+//					return (OptionSpec option, IParamLabelRenderer paramLabelRenderer, ColorScheme scheme) -> {
+//						picocli.CommandLine.Help.Ansi.Text[][] result = optRenderer.render(option, paramLabelRenderer, colorScheme);
+//						for (int rowIdx = 0; rowIdx < result.length; ++rowIdx) {
+//							picocli.CommandLine.Help.Ansi.Text[] row = result[rowIdx];
+//							for (int colIdx = 0; colIdx < row.length; ++colIdx) {
+//								if (rowIdx == 0 && colIdx == 1) {
+//									result[rowIdx][colIdx] = ansi().text(StringEscapeUtils.escapeHtml4(row[colIdx].plainString()));									
+//								} else {
+//									result[rowIdx][colIdx] = ansi().text(StringEscapeUtils.escapeHtml4(row[colIdx].plainString()));
+//								}
+//							}
+//						}
+//						return result;
+//					};
+//		        }				
+//				
+//			};
+//			
+//	    });		
+		
 		Action action = createAction();
 		action.setText(commandSpec.name());
 		action.setLocation(commandSpec.name() + "/index.html");
@@ -181,7 +312,34 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 			builder.append("</td></tr></table>").append(System.lineSeparator());
 		}
 
-		builder.append(HelpCommand.usageToHTML(commandLine));		
+//		To customize rendering, e.g. add links to sub-commands:
+//		 	Map<String, IHelpSectionRenderer> helpSections = commandLine.getHelpSectionMap();
+//			IHelpSectionRenderer commandListSection = helpSections.get(CommandLine.Model.UsageMessageSpec.SECTION_KEY_COMMAND_LIST);
+//			IHelpSectionRenderer myCommandListSection = help -> "Purum<P/>" + commandListSection.render(help);
+//			helpSections.put(CommandLine.Model.UsageMessageSpec.SECTION_KEY_COMMAND_LIST, myCommandListSection);
+//		HTML is not rendered in <PRE>. If links are to be rendered then all sections shall be wrapped in <PRE> or CSS equivalent of PRE and then individual sections
+//		shall be customized. Can be done with switch - case - default		
+		
+		builder
+			.append("<div style=\"font-family:monospace;white-space:pre;padding:5px;width:max-content\">")
+			.append(System.lineSeparator());
+		
+	 	Map<String, IHelpSectionRenderer> helpSections = commandLine.getHelpSectionMap();
+	 	for (Entry<String, IHelpSectionRenderer> hse: helpSections.entrySet()) {	 		
+ 			IHelpSectionRenderer sectionRenderer = filter(hse.getKey(), hse.getValue());
+ 			if (sectionRenderer != null) {
+ 				hse.setValue(sectionRenderer);
+ 			}
+	 	}
+		
+		StringWriter usageWriter = new StringWriter();		
+		try (PrintWriter pw = new PrintWriter(usageWriter)) {
+			commandLine.usage(pw, Help.Ansi.OFF);
+		}
+		usageWriter.close();
+		builder.append(usageWriter.toString());
+		builder.append("</div>").append(System.lineSeparator());
+		
 		addContent(action, builder.toString());
 
 		// Description 
@@ -203,7 +361,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 						action, 
 						description, 
 						clazz, 
-						context, 
+						commandLine, 
 						documentationFactories,
 						progressMonitor);				
 				
@@ -239,7 +397,6 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		for (CommandLine subCommand: commandLine.getSubcommands().values().stream().sorted((a,b) -> a.getCommandName().compareTo(b.getCommandName())).collect(Collectors.toList())) {
 			children.add(createCommandLineAction(
 					subCommand, 
-					context,
 					documentationFactories, 
 					progressMonitor));
 		}
@@ -248,7 +405,6 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		for (PositionalParamSpec param: commandSpec.positionalParameters()) {
 			Action paramAction = argSpecAction(
 					param,
-					context,
 					documentationFactories,
 					progressMonitor);
 			
@@ -268,7 +424,6 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		for (OptionSpec opt: commandSpec.options().stream().sorted((a, b) -> a.shortestName().compareToIgnoreCase(b.shortestName())).toList()) {
 			Action optAction = argSpecAction(
 					opt,
-					context,
 					documentationFactories,
 					progressMonitor);
 			
@@ -291,7 +446,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 			Action action, 
 			Description description,
 			Class<? extends Object> clazz, 
-			Context context, 
+			Object docContext, 
 			Collection<DocumentationFactory> documentationFactories,
 			ProgressMonitor progressMonitor) {
 		if (documentationFactories != null) {
@@ -305,7 +460,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 					for (DocumentationFactory docFactory: documentationFactories) {						
 						if (docFactory.canHandle(resourceURI)) {
 							Collection<EObject> docObjs = docFactory.createDocumentation(
-									context, 
+									docContext, 
 									resourceURI, 
 									progressMonitor);							
 							action.getContent().addAll(docObjs);								
@@ -321,7 +476,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 				for (DocumentationFactory docFactory: documentationFactories) {						
 					if (docFactory.canHandle(format)) {
 						Collection<EObject> docObjs = docFactory.createDocumentation(
-								context, 
+								docContext, 
 								doc, 
 								format, 
 								Util.createClassURI(clazz), 

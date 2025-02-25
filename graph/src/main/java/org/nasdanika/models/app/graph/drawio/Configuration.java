@@ -204,6 +204,16 @@ public class Configuration implements RepresentationElementFilter {
 			ProgressMonitor progressMonitor) {
 		
 		return processor;
-	}	
+	}
+	
+	/**
+	 * Base URI for resolving documentation references instead of the
+	 * document URI. Resolved relative to the document URI.
+	 * If null, document URI is used.
+	 * @return
+	 */
+	protected URI getBaseURI() {
+		return null;
+	}
 
 }

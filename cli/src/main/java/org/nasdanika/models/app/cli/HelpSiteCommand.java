@@ -96,7 +96,6 @@ public class HelpSiteCommand extends AbstractSiteCommand {
 				
 		Action rootCommandAction = ActionHelpMixIn.createCommandLineAction(
 				rootCommand, 
-				context,
 				documentationFactories,
 				progressMonitor);
 		

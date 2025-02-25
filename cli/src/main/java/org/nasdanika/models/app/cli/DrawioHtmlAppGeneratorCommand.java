@@ -36,11 +36,7 @@ import picocli.CommandLine.ParentCommand;
 		mixinStandardHelpOptions = true,
 		name = "html-app")
 @ParentCommands(Document.Supplier.class)
-@Description(
-		icon = "https://docs.nasdanika.org/images/html-application.svg",
-		value = """
-				TODO...
-				""")
+@Description(icon = "https://docs.nasdanika.org/images/html-application.svg")
 public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorCommand {
 	
 	public DrawioHtmlAppGeneratorCommand(CapabilityLoader capabilityLoader) {

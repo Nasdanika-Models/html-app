@@ -17,7 +17,7 @@ module org.nasdanika.models.app.cli {
 	requires org.nasdanika.models.app.graph;
 	requires org.apache.commons.text;
 	
-	opens org.nasdanika.models.app.cli to info.picocli;
+	opens org.nasdanika.models.app.cli;
 	
 	provides CapabilityFactory with 
 		AppCommandFactory, 
