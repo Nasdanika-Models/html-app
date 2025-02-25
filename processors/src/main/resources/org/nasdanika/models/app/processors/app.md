@@ -8,7 +8,13 @@ Application models can be:
  
 These approaches can be combined. 
 
-[Javadoc](https://javadoc.io/doc/org.nasdanika.html/app-model).
+Javadoc:
+
+* [Model](https://javadoc.io/doc/org.nasdanika.models.app/model)
+* [CLI](https://javadoc.io/doc/org.nasdanika.models.app/cli)
+* [EMF](https://javadoc.io/doc/org.nasdanika.models.app/emf)
+* [Gen](https://javadoc.io/doc/org.nasdanika.models.app/gen)
+* [Graph](https://javadoc.io/doc/org.nasdanika.models.app/graph)
 
 [TOC levels=6]
 

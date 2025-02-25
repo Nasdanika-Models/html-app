@@ -100,9 +100,10 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 			names = {"-F", "--representation-element-filter"},
 			paramLabel = "Invocable URI",
 			description = {
-					"Invocable URI of representation element filter",
+					"Invocable URI of a representation element filter",
 					"URIs are resolved relative to the current directory"
 			})
+	@Description(icon = "https://docs.nasdanika.org/images/filter.svg")
 	private List<String> representationElementFilters = new ArrayList<>();	
 
 	@Override
