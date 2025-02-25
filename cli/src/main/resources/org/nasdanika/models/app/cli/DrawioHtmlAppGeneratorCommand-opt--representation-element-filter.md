@@ -1,8 +1,6 @@
 [Invocable URI](https://docs.nasdanika.org/core/capability/index.html#loading-invocables-from-uris) returning an instance of [RepresentationElementFilter](https://javadoc.io/doc/org.nasdanika.models.app/graph/latest/org.nasdanika.models.app.graph/org/nasdanika/models/app/graph/drawio/RepresentationElementFilter.html).
 
-Below is a Groovy example. 
-
-[bob-decorator.groovy](https://github.com/Nasdanika-Demos/bob-the-builder/blob/main/bob-decorator.groovy) from [Bob The Builder demo](https://nasdanika-demos.github.io/bob-the-builder/) adds a border to the Bob icon:
+Groovy example - [bob-decorator.groovy](https://github.com/Nasdanika-Demos/bob-the-builder/blob/main/bob-decorator.groovy) from [Bob The Builder demo](https://nasdanika-demos.github.io/bob-the-builder/) adds a border to the Bob icon:
 
 ```groovy
 import org.nasdanika.models.app.graph.drawio.RepresentationElementFilter;
