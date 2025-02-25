@@ -104,16 +104,7 @@ public class SiteGeneratorCommand extends DelegatingCommand {
 					"Page template URI relative ",
 					"to the current directory"
 				})
-	@Description(
-			"""
-			
-			Sample page template:
-			
-			```yaml
-			TODO
-			```
-			
-			""")
+	@Description
 	private String pageTemplate;
 		
 	@Option(

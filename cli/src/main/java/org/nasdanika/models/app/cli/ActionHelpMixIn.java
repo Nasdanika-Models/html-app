@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -107,6 +108,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 	private static Action argSpecAction(
 			ArgSpec argSpec, 
 			Collection<DocumentationFactory> documentationFactories,
+			Collection<String> classifiers, 
 			ProgressMonitor progressMonitor) throws IOException {
 		DescriptionRecord descriptionRecord = getDescriptionRecord(argSpec);
 		if (descriptionRecord == null) {
@@ -122,10 +124,12 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 			action.setTooltip(tooltip);
 		}
 		
+		Member member = (Member) descriptionRecord.annotatedElement();
 		boolean handled = generateDocumentation(
 				action, 
 				descriptionRecord.description(), 
-				((Member) descriptionRecord.annotatedElement()).getDeclaringClass(), 
+				member.getDeclaringClass(),
+				classifiers,	
 				argSpec, 
 				documentationFactories,
 				progressMonitor);				
@@ -137,7 +141,6 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 				if (Util.isBlank(markdown)) {
 					String dResource = descriptionRecord.description().resource();
 					if (!Util.isBlank(dResource)) {
-						Member member = (Member) descriptionRecord.annotatedElement();
 						InputStream dStream = member.getDeclaringClass().getResourceAsStream(dResource);
 						if (dStream != null) {
 							markdown = DefaultConverter.INSTANCE.toString(dStream);
@@ -361,6 +364,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 						action, 
 						description, 
 						clazz, 
+						Collections.singleton(null),
 						commandLine, 
 						documentationFactories,
 						progressMonitor);				
@@ -403,9 +407,12 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		
 		Action parametersSection = null;		
 		for (PositionalParamSpec param: commandSpec.positionalParameters()) {
+			Collection<String> classifiers = new ArrayList<>();
+			// TODO - classifiers from param label
 			Action paramAction = argSpecAction(
 					param,
 					documentationFactories,
+					classifiers,
 					progressMonitor);
 			
 			if (paramAction != null) {
@@ -422,9 +429,14 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		
 		Action optionsSection = null;
 		for (OptionSpec opt: commandSpec.options().stream().sorted((a, b) -> a.shortestName().compareToIgnoreCase(b.shortestName())).toList()) {
+			Collection<String> classifiers = new ArrayList<>();
+			for (String optName: opt.names()) {
+				classifiers.add("-opt" + optName);
+			}
 			Action optAction = argSpecAction(
 					opt,
 					documentationFactories,
+					classifiers,
 					progressMonitor);
 			
 			if (optAction != null) {				
@@ -442,10 +454,23 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		return action;
 	}
 
+	/**
+	 * Generates documentation using documentation factories
+	 * @param action
+	 * @param description
+	 * @param clazz
+	 * @param impliedName Whether to imply documentation resource name. true for classes and fields, false for methods
+	 * @param classifier Used for implied resource name. null or empty string for classes, <code>-&lt;field name&gt;</code> for fields 
+	 * @param docContext
+	 * @param documentationFactories
+	 * @param progressMonitor
+	 * @return
+	 */
 	protected static boolean generateDocumentation(
 			Action action, 
 			Description description,
 			Class<? extends Object> clazz, 
+			Collection<String> classifiers,
 			Object docContext, 
 			Collection<DocumentationFactory> documentationFactories,
 			ProgressMonitor progressMonitor) {
@@ -454,8 +479,30 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 			if (Util.isBlank(doc)) {
 				// Doc is blank, using resource
 				String resource = description.resource();
-				if (!Util.isBlank(resource)) {
-					URI baseURI = Util.createClassURI(clazz);
+				URI baseURI = Util.createClassURI(clazz);
+				if (Util.isBlank(resource)) {
+					for(String classifier: classifiers) {
+						String baseName = clazz.getName().substring(clazz.getName().lastIndexOf('.') + 1);
+						if (!Util.isBlank(classifier)) {
+							baseName += classifier;
+						}
+						baseName += ".";
+						for (DocumentationFactory docFactory: documentationFactories) {
+							for (String extension: docFactory.getExtensions()) {
+								String resName = baseName + extension;
+								InputStream dStream = clazz.getResourceAsStream(resName);
+								if (dStream != null) {
+									Collection<EObject> docObjs = docFactory.createDocumentation(
+											docContext, 
+											URI.createURI(resName).resolve(baseURI), 
+											progressMonitor);							
+									action.getContent().addAll(docObjs);								
+									return true;
+								}								
+							}
+						}						
+					}
+				} else {
 					URI resourceURI = URI.createURI(resource).resolve(baseURI);
 					for (DocumentationFactory docFactory: documentationFactories) {						
 						if (docFactory.canHandle(resourceURI)) {
@@ -486,7 +533,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 						return true;
 					}
 				}						
-			}					
+			}								
 		}
 		return false;
 	}
