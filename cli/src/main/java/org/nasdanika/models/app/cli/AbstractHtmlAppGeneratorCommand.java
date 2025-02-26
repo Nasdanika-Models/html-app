@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.nasdanika.capability.CapabilityLoader;
 import org.nasdanika.cli.CommandGroup;
+import org.nasdanika.cli.Description;
 import org.nasdanika.cli.ResourceSetMixIn;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Util;
@@ -46,6 +47,7 @@ public abstract class AbstractHtmlAppGeneratorCommand extends CommandGroup imple
 			"Root label URL or file path, resolved relative",
 			"to the current directory"
 		})
+	@Description
 	private String rootLabel;
 	
 	@Option(
@@ -66,7 +68,7 @@ public abstract class AbstractHtmlAppGeneratorCommand extends CommandGroup imple
 		
 	@Option(
 		names = {"-f", "--file"},
-		description = "Root action option is a file path")
+		description = "Root label option is a file path")
 	private boolean isFile;
 
 	@Override

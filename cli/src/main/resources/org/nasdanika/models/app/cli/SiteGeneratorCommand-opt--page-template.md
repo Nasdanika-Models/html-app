@@ -1,4 +1,15 @@
-Sample page template:
+[Bootstrap Page](https://bootstrap.models.nasdanika.org/references/eClassifiers/Page/index.html) to use as a template for site pages.
+
+In the page template file you can:
+
+* Modify the [theme](https://javadoc.io/doc/org.nasdanika.html/bootstrap/latest/org.nasdanika.html.bootstrap/org/nasdanika/html/bootstrap/Theme.html) - choose one of 20+ 
+[Bootswatch themes](https://bootswatch.com/4/) or the default theme. Please note that generated sites look good with light themes, and not so good (in my personal opinion) with dark themes.
+* Set ``fluid`` to ``true``.
+* Modify [navigation panel style](https://html-app.models.nasdanika.org/references/eClassifiers/NavigationPanelStyle/index.html)
+
+See [Bootstrap Page Load Specification](https://bootstrap.models.nasdanika.org/references/eClassifiers/Page/load-specification.html) for supported configuration keys.
+
+Sample page template in YAML:
             
 ```yaml
 bootstrap.Page:
@@ -29,3 +40,4 @@ bootstrap.Page:
         style: SEARCHABLE_TREE # COLLAPSIBLE_CARDS
         collapsible: true
 ```
+
