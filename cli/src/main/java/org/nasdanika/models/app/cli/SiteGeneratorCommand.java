@@ -122,6 +122,19 @@ public class SiteGeneratorCommand extends DelegatingCommand {
 				"-1 for any (not fail on errors)",
 				"default is 0"	
 			})
+	@Description(
+			icon = "fas fa-exclamation-triangle",
+			value = """
+					``-r=-1`` command line option means "don't fail on page errors" such as:
+					
+					* Blank pages
+					* Broken internal links
+					* Missing resources
+					
+					Missing resources are reported on pages using danger alert blocks.
+					
+					If you want to prevent deployment of a site with page errors, don't use the option or set it to the expected number of errors - there might be "known errors" which you are OK to live with.					
+					""")
 	private int pageErrors;
 		
 	@Option(

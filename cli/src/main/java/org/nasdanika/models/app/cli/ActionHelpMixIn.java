@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -408,7 +409,14 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		Action parametersSection = null;		
 		for (PositionalParamSpec param: commandSpec.positionalParameters()) {
 			Collection<String> classifiers = new ArrayList<>();
-			// TODO - classifiers from param label
+			DescriptionRecord descriptionRecord = getDescriptionRecord(param);
+			if (descriptionRecord != null) {
+				AnnotatedElement annotatedElement = descriptionRecord.annotatedElement();
+				if (annotatedElement instanceof Field) {
+					classifiers.add("-param-" + ((Field) annotatedElement).getName());
+				}
+			}
+			
 			Action paramAction = argSpecAction(
 					param,
 					documentationFactories,

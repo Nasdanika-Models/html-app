@@ -6,6 +6,8 @@ If the principal action is not present or ``-R, --add-to-root`` option is set, t
 
 #### Example
 
+Below is a YAML definition of a root action. 
+
 ```yaml
 Action:
     icon: https://docs.nasdanika.org/images/nasdanika-logo.png
@@ -34,3 +36,4 @@ Action:
           location: https://github.com/Nasdanika-Templates/drawio-site  
 ```
 
+See [Action Load Specification](https://html-app.models.nasdanika.org/references/eClassifiers/Action/load-specification.html) for supported configuration keys.
