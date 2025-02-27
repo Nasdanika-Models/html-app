@@ -3,6 +3,7 @@ package org.nasdanika.models.app.cli;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.DiagnosticException;
 import org.eclipse.emf.common.util.URI;
@@ -24,6 +25,7 @@ import org.nasdanika.models.app.AppFactory;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.ParameterException;
 import picocli.CommandLine.Parameters;
 
 @Command(
@@ -78,6 +80,21 @@ public class HelpSiteCommand extends AbstractSiteCommand {
 	@Option(names = "--root-action-location", description = "Root action location")
 	private String rootActionLocation;
 	
+	@Option(
+			names = "--command-path", 
+			split = ",",
+			description = {
+				"Comma-separated list of command names",
+				"help is generated for the last command",
+				"in the path"
+			})
+	@Description(
+			"""
+			Use this option if you want to generate help not for the root
+			command, but for a sub-command.			
+			""")
+	private String[] commandPath;
+	
 	@Override
 	protected int generate(Context context, ProgressMonitor progressMonitor) throws IOException, DiagnosticException {
 		Action rootAction = AppFactory.eINSTANCE.createAction();
@@ -94,8 +111,23 @@ public class HelpSiteCommand extends AbstractSiteCommand {
 			}
 		}		
 				
+		CommandLine command = rootCommand;
+		if (commandPath != null) {
+			for (String cmdName: commandPath) {
+				Map<String, CommandLine> subCommands = command.getSubcommands();
+				if (subCommands == null) {
+					throw new ParameterException(command, command.getCommandName() + " has no subcommands");
+				} else {
+					CommandLine subCommand = subCommands.get(cmdName);
+					if (subCommand == null) {
+						throw new ParameterException(command, command.getCommandName() + " does not have " + cmdName + " subcommand");						
+					}
+					command = subCommand;
+				}
+			}
+		}
 		Action rootCommandAction = ActionHelpMixIn.createCommandLineAction(
-				rootCommand, 
+				command, 
 				documentationFactories,
 				progressMonitor);
 		
