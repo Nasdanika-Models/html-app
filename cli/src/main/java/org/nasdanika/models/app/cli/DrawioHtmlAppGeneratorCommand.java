@@ -68,6 +68,14 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 			}
 			
 			@Override
+			protected URI getRefBaseURI(URI docURI) {
+				if (Util.isBlank(refBase)) {
+					return super.getRefBaseURI(docURI);
+				}
+				return URI.createURI(refBase).resolve(docURI);
+			}
+			
+			@Override
 			protected String getIndexName() {
 				return DrawioHtmlAppGeneratorCommand.this.indexName;
 			}
@@ -90,10 +98,43 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 		names = {"-b", "--base-uri"},
 		description = "Base URI. E.g. 'pages/'")
 	private String base;
+		
+	@Option(
+		names = "--ref-base-uri",
+		description = { 
+				"Base URI for resolving documentation",
+				"and prototype references. Resolved",
+				"relative to the document URI"				
+		})
+	private String refBase;
+	
 	
 	@Option(
 		names = {"-x", "--index"},
 		description = "Index file name, defaults to ${DEFAULT-VALUE}")
+	@Description(
+			"""
+			You may change the file extension if you need to generate server pages (PHP, JSP, ASPX) with additional functionality such as authentication.
+			For example, you may change the extension to ``php`` to add authentication and other dynamic behavior with ``-x index.php`` option. 
+			[Internet Banking System PHP demo](https://github.com/Nasdanika-Demos/internet-banking-system-php) shows how do so.
+			If you use generated search, also add ``-x <extension>`` option to the [site](https://docs.nasdanika.org/nsd-cli/nsd/drawio/html-app/site/index.html) command so the generated pages are included into the search index, e.g. ``-x php``.
+			
+			To add contents before the ``<html>`` opening tag use ``prolog`` configuration key in page template. E.g.:
+			
+			```yml
+			  prolog:  
+			    content.Text: |
+			      <?php
+			        ... php code here ...
+			      ?>
+			```
+			
+			You can also use ``epilog`` to add content after the ``</html>`` closing tag.
+			
+			If you use search and glossary, change their extensions too.
+			
+			This technique can be used to publish generated sites to SharePoint - change the extension to ``aspx``.			
+			""")
 	private String indexName = "index.html";
 		
 	@Option(			

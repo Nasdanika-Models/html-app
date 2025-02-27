@@ -136,7 +136,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 		if (element instanceof ModelElement) {		
 			try {
 				ModelElement modelElement = (ModelElement) element;
-				URI baseUri = modelElement.getModel().getPage().getDocument().getURI();
+				URI refBaseUri = factory.getRefBaseURI(modelElement.getModel().getPage().getDocument().getURI());
 				String docProperty = factory.getDocumentationProperty();
 				if (!Util.isBlank(docProperty)) {
 					String doc = modelElement.getProperty(docProperty);
@@ -156,7 +156,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 							.findAny();
 						
 						if (dfo.isPresent()) {
-							return dfo.get().createDocumentation(element, doc, docFormatStr[0], baseUri, progressMonitor);
+							return dfo.get().createDocumentation(element, doc, docFormatStr[0], refBaseUri, progressMonitor);
 						}
 						
 						throw new ConfigurationException("Unsupported documentation format: '" + docFormatStr[0] + "'", modelElement);
@@ -184,8 +184,8 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 							}
 						}
 						URI[] docRefURI = { URI.createURI(docRefStr) };
-						if (baseUri != null && !baseUri.isRelative()) {
-							docRefURI[0] = docRefURI[0].resolve(baseUri);
+						if (refBaseUri != null && !refBaseUri.isRelative()) {
+							docRefURI[0] = docRefURI[0].resolve(refBaseUri);
 						}
 						if (docFactory == null) {
 							Optional<DocumentationFactory> dfo = factory.getDocumentationFactories(progressMonitor)
@@ -262,14 +262,14 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 					
 				};
 				
-				URI baseUri = modelElement.getModel().getPage().getDocument().getURI();
+				URI refBaseUri = factory.getRefBaseURI(modelElement.getModel().getPage().getDocument().getURI());
 				String prototypeProperty = factory.getPrototypeProperty();
 				if (!Util.isBlank(prototypeProperty)) {
 					String prototypeSpec = modelElement.getProperty(prototypeProperty);
 					if (!Util.isBlank(prototypeSpec)) {
 						Object obj = eObjectLoader.loadYaml(
 								prototypeSpec, 
-								baseUri, 
+								refBaseUri, 
 								null, 
 								progressMonitor);
 						
@@ -286,8 +286,8 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 					String protoRefStr = modelElement.getProperty(protoRefProperty);
 					if (!Util.isBlank(protoRefStr)) {
 						URI[] protoRefURI = { URI.createURI(protoRefStr) };
-						if (baseUri != null && !baseUri.isRelative()) {
-							protoRefURI[0] = protoRefURI[0].resolve(baseUri);
+						if (refBaseUri != null && !refBaseUri.isRelative()) {
+							protoRefURI[0] = protoRefURI[0].resolve(refBaseUri);
 						}
 						
 						return (Label) factory.getResourceSet().getEObject(protoRefURI[0], true);

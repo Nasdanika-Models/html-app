@@ -103,6 +103,11 @@ public class DrawioHtmlAppGenerator extends Configuration {
 	protected URI getRebaseURI() {
 		return baseURI;
 	}
+	
+	@Override
+	protected URI getRefBaseURI(URI docURI) {
+		return super.getRefBaseURI(docURI);
+	}
 
 	protected DrawioProcessorFactory createProcessorFactory(ProgressMonitor progressMonitor) {
 		return new DrawioProcessorFactory(capabilityLoader, progressMonitor) {
@@ -131,6 +136,11 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			protected String getDocFormatProperty() {
 				return DrawioHtmlAppGenerator.this.getDocFormatProperty();
 			}		
+			
+			@Override
+			protected URI getRefBaseURI(URI docURI) {
+				return DrawioHtmlAppGenerator.this.getRefBaseURI(docURI);
+			}
 			
 			/**
 			 * Override to implement filtering of representation elements

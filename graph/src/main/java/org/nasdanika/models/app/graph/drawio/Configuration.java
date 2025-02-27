@@ -207,13 +207,13 @@ public class Configuration implements RepresentationElementFilter {
 	}
 	
 	/**
-	 * Base URI for resolving documentation references instead of the
+	 * Base URI for resolving documentation and prototype references instead of the
 	 * document URI. Resolved relative to the document URI.
 	 * If null, document URI is used.
 	 * @return
 	 */
-	protected URI getBaseURI() {
-		return null;
+	protected URI getRefBaseURI(URI docURI) {
+		return docURI;
 	}
 
 }
