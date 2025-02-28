@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.URI;
@@ -136,6 +137,10 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 		if (element instanceof ModelElement) {		
 			try {
 				ModelElement modelElement = (ModelElement) element;
+				Function<String, String> tokenSource = key -> {
+					String value = modelElement.getProperty(key);
+					return Util.isBlank(value) ? null : value;
+				};
 				URI refBaseUri = factory.getRefBaseURI(modelElement.getModel().getPage().getDocument().getURI());
 				String docProperty = factory.getDocumentationProperty();
 				if (!Util.isBlank(docProperty)) {
@@ -156,7 +161,13 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 							.findAny();
 						
 						if (dfo.isPresent()) {
-							return dfo.get().createDocumentation(element, doc, docFormatStr[0], refBaseUri, progressMonitor);
+							return dfo.get().createDocumentation(
+									element, 
+									doc, 
+									docFormatStr[0], 
+									refBaseUri,
+									tokenSource,
+									progressMonitor);
 						}
 						
 						throw new ConfigurationException("Unsupported documentation format: '" + docFormatStr[0] + "'", modelElement);
@@ -200,7 +211,11 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 							}
 						}
 						
-						return docFactory.createDocumentation(element, docRefURI[0], progressMonitor);				
+						return docFactory.createDocumentation(
+								element, 
+								docRefURI[0],
+								tokenSource,
+								progressMonitor);				
 					}
 				}
 			} catch (Exception e) {

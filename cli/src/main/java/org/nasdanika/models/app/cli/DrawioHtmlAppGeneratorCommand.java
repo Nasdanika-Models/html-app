@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import org.eclipse.emf.common.util.URI;
@@ -12,6 +13,7 @@ import org.nasdanika.capability.CapabilityLoader;
 import org.nasdanika.capability.ServiceCapabilityFactory;
 import org.nasdanika.cli.Description;
 import org.nasdanika.cli.ParentCommands;
+import org.nasdanika.common.Context;
 import org.nasdanika.common.Diagnostic;
 import org.nasdanika.common.Invocable;
 import org.nasdanika.common.ProgressMonitor;
@@ -49,22 +51,14 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 	protected Consumer<Diagnostic> createDiagnosticConsumer(ProgressMonitor progressMonitor) {		
 		return d -> progressMonitor.worked(d.getStatus(), 1, "Diagnostic: " + d.getMessage(), d);
 	}
+		
 
-	protected DrawioHtmlAppGenerator createDrawioActionGenerator(Collection<RepresentationElementFilter> representationElementFilters) {
+	protected DrawioHtmlAppGenerator createDrawioActionGenerator(URI baseURI, Collection<RepresentationElementFilter> representationElementFilters) {
 		return new DrawioHtmlAppGenerator() {
 			
 			@Override
 			protected URI getBaseURI() {
-				URI baseURI = super.getBaseURI();
-				if (Util.isBlank(base)) {
-					return baseURI;
-				}
-				
-				URI bURI = URI.createURI(base);
-				if (bURI.isRelative()) {
-					bURI = bURI.resolve(baseURI);
-				}
-				return bURI;
+				return baseURI;
 			}
 			
 			@Override
@@ -106,8 +100,7 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 				"and prototype references. Resolved",
 				"relative to the document URI"				
 		})
-	private String refBase;
-	
+	private String refBase;	
 	
 	@Option(
 		names = {"-x", "--index"},
@@ -149,7 +142,21 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 
 	@Override
 	protected Collection<Label> getLabels(ProgressMonitor progressMonitor) {
-		Document document = documentSupplier.getDocument(progressMonitor); 
+		URI actionGeneratorBaseURI = URI.createURI("tmp://" + UUID.randomUUID() + "/" + UUID.randomUUID() + "/");
+		if (!Util.isBlank(base)) {
+			URI bURI = URI.createURI(base);
+			if (bURI.isRelative()) {
+				bURI = bURI.resolve(actionGeneratorBaseURI);
+			}
+			actionGeneratorBaseURI = bURI;
+		}				
+		
+		Map<String,String> properties = Map.of(Context.BASE_URI_PROPERTY, actionGeneratorBaseURI.toString());
+		
+		Document document = documentSupplier.getDocument(
+				null,
+				properties::get, 
+				progressMonitor); 
 		Collection<RepresentationElementFilter> refs = new ArrayList<>();		
 		File currentDir = new File(".");
 		URI baseURI = URI.createFileURI(currentDir.getAbsolutePath()).appendSegment("");		
@@ -162,7 +169,7 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 			refs.add(ref);			
 		}		
 		
-		DrawioHtmlAppGenerator actionGenerator = createDrawioActionGenerator(refs);
+		DrawioHtmlAppGenerator actionGenerator = createDrawioActionGenerator(actionGeneratorBaseURI, refs);
 		Supplier<Collection<Label>> labelSupplier = actionGenerator.createLabelsSupplier(document, progressMonitor);
 		Consumer<Diagnostic> diagnosticConsumer = createDiagnosticConsumer(progressMonitor);
 		return labelSupplier.call(progressMonitor, diagnosticConsumer);

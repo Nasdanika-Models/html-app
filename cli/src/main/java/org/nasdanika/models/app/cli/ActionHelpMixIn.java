@@ -449,7 +449,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 			
 			if (optAction != null) {				
 				optAction.setText(StringEscapeUtils.escapeHtml4(String.join(", ", opt.names())));
-				optAction.setName("opt_" + StringEscapeUtils.escapeHtml4(opt.shortestName()));
+				optAction.setName("opt" + StringEscapeUtils.escapeHtml4(opt.shortestName()));
 				if (optionsSection == null) {
 					optionsSection = createAction();
 					optionsSection.setText("Options");
@@ -502,7 +502,8 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 								if (dStream != null) {
 									Collection<EObject> docObjs = docFactory.createDocumentation(
 											docContext, 
-											URI.createURI(resName).resolve(baseURI), 
+											URI.createURI(resName).resolve(baseURI),
+											null,
 											progressMonitor);							
 									action.getContent().addAll(docObjs);								
 									return true;
@@ -517,6 +518,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 							Collection<EObject> docObjs = docFactory.createDocumentation(
 									docContext, 
 									resourceURI, 
+									null,
 									progressMonitor);							
 							action.getContent().addAll(docObjs);								
 							return true;
@@ -534,7 +536,8 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 								docContext, 
 								doc, 
 								format, 
-								Util.createClassURI(clazz), 
+								Util.createClassURI(clazz),
+								null,
 								progressMonitor);
 						
 						action.getContent().addAll(docObjs);								

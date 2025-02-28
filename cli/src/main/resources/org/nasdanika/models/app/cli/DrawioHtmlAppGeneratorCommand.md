@@ -9,29 +9,29 @@
     * Adds the generated labels to the root action
 * Passes the resulting model to the [site](site/index.html) sub-command to generate a documentation site
 
-## Diagram element configuration
+## Diagram element configuration – 
 
 Diagram elements can be configured with the following properties:
 
-* ``documentation`` – documentation text in documentation format
-* ``doc-format`` – explicitly specified documentation format for ``documentation`` and ``doc-ref`. Out of the box:
+* ``documentation`` - documentation text in documentation format
+* ``doc-format`` - explicitly specified documentation format for ``documentation`` and ``doc-ref`. Out of the box:
     * ``markdown`` (default), 
     * ``html``
     * ``text``
-* ``doc-ref`` – URI of a documentation resource resolved relative to the URI of the diagram file. Documentation format is derived from the URI extension, defaulting to ``markdown``. Use ``doc-format`` to override.
-* ``icon`` – diagram element icon URL resolved relative to the diagram file. If there is no slash (``/``) in the icon name then it is treated as a CSS style, e.g. ``fas fa-user``. 
+* ``doc-ref`` - URI of a documentation resource resolved relative to the URI of the diagram file. Documentation format is derived from the URI extension, defaulting to ``markdown``. Use ``doc-format`` to override.
+* ``icon`` - diagram element icon URL resolved relative to the diagram file. If there is no slash (``/``) in the icon name then it is treated as a CSS style, e.g. ``fas fa-user``. 
 For image diagram elements icons are derived from element images. It is recommended to use SVG 20x20 OR 18x18 pixels for icons because they are also used in page titles and PNG images get blurry when scaled up.
-* ``parent`` – Connection property with values ``source`` or ``target``. Use to generate documentation from mind maps where parent/child relationship is defined by connections, not by containment.
+* ``parent`` - Connection property with values ``source`` or ``target``. Use to generate documentation from mind maps where parent/child relationship is defined by connections, not by containment.
 * ``prototype`` & ``proto-ref`` – YAML specification of [html application](https://html-app.models.nasdanika.org/index.html) [action](https://html-app.models.nasdanika.org/references/eClassifiers/Action/index.html), [link](https://html-app.models.nasdanika.org/references/eClassifiers/Link/index.html) or [label](https://html-app.models.nasdanika.org/references/eClassifiers/Label/index.html). See load specifications of respective model elements for supported configuration keys. If both properties are specified, ``prototype`` takes precedence over ``proto-ref``. With prototypes you can:
-    * Generate complex site pages (actions) with children, navigation, sections, …
+    * Generate complex site pages (actions) with children, navigation, sections, ...
     * Reuse action models. For example, generate an action model from one diagram and use it as a prototype for an element of another diagram. Or generate an action model for CLI or Ecore documentation.
-* ``role`` – action/page role:
+* ``role`` - action/page role:
     * ``anonymous`` (default for connections)
     * ``child`` (default for nodes)
     * ``navigation``
     * ``section``
-* ``sort-key`` – By default generated pages (actions) are sorted alphabetically by title. This property can be used to customize sorting. If it is set then pages are sorted first by the property value and then by page title.
-* ``title`` – By default the element label is used as page title (action text). Use this property to explicitly set the page title. For example, for elements with long labels.
+* ``sort-key`` - By default generated pages (actions) are sorted alphabetically by title. This property can be used to customize sorting. If it is set then pages are sorted first by the property value and then by page title.
+* ``title`` - By default the element label is used as page title (action text). Use this property to explicitly set the page title. For example, for elements with long labels.
 
 Site pages are generated only for elements with:
 
