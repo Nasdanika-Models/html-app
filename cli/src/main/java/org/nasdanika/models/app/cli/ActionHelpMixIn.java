@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -86,28 +87,41 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 	
 	private record DescriptionRecord(AnnotatedElement annotatedElement, Description description) {}
 	
+	/**
+	 * @param argSpec
+	 * @param commandMethod for resolving parameter descriptions
+	 * @return
+	 */
 	private static DescriptionRecord getDescriptionRecord(ArgSpec argSpec) {
-		AnnotatedElement annotatedElement = null;
+		AnnotatedElement annotatedElement = null;				
 		ISetter setter = argSpec.setter();
 		if (setter instanceof IAnnotatedElementProvider) {
 			annotatedElement = ((IAnnotatedElementProvider) setter).getAnnotatedElement();
 		} else {
 			IGetter getter = argSpec.getter();
 			if (getter instanceof IAnnotatedElementProvider) {
-				annotatedElement = ((IAnnotatedElementProvider) getter).getAnnotatedElement();				
+				annotatedElement = ((IAnnotatedElementProvider) getter).getAnnotatedElement();
 			}
 		}
 		
-		if (annotatedElement == null) {
-			return null;
-		}
-		
-		Description description = annotatedElement.getAnnotation(Description.class);
+		Description description = annotatedElement == null ? argSpec.getAnnotation(Description.class) : annotatedElement.getAnnotation(Description.class);		
 		return description == null ? null : new DescriptionRecord(annotatedElement, description);
 	}
 	
+	/**
+	 * 
+	 * @param argSpec
+	 * @param contextClass for loading resources
+	 * @param commandMethod if user object is method - for method commands, null otherwise.
+	 * @param documentationFactories
+	 * @param classifiers
+	 * @param progressMonitor
+	 * @return
+	 * @throws IOException
+	 */
 	private static Action argSpecAction(
 			ArgSpec argSpec, 
+			Class<?> contextClass,
 			Collection<DocumentationFactory> documentationFactories,
 			Collection<String> classifiers, 
 			ProgressMonitor progressMonitor) throws IOException {
@@ -124,12 +138,18 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 		if (!Util.isBlank(tooltip)) {
 			action.setTooltip(tooltip);
 		}
+
+		if (contextClass == null) {
+			AnnotatedElement annotatedElement = descriptionRecord.annotatedElement();
+			if (annotatedElement instanceof Member) {		
+				contextClass = ((Member) annotatedElement).getDeclaringClass();
+			}
+		}
 		
-		Member member = (Member) descriptionRecord.annotatedElement();
 		boolean handled = generateDocumentation(
 				action, 
 				descriptionRecord.description(), 
-				member.getDeclaringClass(),
+				contextClass,
 				classifiers,	
 				argSpec, 
 				documentationFactories,
@@ -142,11 +162,15 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 				if (Util.isBlank(markdown)) {
 					String dResource = descriptionRecord.description().resource();
 					if (!Util.isBlank(dResource)) {
-						InputStream dStream = member.getDeclaringClass().getResourceAsStream(dResource);
-						if (dStream != null) {
-							markdown = DefaultConverter.INSTANCE.toString(dStream);
+						if (contextClass == null) {
+							markdown = "No context class for resource: ``" + dResource + "``";							
 						} else {
-							markdown = "Resource not found: ``" + dResource + "`` by class ``" + member.getDeclaringClass().getName() + "``";
+							InputStream dStream = contextClass.getResourceAsStream(dResource);
+							if (dStream != null) {
+								markdown = DefaultConverter.INSTANCE.toString(dStream);
+							} else {
+								markdown = "Resource not found: ``" + dResource + "`` by class ``" + contextClass.getName() + "``";
+							}
 						}
 					}
 				}
@@ -348,58 +372,89 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 
 		// Description 
 		Object userObject = commandSpec.userObject();
+		Class<? extends Object> clazz = null;
 		if (userObject != null) {
-			Class<? extends Object> clazz = userObject.getClass();
-			Description description = clazz.getAnnotation(Description.class);
-			if (description != null) {
-				String icon = description.icon();
-				if (!Util.isBlank(icon)) {
-					action.setIcon(icon);
+			if (userObject instanceof Method) {
+				Method commandMethod = (Method) userObject;
+				clazz = commandMethod.getDeclaringClass();
+				Description description = commandMethod.getAnnotation(Description.class);
+				if (description != null) {
+					String icon = description.icon();
+					if (!Util.isBlank(icon)) {
+						action.setIcon(icon);
+					}
+					String tooltip = description.tooltip();
+					if (!Util.isBlank(tooltip)) {
+						action.setTooltip(tooltip);
+					}
+					
+					generateDocumentation(
+							action, 
+							description, 
+							commandMethod.getDeclaringClass(), 
+							Collections.emptyList(),
+							commandLine, 
+							documentationFactories,
+							progressMonitor);
 				}
-				String tooltip = description.tooltip();
-				if (!Util.isBlank(tooltip)) {
-					action.setTooltip(tooltip);
-				}
-				
-				boolean handled = generateDocumentation(
-						action, 
-						description, 
-						clazz, 
-						Collections.singleton(null),
-						commandLine, 
-						documentationFactories,
-						progressMonitor);				
-				
-				if (!handled) {
-					if (Util.isBlank(description.format()) || Description.MARKDOWN_FORMAT.equals(description.format())) {
-						String markdown = description.value();
-						if (Util.isBlank(markdown)) {
-							String dResource = description.resource();
-							if (Util.isBlank(dResource)) {
-								dResource = clazz.getName().substring(clazz.getName().lastIndexOf('.') + 1) + ".md";						
+			} else {
+				clazz = userObject.getClass();
+				Description description = clazz.getAnnotation(Description.class);
+				if (description != null) {
+					String icon = description.icon();
+					if (!Util.isBlank(icon)) {
+						action.setIcon(icon);
+					}
+					String tooltip = description.tooltip();
+					if (!Util.isBlank(tooltip)) {
+						action.setTooltip(tooltip);
+					}
+					
+					boolean handled = generateDocumentation(
+							action, 
+							description, 
+							clazz, 
+							Collections.singleton(null),
+							commandLine, 
+							documentationFactories,
+							progressMonitor);				
+					
+					if (!handled) {
+						if (Util.isBlank(description.format()) || Description.MARKDOWN_FORMAT.equals(description.format())) {
+							String markdown = description.value();
+							if (Util.isBlank(markdown)) {
+								String dResource = description.resource();
+								if (Util.isBlank(dResource)) {
+									dResource = clazz.getName().substring(clazz.getName().lastIndexOf('.') + 1) + ".md";						
+								}
+								InputStream dStream = clazz.getResourceAsStream(dResource);
+								if (dStream != null) {
+									markdown = DefaultConverter.INSTANCE.toString(dStream);
+								}
 							}
-							InputStream dStream = clazz.getResourceAsStream(dResource);
-							if (dStream != null) {
-								markdown = DefaultConverter.INSTANCE.toString(dStream);
-							}
+							
+							StringBuilder markdownBuilder = new StringBuilder("<div class=\"markdown-body\">")
+								.append(System.lineSeparator())
+								.append(MarkdownHelper.INSTANCE.markdownToHtml(markdown))
+								.append(System.lineSeparator())
+								.append("</div>")
+								.append(System.lineSeparator());
+							addContent(action, markdownBuilder.toString());
+						} else {
+							addContent(action, "Unsupported description format: " + description.format()); 
 						}
-						
-						StringBuilder markdownBuilder = new StringBuilder("<div class=\"markdown-body\">")
-							.append(System.lineSeparator())
-							.append(MarkdownHelper.INSTANCE.markdownToHtml(markdown))
-							.append(System.lineSeparator())
-							.append("</div>")
-							.append(System.lineSeparator());
-						addContent(action, markdownBuilder.toString());
-					} else {
-						addContent(action, "Unsupported description format: " + description.format()); 
 					}
 				}
 			}
-		}
+		} 
 		
 		EList<EObject> children = action.getChildren();
-		for (CommandLine subCommand: commandLine.getSubcommands().values().stream().sorted((a,b) -> a.getCommandName().compareTo(b.getCommandName())).collect(Collectors.toList())) {
+		for (CommandLine subCommand: commandLine
+				.getSubcommands()
+				.values()
+				.stream()
+				.sorted((a,b) -> a.getCommandName().compareTo(b.getCommandName())).collect(Collectors.toList())) {
+			
 			children.add(createCommandLineAction(
 					subCommand, 
 					documentationFactories, 
@@ -419,6 +474,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 			
 			Action paramAction = argSpecAction(
 					param,
+					clazz,
 					documentationFactories,
 					classifiers,
 					progressMonitor);
@@ -443,6 +499,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 			}
 			Action optAction = argSpecAction(
 					opt,
+					clazz,
 					documentationFactories,
 					classifiers,
 					progressMonitor);
@@ -487,6 +544,9 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 			if (Util.isBlank(doc)) {
 				// Doc is blank, using resource
 				String resource = description.resource();
+				if (clazz == null) {
+					return false;
+				}
 				URI baseURI = Util.createClassURI(clazz);
 				if (Util.isBlank(resource)) {
 					for(String classifier: classifiers) {

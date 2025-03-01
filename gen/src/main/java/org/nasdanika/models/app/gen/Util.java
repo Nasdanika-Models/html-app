@@ -1318,10 +1318,14 @@ public final class Util {
 			BiPredicate<File, String> searchPredicate,
 			BiConsumer<String,String> errorConsumer) throws IOException {				
 
-		String searchDocumentsPath = "search-documents.js";
-		JSONObject searchDocuments = generateSitemapAndSearch(dir, domain, siteMapPredicate, changeFrequency, searchPredicate, errorConsumer, searchDocumentsPath);		
-		try (FileWriter writer = new FileWriter(new File(dir, searchDocumentsPath))) {
+		String searchDocumentsScriptPath = "search-documents.js";
+		String searchDocumentsJSONPath = "search-documents.json";
+		JSONObject searchDocuments = generateSitemapAndSearch(dir, domain, siteMapPredicate, changeFrequency, searchPredicate, errorConsumer, searchDocumentsScriptPath);		
+		try (FileWriter writer = new FileWriter(new File(dir, searchDocumentsScriptPath))) {
 			writer.write("var searchDocuments = " + searchDocuments);
+		}
+		try (FileWriter writer = new FileWriter(new File(dir, searchDocumentsJSONPath))) {
+			searchDocuments.write(writer, 2, 0);
 		}
 	}
 
