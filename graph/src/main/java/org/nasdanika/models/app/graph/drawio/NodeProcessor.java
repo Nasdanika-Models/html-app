@@ -61,7 +61,7 @@ public class NodeProcessor extends LayerElementProcessor<Node> {
 			} else {
 				URI imageURI = URI.createURI(image);
 				if (imageURI.isRelative()) {
-					URI appBase = factory.getAppBase();
+					URI appBase = configuration.getAppBase();
 					if (appBase != null && !appBase.isRelative()) {
 						imageURI = imageURI.resolve(appBase);
 					}
@@ -70,7 +70,7 @@ public class NodeProcessor extends LayerElementProcessor<Node> {
 			}
 			
 			try {
-				label.setIcon(Util.scaleImage(factory.rewriteImage(image, progressMonitor), factory.getIconSize()));
+				label.setIcon(Util.scaleImage(configuration.rewriteImage(image, progressMonitor), configuration.getIconSize()));
 			} catch (IOException e) {
 				progressMonitor.worked(Status.WARNING, 1, "Could not scale image: " + e, e);
 			}

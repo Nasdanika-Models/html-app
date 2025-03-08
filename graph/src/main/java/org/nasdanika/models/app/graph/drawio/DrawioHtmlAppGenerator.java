@@ -105,7 +105,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 	}
 	
 	@Override
-	protected URI getRefBaseURI(URI docURI) {
+	public URI getRefBaseURI(URI docURI) {
 		return super.getRefBaseURI(docURI);
 	}
 
@@ -113,32 +113,32 @@ public class DrawioHtmlAppGenerator extends Configuration {
 		return new DrawioProcessorFactory(capabilityLoader, progressMonitor) {
 			
 			@Override
-			protected String getIconProperty() {
+			public String getIconProperty() {
 				return DrawioHtmlAppGenerator.this.getIconProperty();
 			}	
 			
 			@Override
-			protected String getTitleProperty() {
+			public String getTitleProperty() {
 				return DrawioHtmlAppGenerator.this.getTitleProperty();
 			}	
 				
 			@Override
-			protected String getDocumentationProperty() {
+			public String getDocumentationProperty() {
 				return DrawioHtmlAppGenerator.this.getDocumentationProperty();
 			}	
 				
 			@Override
-			protected String getDocRefProperty() {
+			public String getDocRefProperty() {
 				return DrawioHtmlAppGenerator.this.getDocRefProperty();
 			}	
 			
 			@Override
-			protected String getDocFormatProperty() {
+			public String getDocFormatProperty() {
 				return DrawioHtmlAppGenerator.this.getDocFormatProperty();
 			}		
 			
 			@Override
-			protected URI getRefBaseURI(URI docURI) {
+			public URI getRefBaseURI(URI docURI) {
 				return DrawioHtmlAppGenerator.this.getRefBaseURI(docURI);
 			}
 			
@@ -163,7 +163,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			 * @return
 			 */
 			@Override
-			protected String getViewer() {
+			public String getViewer() {
 				return DrawioHtmlAppGenerator.this.getViewer();
 			}
 				
@@ -177,7 +177,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			 * @return
 			 */
 			@Override
-			protected URI getAppBase() {
+			public URI getAppBase() {
 				return DrawioHtmlAppGenerator.this.getAppBase();
 			}
 			
@@ -188,7 +188,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			 * @return
 			 */
 			@Override
-			protected String rewriteImage(String imageRepr, ProgressMonitor progressMonitor) {
+			public String rewriteImage(String imageRepr, ProgressMonitor progressMonitor) {
 				return DrawioHtmlAppGenerator.this.rewriteImage(imageRepr, progressMonitor);
 			}
 			
@@ -196,12 +196,12 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			 * Icon size to scale image representations to
 			 * @return
 			 */
-			protected int getIconSize() {
+			public int getIconSize() {
 				return DrawioHtmlAppGenerator.this.getIconSize();
 			}
 			
 			@Override
-			protected String getIndexName() {
+			public String getIndexName() {
 				return DrawioHtmlAppGenerator.this.getIndexName();
 			}
 
@@ -214,7 +214,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			 * @param progressMonitor
 			 * @return
 			 */
-			protected Collection<? extends EObject> createRepresentationContent(
+			public Collection<? extends EObject> createRepresentationContent(
 					Document representation,
 					Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory>> registry,
 					ProgressMonitor progressMonitor) {
@@ -223,7 +223,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			}
 			
 			@Override
-			protected <T extends WidgetFactory> T filter(
+			public <T extends WidgetFactory> T filter(
 					ProcessorConfig config, 
 					T processor,
 					BiConsumer<Element, BiConsumer<ProcessorInfo<Object>, ProgressMonitor>> infoProvider,

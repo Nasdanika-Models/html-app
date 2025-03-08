@@ -85,8 +85,8 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 		Text representationText = ContentFactory.eINSTANCE.createText(); // Interpolate with element properties?
 		try {
 			Document representation = createRepresentation(progressMonitor);
-			representationText.setContent(representation.toHtml(true, factory.getViewer()));
-			action.getContent().addAll(factory.createRepresentationContent(representation, registry, progressMonitor));
+			representationText.setContent(representation.toHtml(true, configuration.getViewer()));
+			action.getContent().addAll(configuration.createRepresentationContent(representation, registry, progressMonitor));
 		} catch (TransformerException | IOException | ParserConfigurationException e) {
 			representationText.setContent("<div class=\"nsd-error\">Error creating representation: " + e + "</div>");
 		}
@@ -152,7 +152,7 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 				if (sourceElementProcessor instanceof BaseProcessor) {
 					BaseProcessor<?> baseProcessor = (BaseProcessor<?>) sourceElementProcessor;
 					String role = baseProcessor.getRole();
-					String sectionRole = factory.getSectionRole();
+					String sectionRole = configuration.getSectionRole();
 					if (Util.isBlank(sectionRole) || !sectionRole.equals(role)) {
 						URI sourceURI = baseProcessor.getActionURI(progressMonitor);
 						if (sourceURI != null && uri != null) {
@@ -164,7 +164,7 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 			}
 		}
 			
-		factory.filterRepresentationElement(
+		configuration.filterRepresentationElement(
 				sourceElement,
 				representationElement, 
 				registry, 

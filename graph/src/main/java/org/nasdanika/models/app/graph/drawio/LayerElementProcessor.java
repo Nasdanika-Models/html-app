@@ -122,8 +122,8 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 				Text representationText = ContentFactory.eINSTANCE.createText(); // Interpolate with element properties?
 				try {
 					Document representation = pageProcessor.createRepresentation(progressMonitor);
-					representationText.setContent(representation.toHtml(true, factory.getViewer()));
-					ret.addAll(factory.createRepresentationContent(representation, registry, progressMonitor));
+					representationText.setContent(representation.toHtml(true, configuration.getViewer()));
+					ret.addAll(configuration.createRepresentationContent(representation, registry, progressMonitor));
 				} catch (TransformerException | IOException | ParserConfigurationException e) {
 					representationText.setContent("<div class=\"alert alert-danger\" role=\"alert\">Error creating representation:" + e + "</div>");
 				}
@@ -149,9 +149,9 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 	public Supplier<Collection<Label>> createLabelsSupplier() {
 		MapCompoundSupplier<ModelElement, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Child labels supplier");
 
-		String parentProperty = factory.getParentProperty();
-		String targetKey = factory.getTargetKey();
-		String sourceKey = factory.getSourceKey();
+		String parentProperty = configuration.getParentProperty();
+		String targetKey = configuration.getTargetKey();
+		String sourceKey = configuration.getSourceKey();
 
 		// Own child nodes not linked to other nodes
 		C: for (Entry<ModelElement, ProcessorInfo<WidgetFactory>> ce: childInfos.entrySet()) {

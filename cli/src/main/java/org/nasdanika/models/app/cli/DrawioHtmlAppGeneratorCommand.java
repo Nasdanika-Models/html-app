@@ -62,7 +62,7 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 			}
 			
 			@Override
-			protected URI getRefBaseURI(URI docURI) {
+			public URI getRefBaseURI(URI docURI) {
 				if (Util.isBlank(refBase)) {
 					return super.getRefBaseURI(docURI);
 				}
@@ -70,7 +70,7 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 			}
 			
 			@Override
-			protected String getIndexName() {
+			public String getIndexName() {
 				return DrawioHtmlAppGeneratorCommand.this.indexName;
 			}
 			

@@ -44,10 +44,10 @@ import org.nasdanika.persistence.ObjectLoader;
  */
 public class BaseProcessor<T extends Element> implements WidgetFactory {
 	
-	protected DrawioProcessorFactory factory;
+	protected Configuration configuration;
 	
-	public BaseProcessor(DrawioProcessorFactory factory) {
-		this.factory = factory;
+	public BaseProcessor(DrawioProcessorFactory configuration) {
+		this.configuration = configuration;
 	}
 		
 	protected T element;
@@ -141,13 +141,13 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 					String value = modelElement.getProperty(key);
 					return Util.isBlank(value) ? null : value;
 				};
-				URI refBaseUri = factory.getRefBaseURI(modelElement.getModel().getPage().getDocument().getURI());
-				String docProperty = factory.getDocumentationProperty();
+				URI refBaseUri = configuration.getRefBaseURI(modelElement.getModel().getPage().getDocument().getURI());
+				String docProperty = configuration.getDocumentationProperty();
 				if (!Util.isBlank(docProperty)) {
 					String doc = modelElement.getProperty(docProperty);
 					if (!Util.isBlank(doc)) {
 						String[] docFormatStr = { null };
-						String docFormatProperty = factory.getDocFormatProperty();
+						String docFormatProperty = configuration.getDocFormatProperty();
 						if (!Util.isBlank(docFormatProperty)) {
 							docFormatStr[0] = modelElement.getProperty(docFormatProperty);
 						}
@@ -155,7 +155,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 							docFormatStr[0] = "markdown";
 						}
 						
-						Optional<DocumentationFactory> dfo = factory.getDocumentationFactories(progressMonitor)
+						Optional<DocumentationFactory> dfo = configuration.getDocumentationFactories(progressMonitor)
 							.stream()
 							.filter(df -> df.canHandle(docFormatStr[0]))
 							.findAny();
@@ -174,16 +174,16 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 					}
 				}
 				
-				String docRefProperty = factory.getDocRefProperty();
+				String docRefProperty = configuration.getDocRefProperty();
 				if (!Util.isBlank(docRefProperty)) {
 					String docRefStr = modelElement.getProperty(docRefProperty);
 					if (!Util.isBlank(docRefStr)) {
-						String docFormatProperty = factory.getDocFormatProperty();
+						String docFormatProperty = configuration.getDocFormatProperty();
 						DocumentationFactory docFactory = null;
 						if (!Util.isBlank(docFormatProperty)) {
 							String docFormatStr = modelElement.getProperty(docFormatProperty);
 							if (!Util.isBlank(docFormatStr)) {
-								Optional<DocumentationFactory> dfo = factory.getDocumentationFactories(progressMonitor)
+								Optional<DocumentationFactory> dfo = configuration.getDocumentationFactories(progressMonitor)
 										.stream()
 										.filter(df -> df.canHandle(docFormatStr))
 										.findAny();
@@ -199,7 +199,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 							docRefURI[0] = docRefURI[0].resolve(refBaseUri);
 						}
 						if (docFactory == null) {
-							Optional<DocumentationFactory> dfo = factory.getDocumentationFactories(progressMonitor)
+							Optional<DocumentationFactory> dfo = configuration.getDocumentationFactories(progressMonitor)
 									.stream()
 									.filter(df -> df.canHandle(docRefURI[0]))
 									.findAny();		
@@ -236,7 +236,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 		if (element instanceof ModelElement) {
 			ModelElement modelElement = (ModelElement) element;
 			if (Util.isBlank(label.getIcon())) {
-				String iconProperty = factory.getIconProperty();
+				String iconProperty = configuration.getIconProperty();
 				if (!Util.isBlank(iconProperty)) {
 					label.setIcon(modelElement.getProperty(iconProperty));
 				}
@@ -244,7 +244,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 			if (Util.isBlank(label.getTooltip())) {
 				label.setTooltip(modelElement.getTooltip());
 			}
-			String titleProperty = factory.getTitleProperty();
+			String titleProperty = configuration.getTitleProperty();
 			if (!Util.isBlank(titleProperty)) {
 				String title = modelElement.getProperty(titleProperty);
 				if (!Util.isBlank(title)) {
@@ -266,19 +266,19 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 					
 					@Override
 					public ResolutionResult resolveEClass(String type) {
-						EClass eClass = (EClass) factory.getType(type, (ModelElement) element);
+						EClass eClass = (EClass) configuration.getType(type, (ModelElement) element);
 						return new ResolutionResult(eClass, null);
 					}
 					
 					@Override
 					public ResourceSet getResourceSet() {
-						return factory.getResourceSet();
+						return configuration.getResourceSet();
 					}
 					
 				};
 				
-				URI refBaseUri = factory.getRefBaseURI(modelElement.getModel().getPage().getDocument().getURI());
-				String prototypeProperty = factory.getPrototypeProperty();
+				URI refBaseUri = configuration.getRefBaseURI(modelElement.getModel().getPage().getDocument().getURI());
+				String prototypeProperty = configuration.getPrototypeProperty();
 				if (!Util.isBlank(prototypeProperty)) {
 					String prototypeSpec = modelElement.getProperty(prototypeProperty);
 					if (!Util.isBlank(prototypeSpec)) {
@@ -289,14 +289,14 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 								progressMonitor);
 						
 						if (obj instanceof SupplierFactory) {
-							obj = ((SupplierFactory<Object>) obj).create(factory.getContext()).call(progressMonitor, factory::onDiagnostic);
+							obj = ((SupplierFactory<Object>) obj).create(configuration.getContext()).call(progressMonitor, configuration::onDiagnostic);
 						} 
 						
 						return (Label) obj;
 					}
 				}
 				
-				String protoRefProperty = factory.getProtoRefProperty();
+				String protoRefProperty = configuration.getProtoRefProperty();
 				if (!Util.isBlank(protoRefProperty)) {
 					String protoRefStr = modelElement.getProperty(protoRefProperty);
 					if (!Util.isBlank(protoRefStr)) {
@@ -305,7 +305,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 							protoRefURI[0] = protoRefURI[0].resolve(refBaseUri);
 						}
 						
-						return (Label) factory.getResourceSet().getEObject(protoRefURI[0], true);
+						return (Label) configuration.getResourceSet().getEObject(protoRefURI[0], true);
 					}
 				}
 			} catch (Exception e) {
@@ -340,7 +340,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 				return ((ModelElementAdapter) a).getRole();
 			}
 		}
-		return factory.getChildRole();
+		return configuration.getChildRole();
 	}
 	
 	protected String getLabelSortKey(Label label) {
@@ -388,7 +388,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 		Map<String, List<Label>> groupedByRole = Util.groupBy(childLabels, this::getLabelRole);
 		groupedByRole.values().forEach(labels -> Collections.sort(labels, this::compareLabelsBySortKeyAndText));
 		
-		String childRole = factory.getChildRole();
+		String childRole = configuration.getChildRole();
 		if (!Util.isBlank(childRole)) {
 			List<Label> children = groupedByRole.remove(childRole);
 			if (children != null) {
@@ -398,7 +398,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 		if (label instanceof Action) {
 			Action action = (Action) label;
 		
-			String anonymousRole = factory.getAnonymousRole();
+			String anonymousRole = configuration.getAnonymousRole();
 			if (!Util.isBlank(anonymousRole)) {
 				List<Label> anonymous = groupedByRole.remove(anonymousRole);
 				if (anonymous != null) {
@@ -412,7 +412,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 				}
 			}
 			
-			String navigationRole = factory.getNavigationRole();
+			String navigationRole = configuration.getNavigationRole();
 			if (!Util.isBlank(navigationRole)) {
 				List<Label> navs = groupedByRole.remove(navigationRole);
 				if (navs != null) {
@@ -420,7 +420,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 				}
 			}		
 			
-			String sectionRole = factory.getSectionRole();
+			String sectionRole = configuration.getSectionRole();
 			if (!Util.isBlank(sectionRole)) {
 				List<Label> sections = groupedByRole.remove(sectionRole);
 				if (sections != null) {
@@ -444,7 +444,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 	
 	protected String getRole() {
 		if (element instanceof ModelElement) {
-			String roleProperty = factory.getRoleProperty();
+			String roleProperty = configuration.getRoleProperty();
 			if (!Util.isBlank(roleProperty)) {
 				String role = ((ModelElement) element).getProperty(roleProperty);
 				if (!Util.isBlank(role)) {
@@ -453,12 +453,12 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 			}
 		}
 		
-		return element instanceof Connection ? factory.getAnonymousRole() : factory.getChildRole();
+		return element instanceof Connection ? configuration.getAnonymousRole() : configuration.getChildRole();
 	}
 	
 	protected String getSortKey() {
 		if (element instanceof ModelElement) {
-			String sortKeyProperty = factory.getSortKeyProperty();		
+			String sortKeyProperty = configuration.getSortKeyProperty();		
 			if (!Util.isBlank(sortKeyProperty)) {
 				return ((ModelElement) element).getProperty(sortKeyProperty);
 			}
@@ -515,7 +515,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 			if (!documentation.isEmpty() ) {
 				mAction.getContent().addAll(documentation);
 			}
-			String sectionRole = factory.getSectionRole();
+			String sectionRole = configuration.getSectionRole();
 			String labelRole = getLabelRole(mLabel);
 			if (Util.isBlank(sectionRole) || !sectionRole.equals(labelRole)) {
 				if (Util.isBlank(mAction.getLocation())) { // Link?
@@ -536,7 +536,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 	}
 
 	protected boolean hasNonChildRoles(List<Label> childLabels) {
-		String childRole = factory.getChildRole();
+		String childRole = configuration.getChildRole();
 		for (Label childLabel: childLabels) {
 			if (!childRole.equals(getLabelRole(childLabel))) {
 				return true;
@@ -546,7 +546,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 	}	
 	
 	protected String getIndexName() {
-		return factory.getIndexName();
+		return configuration.getIndexName();
 	}
 	
 }

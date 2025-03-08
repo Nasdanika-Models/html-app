@@ -2,19 +2,30 @@ package org.nasdanika.models.app.graph.drawio;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.nasdanika.common.Context;
+import org.nasdanika.common.DiagnosticException;
 import org.nasdanika.common.DiagramGenerator;
+import org.nasdanika.common.DocumentationFactory;
 import org.nasdanika.common.ProgressMonitor;
+import org.nasdanika.common.Status;
 import org.nasdanika.drawio.Document;
 import org.nasdanika.drawio.ModelElement;
 import org.nasdanika.graph.Element;
 import org.nasdanika.graph.processor.ProcessorConfig;
 import org.nasdanika.graph.processor.ProcessorInfo;
 import org.nasdanika.models.app.graph.WidgetFactory;
+import org.nasdanika.ncore.util.NcoreUtil;
+import org.nasdanika.persistence.ConfigurationException;
 
 /**
  * Base class for processor configuration/customization classes.
@@ -51,71 +62,71 @@ public class Configuration implements RepresentationElementFilter {
 	
 	public static final String INDEX_NAME = "index.html";
 	
-	protected String getIconProperty() {
+	public String getIconProperty() {
 		return ICON_PROPERTY;
 	}	
 		
-	protected String getSortKeyProperty() {
+	public String getSortKeyProperty() {
 		return SORT_KEY_PROPERTY;
 	}		
 	
-	protected String getRoleProperty() {
+	public String getRoleProperty() {
 		return ROLE_PROPERTY;
 	}	
 	
-	protected String getParentProperty() {
+	public String getParentProperty() {
 		return PARENT_PROPERTY;
 	}	
 	
-	protected String getTitleProperty() {
+	public String getTitleProperty() {
 		return TITLE_PROPERTY;
 	}	
 		
-	protected String getDocumentationProperty() {
+	public String getDocumentationProperty() {
 		return DOCUMENTATION_PROPERTY;
 	}	
 		
-	protected String getDocRefProperty() {
+	public String getDocRefProperty() {
 		return DOC_REF_PROPERTY;
 	}	
 		
-	protected String getPrototypeProperty() {
+	public String getPrototypeProperty() {
 		return PROTOTYPE_PROPERTY;
 	}	
 		
-	protected String getProtoRefProperty() {
+	public String getProtoRefProperty() {
 		return PROTO_REF_PROPERTY;
 	}	
 	
-	protected String getDocFormatProperty() {
+	public String getDocFormatProperty() {
 		return DOC_FORMAT_PROPERTY; 
 	}		
 	
-	protected String getSourceKey() {
+	public String getSourceKey() {
 		return SOURCE_KEY; 
 	}		
 	
-	protected String getTargetKey() {
+	public String getTargetKey() {
 		return TARGET_KEY; 
 	}		
 	
-	protected String getAnonymousRole() {
+	public String getAnonymousRole() {
 		return ANONYMOUS_ROLE; 
 	}		
 	
-	protected String getChildRole() {
+	public String getChildRole() {
 		return CHILD_ROLE; 
 	}		
 	
-	protected String getNavigationRole() {
+	public String getNavigationRole() {
 		return NAVIGATION_ROLE; 
 	}		
 	
-	protected String getSectionRole() {
+	public String getSectionRole() {
 		return SECTION_ROLE; 
 	}		
 	
-	protected String getIndexName() {
+	public String getIndexName() {
 		return INDEX_NAME;
 	}
 	
@@ -138,7 +149,7 @@ public class Configuration implements RepresentationElementFilter {
 	 * Override to customize viewer.
 	 * @return
 	 */
-	protected String getViewer() {
+	public String getViewer() {
 		return DiagramGenerator.JSDELIVR_DRAWIO_VIEWER;
 	}
 	
@@ -151,7 +162,7 @@ public class Configuration implements RepresentationElementFilter {
 	 * It can also be deployed as a Docker container - https://www.drawio.com/blog/diagrams-docker-app, https://hub.docker.com/r/jgraph/drawio 
 	 * @return
 	 */
-	protected URI getAppBase() {
+	public URI getAppBase() {
 		return DrawioProcessorFactory.DEFAULT_APP_BASE;
 	}
 	
@@ -161,7 +172,7 @@ public class Configuration implements RepresentationElementFilter {
 	 * @param imageRepr
 	 * @return
 	 */
-	protected String rewriteImage(String imageRepr, ProgressMonitor progressMonitor) {
+	public String rewriteImage(String imageRepr, ProgressMonitor progressMonitor) {
 		return imageRepr;
 	}
 	
@@ -169,7 +180,7 @@ public class Configuration implements RepresentationElementFilter {
 	 * Icon size to scale image representations to
 	 * @return
 	 */
-	protected int getIconSize() {
+	public int getIconSize() {
 		return DrawioProcessorFactory.ICON_SIZE;
 	}
 
@@ -182,7 +193,7 @@ public class Configuration implements RepresentationElementFilter {
 	 * @param progressMonitor
 	 * @return
 	 */
-	protected Collection<? extends EObject> createRepresentationContent(
+	public Collection<? extends EObject> createRepresentationContent(
 			Document representation,
 			Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory>> registry,
 			ProgressMonitor progressMonitor) {
@@ -197,7 +208,7 @@ public class Configuration implements RepresentationElementFilter {
 	 * @param infoProvider
 	 * @param progressMonitor
 	 */
-	protected <T extends WidgetFactory> T filter(
+	public <T extends WidgetFactory> T filter(
 			ProcessorConfig config, 
 			T processor, 
 			BiConsumer<Element,BiConsumer<ProcessorInfo<Object>,ProgressMonitor>> infoProvider,
@@ -212,8 +223,51 @@ public class Configuration implements RepresentationElementFilter {
 	 * If null, document URI is used.
 	 * @return
 	 */
-	protected URI getRefBaseURI(URI docURI) {
+	public URI getRefBaseURI(URI docURI) {
 		return docURI;
+	}
+	
+	public Collection<DocumentationFactory> getDocumentationFactories(ProgressMonitor progressMonitor) {
+		return Collections.emptyList();
+	}
+
+	protected ResourceSet resourceSet = new ResourceSetImpl();
+	
+	public ResourceSet getResourceSet() {
+		return resourceSet;
+	}
+	
+	protected String getEPackageName(EPackage ePackage) {
+		return NcoreUtil.getNasdanikaAnnotationDetail(ePackage, NcoreUtil.LOAD_KEY, ePackage.getName());
+	}
+
+	protected Map<String, EPackage> getEPackages() {
+		Map<String, EPackage> ret = new LinkedHashMap<>();
+		for (Object ep: resourceSet.getPackageRegistry().values()) {
+			EPackage ePackage = (EPackage) ep;
+			ret.put(getEPackageName(ePackage), ePackage);
+		}
+		return ret;
+	}
+		
+	public EClassifier getType(String type, ModelElement source) {
+		return NcoreUtil.getType(type, getEPackages(), msg -> new ConfigurationException(msg, source));
+	}
+	
+	public Context getContext() {
+		return Context.EMPTY_CONTEXT;
+	}
+	
+	public void onDiagnostic(org.nasdanika.common.Diagnostic diagnostic) {
+		if (diagnostic.getStatus() == Status.FAIL || diagnostic.getStatus() == Status.ERROR) {
+			System.err.println("***********************");
+			System.err.println("*      Diagnostic     *");
+			System.err.println("***********************");
+			diagnostic.dump(System.err, 4, Status.FAIL, Status.ERROR);
+		}
+		if (diagnostic.getStatus() != Status.SUCCESS) {
+			throw new DiagnosticException(diagnostic);
+		};
 	}
 
 }
