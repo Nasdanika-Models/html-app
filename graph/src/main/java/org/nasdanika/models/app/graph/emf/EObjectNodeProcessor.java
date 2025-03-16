@@ -238,13 +238,24 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 		
 		for (Map.Entry<String, String> representation: getRepresentations().entrySet()) {
 			action.getRepresentations().put(representation.getKey(), representation.getValue());
-			if (Util.isBlank(action.getIcon()) && AbstractDrawioFactory.IMAGE_REPRESENTATION.equals(representation.getKey())) {
+			if (AbstractDrawioFactory.IMAGE_REPRESENTATION.equals(representation.getKey()) && isSetRepresentationIcon(action)) {
 				String imageRepr = representation.getValue();
 				action.setIcon(getImageRepresentationIcon(imageRepr));				
 			}
 		}
 		
 		return action;
+	}
+
+	/**
+	 * Shall return true if the action icon shall be set to the representation icon.
+	 * This implementation returns true if the action icon is blank.
+	 * Override to force setting the icon to the representation icon.
+	 * @param action
+	 * @return  
+	 */
+	protected boolean isSetRepresentationIcon(Action action) {
+		return Util.isBlank(action.getIcon());
 	}
 
 	/**

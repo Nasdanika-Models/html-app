@@ -25,7 +25,7 @@ import picocli.CommandLine.Mixin;
 import picocli.CommandLine.ParentCommand;
 
 @Command(
-		description = "Generates html application model from a drawio document",
+		description = "Generates html application model from a model",
 		versionProvider = ModuleVersionProvider.class,		
 		mixinStandardHelpOptions = true,
 		name = "html-app")
