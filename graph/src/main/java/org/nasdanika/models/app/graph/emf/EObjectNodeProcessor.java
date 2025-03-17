@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -68,6 +69,10 @@ import org.nasdanika.models.app.gen.AppAdapterFactory;
 import org.nasdanika.models.bootstrap.BootstrapElement;
 import org.nasdanika.models.bootstrap.BootstrapFactory;
 import org.nasdanika.models.bootstrap.Modal;
+import org.nasdanika.models.bootstrap.Table;
+import org.nasdanika.models.bootstrap.TableCell;
+import org.nasdanika.models.bootstrap.TableRow;
+import org.nasdanika.models.bootstrap.TableSection;
 import org.nasdanika.models.html.HtmlFactory;
 import org.nasdanika.models.app.graph.WidgetFactory;
 import org.nasdanika.ncore.Documented;
@@ -232,6 +237,23 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 			Label helpDecorator = eClassWidgetFactory.createHelpDecorator(progressMonitor);
 			action.setDecorator(helpDecorator);
 		}
+		
+		Collection<Entry<String, Collection<EObject>>> properties = getProperties(progressMonitor);
+		if (properties != null && !properties.isEmpty()) {
+			// Properties table
+			Table propertiesTable = BootstrapFactory.eINSTANCE.createTable();
+			action.getContent().add(propertiesTable);
+			Text autoText = ContentFactory.eINSTANCE.createText();
+			autoText.setContent("width:auto");
+			propertiesTable.getAttributes().put("style", autoText);
+			TableSection body = BootstrapFactory.eINSTANCE.createTableSection();
+			propertiesTable.setBody(body);
+			EList<TableRow> bodyRows = body.getRows();
+			for (Entry<String, Collection<EObject>> pe: properties) {			
+				bodyRows.add(buildPropertyRow(pe.getKey(), pe.getValue()));
+			}
+		}
+		
 		if (getTarget() instanceof Documented) {
 			action.getContent().addAll(EcoreUtil.copyAll(((Documented) getTarget()).getDocumentation()));
 		}
@@ -245,6 +267,26 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 		}
 		
 		return action;
+	}
+	
+	protected Collection<Map.Entry<String, Collection<EObject>>> getProperties(ProgressMonitor progressMonitor)  {
+		return Collections.emptySet();
+	}
+	
+	protected TableRow buildPropertyRow(String name, Collection<EObject> cellValues) {
+		TableRow row = BootstrapFactory.eINSTANCE.createTableRow();
+		TableCell nameCell = BootstrapFactory.eINSTANCE.createTableCell();
+		row.getCells().add(nameCell);
+		nameCell.setHeader(true);
+		Text nameText = ContentFactory.eINSTANCE.createText();
+		nameText.setContent(name);
+		nameCell.getContent().add(nameText);		
+		
+		TableCell valueCell = BootstrapFactory.eINSTANCE.createTableCell();
+		row.getCells().add(valueCell);
+		valueCell.getContent().addAll(cellValues);
+		
+		return row;		
 	}
 
 	/**
