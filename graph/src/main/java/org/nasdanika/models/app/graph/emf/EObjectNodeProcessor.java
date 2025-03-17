@@ -227,7 +227,8 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 	}
 	
 	/**
-	 * Creates action for the node.
+	 * Creates an action for the node.
+	 * When overridden, the method can return a {@link Label} or its subclass
 	 * @param progressMonitor
 	 * @return
 	 */
