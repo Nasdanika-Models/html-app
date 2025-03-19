@@ -239,22 +239,6 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 			action.setDecorator(helpDecorator);
 		}
 		
-		Collection<Entry<String, Collection<EObject>>> properties = getProperties(progressMonitor);
-		if (properties != null && !properties.isEmpty()) {
-			// Properties table
-			Table propertiesTable = BootstrapFactory.eINSTANCE.createTable();
-			action.getContent().add(propertiesTable);
-			Text autoText = ContentFactory.eINSTANCE.createText();
-			autoText.setContent("width:auto");
-			propertiesTable.getAttributes().put("style", autoText);
-			TableSection body = BootstrapFactory.eINSTANCE.createTableSection();
-			propertiesTable.setBody(body);
-			EList<TableRow> bodyRows = body.getRows();
-			for (Entry<String, Collection<EObject>> pe: properties) {			
-				bodyRows.add(buildPropertyRow(pe.getKey(), pe.getValue()));
-			}
-		}
-		
 		if (getTarget() instanceof Documented) {
 			action.getContent().addAll(EcoreUtil.copyAll(((Documented) getTarget()).getDocumentation()));
 		}
@@ -269,9 +253,27 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 		
 		return action;
 	}
+
+	protected Table createPropertiesTable(ProgressMonitor progressMonitor) {
+		Collection<Entry<String, Collection<EObject>>> properties = getProperties(progressMonitor);
+		if (properties == null || properties.isEmpty()) {
+			return null;
+		}
+		Table propertiesTable = BootstrapFactory.eINSTANCE.createTable();
+		Text autoText = ContentFactory.eINSTANCE.createText();
+		autoText.setContent("width:auto");
+		propertiesTable.getAttributes().put("style", autoText);
+		TableSection body = BootstrapFactory.eINSTANCE.createTableSection();
+		propertiesTable.setBody(body);
+		EList<TableRow> bodyRows = body.getRows();
+		for (Entry<String, Collection<EObject>> pe: properties) {			
+			bodyRows.add(buildPropertyRow(pe.getKey(), pe.getValue()));
+		}
+		return propertiesTable;
+	}
 	
 	protected Collection<Map.Entry<String, Collection<EObject>>> getProperties(ProgressMonitor progressMonitor)  {
-		return Collections.emptySet();
+		return new ArrayList<>();
 	}
 	
 	protected TableRow buildPropertyRow(String name, Collection<EObject> cellValues) {
