@@ -14,7 +14,7 @@
 Diagram elements can be configured with the following properties:
 
 * ``documentation`` - documentation text in documentation format
-* ``doc-format`` - explicitly specified documentation format for ``documentation`` and ``doc-ref`. Out of the box:
+* ``doc-format`` - explicitly specified documentation format for ``documentation`` and ``doc-ref``. Out of the box:
     * ``markdown`` (default), 
     * ``html``
     * ``text``
