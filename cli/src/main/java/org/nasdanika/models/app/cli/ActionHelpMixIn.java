@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.nasdanika.cli.HelpCommand;
 import org.nasdanika.cli.ParentCommands;
+import org.nasdanika.common.Composable;
 import org.nasdanika.common.DefaultConverter;
 import org.nasdanika.common.Description;
 import org.nasdanika.common.DocumentationFactory;
@@ -38,6 +39,7 @@ import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Text;
 import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.AppFactory;
+import org.nasdanika.models.app.Label;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Help;
@@ -56,6 +58,64 @@ import picocli.CommandLine.Option;
 @ParentCommands(HelpCommand.class)
 public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 	
+	/**
+	 * Service/capability interface for contributing to help action generation.
+	 */
+	public interface Contributor extends Composable<Contributor> {
+		
+		Label build(
+				Label label,
+				CommandLine commandLine,
+				Collection<DocumentationFactory> documentationFactories,
+				ProgressMonitor progressMonitor);			
+		
+		@Override
+		default Contributor compose(Contributor other) {
+			if (other == null) {
+				return this;
+			}
+			
+			return new Contributor() {
+
+				@Override
+				public Label build(
+						Label label,
+						CommandLine commandLine, 
+						Collection<DocumentationFactory> documentationFactories,
+						ProgressMonitor progressMonitor) {
+					
+					Label ret = Contributor.this.build(label, commandLine, documentationFactories, progressMonitor);
+					return other.build(ret, commandLine, documentationFactories, progressMonitor);
+				}
+				
+			};
+			
+		}
+		
+		Contributor NOP = new Contributor() {
+
+			@Override
+			public Label build(
+					Label label, 
+					CommandLine commandLine,
+					Collection<DocumentationFactory> documentationFactories, 
+					ProgressMonitor progressMonitor) {
+				return label;
+			}
+			
+			@Override
+			public Contributor compose(Contributor other) {				
+				return other == null ? this : other;
+			}
+			
+		};
+		
+		static Contributor of(Collection<Contributor> contributors) {
+			return contributors.stream().reduce(NOP, (a,b) -> a.compose(b)); 
+		}
+		
+	}	
+	
 	private CommandLine rootCommand;
 
 	public ActionHelpMixIn(CommandLine rootCommand) {
@@ -72,16 +132,17 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 
 	@Override
 	public void write(OutputStream out) throws IOException {
-		Action rootAction = createCommandLineAction(
+		Label rootLabel = createCommandLineLabel(
 				rootCommand,
 				Collections.emptySet(),
+				Contributor.NOP, // TODO - from capabilities
 				new NullProgressMonitor()); // TODO - from parent's capability loader
 		ResourceSet actionModelsResourceSet = new ResourceSetImpl();
 		actionModelsResourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
 		
 		URI actionModelResourceURI = URI.createFileURI(File.createTempFile("command-action-model-", ".xml").getAbsolutePath());		
 		Resource actionModelResource = actionModelsResourceSet.createResource(actionModelResourceURI);
-		actionModelResource.getContents().add(rootAction);
+		actionModelResource.getContents().add(rootLabel);
 		actionModelResource.save(out, null);
 	}
 	
@@ -291,10 +352,11 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
  		}
  		return EscapingHelpSectionRenderer.wrap(renderer);
 	}
-	
-	public static Action createCommandLineAction(
+			
+	public static Label createCommandLineLabel(
 			CommandLine commandLine,
 			Collection<DocumentationFactory> documentationFactories,
+			Contributor contributor,
 			ProgressMonitor progressMonitor) throws IOException {		
 		CommandSpec commandSpec = commandLine.getCommandSpec();
 
@@ -455,9 +517,10 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 				.stream()
 				.sorted((a,b) -> a.getCommandName().compareTo(b.getCommandName())).collect(Collectors.toList())) {
 			
-			children.add(createCommandLineAction(
+			children.add(createCommandLineLabel(
 					subCommand, 
 					documentationFactories, 
+					contributor,
 					progressMonitor));
 		}
 		
@@ -514,9 +577,9 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 				}
 				optionsSection.getSections().add(optAction);
 			}
-		}				
-
-		return action;
+		}	
+				
+		return contributor == null ? action : contributor.build(action, commandLine, documentationFactories, progressMonitor);
 	}
 
 	/**

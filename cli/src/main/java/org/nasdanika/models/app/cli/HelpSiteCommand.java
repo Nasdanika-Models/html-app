@@ -21,6 +21,7 @@ import org.nasdanika.common.DocumentationFactory;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.AppFactory;
+import org.nasdanika.models.app.Label;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -56,12 +57,15 @@ public class HelpSiteCommand extends AbstractSiteCommand {
 	}
 	
 	private CommandLine rootCommand;
+	private ActionHelpMixIn.Contributor contributor;
 
 	public HelpSiteCommand(
 			CommandLine rootCommand,
+			ActionHelpMixIn.Contributor contributor,
 			CapabilityLoader capabilityLoader) {
 		super(capabilityLoader);
 		this.rootCommand = rootCommand;
+		this.contributor = contributor;
 	}
 	
 	private URI modelURI;
@@ -126,13 +130,16 @@ public class HelpSiteCommand extends AbstractSiteCommand {
 				}
 			}
 		}
-		Action rootCommandAction = ActionHelpMixIn.createCommandLineAction(
+		Label rootCommandLabel = ActionHelpMixIn.createCommandLineLabel(
 				command, 
 				documentationFactories,
+				contributor,
 				progressMonitor);
 		
-		rootCommandAction.setLocation("${base-uri}index.html");
-		rootAction.getChildren().add(rootCommandAction);
+		if (rootCommandLabel instanceof Action) {
+			((Action) rootCommandLabel).setLocation("${base-uri}index.html");
+		}
+		rootAction.getChildren().add(rootCommandLabel);
 		ResourceSet actionModelsResourceSet = new ResourceSetImpl();
 		actionModelsResourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
 		
