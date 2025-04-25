@@ -951,6 +951,7 @@ public final class Util {
 		if (breadcrumbQuery.size() > 0) {
 			searchDocument.put("path", String.join("/", breadcrumbQuery.stream().map(e -> StringEscapeUtils.escapeHtml4(e.text())).toList()));
 		}
+		searchDocument.put("timestamp", System.currentTimeMillis());
 		for (Element element: contentPanelQuery) {
 			String actionUUID = element.attr(DATA_NSD_LABEL_UUID_ATTRIBUTE);
 			if (!org.nasdanika.common.Util.isBlank(actionUUID)) {
