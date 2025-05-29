@@ -2,6 +2,7 @@ package org.nasdanika.models.app.graph.drawio;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -50,7 +51,7 @@ public class DrawioProcessorFactory extends Configuration {
 				Requirement<Object, DocumentationFactory> requirement = ServiceCapabilityFactory.createRequirement(DocumentationFactory.class, null, new DocumentationFactory.Requirement(true));
 				Iterable<CapabilityProvider<Object>> cpi = capabilityLoader.load(requirement, progressMonitor);
 				for (CapabilityProvider<Object> cp: cpi) {				
-					cp.getPublisher().subscribe(df -> documentationFactories.add((DocumentationFactory) df));
+					cp.getPublisher().filter(Objects::nonNull).collectList().block().forEach(df -> documentationFactories.add((DocumentationFactory) df));
 				}
 			}
 		}

@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -173,7 +174,7 @@ public class HtmlAppGenerator {
 
 		Map<EPackage, URI> references = new IdentityHashMap<EPackage, URI>();
 		for (CapabilityProvider<Object> resourceSetContributorProvider: capabilityLoader.load(contributorRequirement, progressMonitor)) {
-			resourceSetContributorProvider.getPublisher().subscribe(contributor -> {
+			resourceSetContributorProvider.getPublisher().filter(Objects::nonNull).collectList().block().forEach(contributor -> {
 				if (contributor instanceof EPackageResourceSetContributor) {
 					EPackageResourceSetContributor ePackageResourceSetContributor = (EPackageResourceSetContributor) contributor;
 					URI docURI = ePackageResourceSetContributor.getDocumentationURI();
@@ -209,7 +210,7 @@ public class HtmlAppGenerator {
 				prototypeProvider, 
 				diagnosticConsumer);
 		for (CapabilityProvider<Object> nodeProcessorProvider: capabilityLoader.load(requirement, progressMonitor)) {
-			nodeProcessorProvider.getPublisher().subscribe(nodeProcessorFactories::add);
+			nodeProcessorProvider.getPublisher().filter(Objects::nonNull).collectList().block().forEach(nodeProcessorFactories::add);
 		}
 		
 		return factory.create(
