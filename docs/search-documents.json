@@ -1,524 +1,524 @@
 {
   "references/eClassifiers/Page/references/eStructuralFeatures/contentRowAppearance/index.html": {
     "path": "Page/References/contentRowAppearance",
-    "link-uuid": "1adbee53-39fa-4927-865b-36e7bb86aa57",
+    "link-uuid": "1443f9f0-1dc1-41e9-8974-8aee5ccd9600",
     "title": "contentRowAppearance",
     "content": "Type Appearance Multiplicity 0..1",
-    "timestamp": 1747875111634
+    "timestamp": 1749930823924
   },
   "references/eClassifiers/ContentPanel/references/eStructuralFeatures/leftNavigation/index.html": {
     "path": "Content Panel/References/leftNavigation",
-    "link-uuid": "00e84f81-d11a-46af-86dd-559372d87426",
+    "link-uuid": "1b53390e-c06e-4363-a13f-23a3042baa04",
     "title": "leftNavigation",
     "content": "Type Navigation Panel Multiplicity 0..1 Navigation panel to display on the left of the content.",
-    "timestamp": 1747875111475
+    "timestamp": 1749930823727
   },
   "references/eClassifiers/Label/references/eStructuralFeatures/notification/index.html": {
     "path": "Label/Attributes/notification",
-    "link-uuid": "e6a697e5-5385-4d6b-86cd-5745a550bf60",
+    "link-uuid": "033a78ba-dc7e-4dab-b0da-086ce2d74086",
     "title": "notification",
     "content": "Type EString Multiplicity 0..1",
-    "timestamp": 1747875111537
+    "timestamp": 1749930823796
   },
   "references/eClassifiers/NavigationPanel/index.html": {
-    "link-uuid": "7f4adf2f-40b5-47b3-88c8-437922c08b79",
+    "link-uuid": "d0fcbcb3-18ea-4f20-8e0a-47bf32b1f39d",
     "title": "Navigation Panel",
     "content": "Navigation panel contains navigation items. Supports several styles.",
-    "timestamp": 1747875111604
+    "timestamp": 1749930823890
   },
   "references/eClassifiers/ContentPanel/references/eStructuralFeatures/title/index.html": {
     "path": "Content Panel/References/title",
-    "link-uuid": "0e2a3795-ec2f-41c8-a254-0ac404734c06",
+    "link-uuid": "93dfcadc-2793-4708-8ae3-4c9ddc57b87f",
     "title": "title",
     "content": "Type Label Multiplicity 0..1 Content title",
-    "timestamp": 1747875111481
+    "timestamp": 1749930823734
   },
   "references/eClassifiers/Page/inheritance.html": {
     "path": "Page/Inheritance",
-    "link-uuid": "9a1ef92f-e592-4c75-8567-4ba78b475355",
+    "link-uuid": "2fb97e21-ef76-484c-a838-83ccd7306b5d",
     "title": "Inheritance",
     "content": "Supertypes ",
-    "timestamp": 1747875111630
+    "timestamp": 1749930823919
   },
   "references/eClassifiers/Link/references/eStructuralFeatures/name/index.html": {
     "path": "Link/Attributes/name",
-    "link-uuid": "f2bfc19e-5395-46b2-ae89-abb12fd8a114",
+    "link-uuid": "b1c02410-9186-4da3-98cb-f7b91348b7a1",
     "title": "name",
     "content": "Type EString Multiplicity 0..1",
-    "timestamp": 1747875111568
+    "timestamp": 1749930823840
   },
   "references/eClassifiers/Page/references/eStructuralFeatures/fluid/index.html": {
     "path": "Page/Attributes/fluid",
-    "link-uuid": "3a7c30cf-79e9-4936-8db2-112742acf8cc",
+    "link-uuid": "bc37a6d0-f551-4046-8032-21c5659153af",
     "title": "fluid",
     "content": "Type EBoolean Multiplicity 0..1",
-    "timestamp": 1747875111635
+    "timestamp": 1749930823926
   },
   "references/eClassifiers/Label/references/eStructuralFeatures/children/index.html": {
     "path": "Label/References/children",
-    "link-uuid": "12fc9aea-ea64-42a6-b2b3-900678edcdef",
+    "link-uuid": "933d51fe-ae21-4b6b-ba2b-cf41d132db2c",
     "title": "children",
     "content": "Type EObject Multiplicity 0..*",
-    "timestamp": 1747875111531
+    "timestamp": 1749930823784
   },
   "index.html": {
-    "link-uuid": "20124075-c39f-4dff-9408-d320566b3e46",
+    "link-uuid": "c001af72-af79-4aef-aa86-0489d8f0230b",
     "title": "HTML Application Model",
     "content": "Nasdanika application model provides model elements for building HTML applications such as static web sites, dynamic applications, and combinations of thereof. Application models can be: Defined manually, Created programmatically, for example generated from other models. Sample Family is an example of an action model generated from a Family model. Loaded from Drawio diagrams as explained in Beyond Diagrams book. These approaches can be combined. API Documentation Concepts Action UI life cycle Action types Page structure Header Root navigation Principal Principal navigation Navigation Panel Content Panel Breadcrumb Title Active action navigation Content left navigation panel Content float left navigation panel Content right navigation panel Content float right navigation panel Section Section title Section navigation Section left navigation panel Section float left navigation panel Section right navigation panel Section float right navigation panel Footer Generation Static sites Dynamic behavior Server-side Client-side API Documentation Model CLI EMF Gen Graph Concepts With Nasdanika App model user interface is constructed from actions organized in a hierarchy. Users activate actions to get results (action contents). This approach allows developers to focus on the functionality of their application in terms of actions and select action placement in the UI and page styling/themes later. Changing of the action placement (e.g. from child to navigation or section) does not change the application functionality, just the appearance. It allows to adjust the application as it evolves. For example, an action of a documentation site might be in a section collection if it doesn&rsquo;t have a lot of content and then can be moved to the children collection if it becomes large enough to be a page on its own. Action UI life cycle In the UI an action goes through the following stages: Display - an action link is displayed to the user. The link may have an icon, text or both. It may have a tooltip. Inline actions don&rsquo;t go through this stage - they go directly to the last stage. Some actions are always visible to the user, e.g. the root and principal actions (see below). Some are only shown in a context of another active action, e.g. navigation and section actions. Activation - user clicks on the action link. Actions may have URL, script, and modal activators. URL activator navigates to a URL, script activator executes a script, and a modal activator shows action content in a modal dialog. Display of the action content. At this stage the action content is displayed to the user. For inline actions content is displayed where the link is displayed for non-inline actions. If an action has a modal activator, then its content is displayed in a modal dialog. Otherwise, action&rsquo;s content is displayed in the content panel. Section actions do not have activators and are displayed in the content panel of their parent action. Action types An application page is generated from 3 actions: Root action - the root of the action hierarchy. It is displayed in the header with its children, except the first one, displayed in the root navigation bar on the top right. On this page &ldquo;Nasdanika Models&rdquo; is the root action. Navigation actions of the root action are displayed in the footer. Principal action - by default the first child of the root action. Displayed in the navigation bar brand on the left. On this page &ldquo;HTML Action Model&rdquo; is the principal action. Navigation actions of the principal action are displayed in the navigation bar on the right of the principal action. Children of the principal action are displayed recursively in the navigation panel. On this page it is a list of package classifiers - Action, Link, &hellip; Active action - any action in the hierarchy which is currently &ldquo;active&rdquo;, i.e. it&rsquo;s content is displayed in the content panel and it is shown as active/selected in the navigation panel or navigation bar. On this page Products/HTML/Models/Application/Model is the active action - it is selected in the navigation tree and your are reading its content. Active action path is displayed in the breadcrumb. Navigation actions of the active action are displayed in in the active action navigation bar to the right of the action title. Section actions are displayed as page sections with their navigation actions displayed in section navigation bars to the right of section titles (for paragraph section style). Content/Section (float) left actions are displayed in the left content/section (float) navigation panel. Content/Section (float) right actions are displayed in the right content/section (float) navigation panel. Page structure This section provides an overview of the page structure. You can hover over the diagram elements to see tooltips and click on the diagram elements to navigate to corresponding documentation sections. You may also hide/show diagram layers. Header Displays the root action&rsquo;s icon and text. Click on the icon/text activates the root action, if it has an activator. Root navigation Displays 1+ children of the root action - siblings of the principal action. Principal Displays the principal&rsquo;s action icon and text. Click on the icon/text activates the principal action, if it as an activator. Principal navigation Displays navigation actions of the principal action. Navigation Panel Displays children of the principal action. Navigation panels can display actions in several modes - list, tree, cards, cards with list or tree. Cards can be collapsible. This page uses collapsible cards with trees. Content Panel Displays content of the active action. Breadcrumb Containment path of the active action. Title Icon and text of the active action. Active action navigation Displays navigation actions of the active action. If a navigation action has children and no activator it is rendered as a drop-down. This also applies to the root, footer, and section navigation actions. Content left navigation panel Displays leftNavigation actions of the active action. Left navigation panel is displayed in a bootstrap column. It can be used to display, for example, a table of contents of the active action - the hierarchy of sections. Content float left navigation panel Displays floatLeftNavigation actions of the active action. Left navigation panel is displayed in a div with float style. Similarly to the content left panel it can be used to display, for example, a table of contents of the active action - the hierarchy of sections. Content right navigation panel Displays rightNavigation actions of the active action. Right navigation panel is displayed in a bootstrap column. It can be used to display, for example, a list of useful links. Content float right navigation panel Displays floatRightNavigation actions of the active action. Right navigation panel is displayed in a div with float style. Similarly to the content right panel it can be used to display, for example, a list of useful links. Section Actions may have zero or more sections. Action may define how sections shall be displayed by specifying SectionStyle. Sections can be nested. A section is rendered in the same way as the active action, but without breadcrumb. Section title Icon and text of the section action. Section navigation Displays navigation actions of the section action. Section left navigation panel Displays leftNavigation actions of the section action. Left navigation panel is displayed in a bootstrap column. Section float left navigation panel Displays floatLeftNavigation actions of the section action. Left navigation panel is displayed in a div with float style. Section right navigation panel Displays rightNavigation actions of the section action. Right navigation panel is displayed in a bootstrap column. Section float right navigation panel Displays floatRightNavigation actions of the section action. Right navigation panel is displayed in a div with float style. Footer Displays navigation actions of the root action. Generation HTML pages are generated from actions by combining the action model with a page template. Example of a page template Static sites Static sites are generated by traversing the action model and generating pages for action with location matching a specific condition, e.g. located under a specified output directory. Static sites can be generated programmatically with SiteGenerator class and its subclasses. There are also Site Generator Maven Plugins Dynamic behavior This section explains how to create a dynamic web application with Nasdanika action models. The dynamic behavior approaches can be combined with each other and with static web site generation. Server-side Server-side dynamic behavior can be implemented by creating a servlet or another type of Java HTTP request processor, e.g. a Spring RestController or Netty handler. An action model can be generated or loaded from some resource and stored in HTTP session. Then individual pages would be generated on access. The action model can be re-generated on specific events, e.g. user log-in/log-out or changes in data which affect the model content. If the action model is highly dynamic, it can be generated for every request instead of caching it in a session. The dynamic part of a page (page content) can be injected via a context property. Some other options: Generate a page with a replacement token in the content panel. Cache the page in session. During request processing use String replace. Generate a page with an empty content panel. Parse the page using Jsoup and store the parsed document and the content panel element in session. During request processing replace content of the content panel element with dynamic content, write to response. If the action model is constant and only the content panel shall be dynamic, then the server-side dynamic generation can be combined with static site generation: the static part would be hosted on a web server such as Apache HTTPD and dynamic requests would be forwarded to a servlet container. Client-side Another option to introduce dynamic behavior is single page applications, e.g. built with: Vue.js and BootstrapVue. The search and glossary pages of this site are created using this approach - the generation process creates search-documents.js file used by a Vue applications. React and React Bootstrap. The client-side approach may be combined with the server-side approach - instead of application pages the server side would generate json responses used by the client side. Or it may generate both - an application page with a Vue/React application on it possibly parameterized during generation, and then json responses with data for the application. The server side may provide update endpoints for the single-page application as well. Header Text and icon of the root action with a link to the root action location Root Navigation Root navigation is built from the root action children starting with index 1, i.e. principal's siblings Footer Built from the root action navigation actions Root Principal Principal action's icon text and link Principal Navigation Principal navigation is built from the principal action navigation items Navigation Panel Navigation panel is built from the principal action child actions Principal Content Panel Content panel is built from the active action and its contained actions Content Left Navigation Panel Built from leftNavigation actions of the active action Content Float Left Navigation Panel Built from floatLeftNavigation actions of the active action Title Active action icon and text Breadcrumb Shows the active action path Active action navigation Built from navigation actions of the current action Content Float Right Navigation Panel Built from floatRightNavigation actions of the active action Content Right Navigation Panel Built from rightNavigation actions of the active action Active Section Sections actions are rendered as nested content panels Section Title Section's icon and text Section Navigation Built from navigation actions of the section action Section Left Navigation Panel Built from leftNavigation actions of the section action Section Right Navigation Panel Built from rightNavigation actions of the section action Section Float Right Navigation Panel Built from floatRightNavigation actions of the section action Section Float Left Navigation Panel Built from floatLeftNavigation actions of the section action Section Page Structure",
-    "timestamp": 1747875111405
+    "timestamp": 1749930823649
   },
   "references/eClassifiers/Page/references/eStructuralFeatures/navigationBar/index.html": {
     "path": "Page/References/navigationBar",
-    "link-uuid": "9cbc302b-b3cd-461a-b6b2-9e2d1f6fbecd",
+    "link-uuid": "ccba6479-197d-4272-a733-eda7dc16872f",
     "title": "navigationBar",
     "content": "Type Navigation Bar Multiplicity 0..1 Navigation bar is displayed below the header.",
-    "timestamp": 1747875111639
+    "timestamp": 1749930823930
   },
   "references/eClassifiers/ContentPanel/references/eStructuralFeatures/sectionColumns/index.html": {
     "path": "Content Panel/Attributes/sectionColumns",
-    "link-uuid": "b52790e7-01e9-409a-8e19-2f6487227fb9",
+    "link-uuid": "d400f786-4c24-4839-b03f-8f10b2eedbbf",
     "title": "sectionColumns",
     "content": "Type EInt Multiplicity 0..1 Applicable to section style &ldquo;Card&rdquo;. Defines how many columns shall be in a row of section cards.",
-    "timestamp": 1747875111477
+    "timestamp": 1749930823730
   },
   "references/eClassifiers/Action/index.html": {
-    "link-uuid": "b6d818e2-ea63-443a-9cef-848517b2658e",
+    "link-uuid": "b17e23a9-b1f1-40ac-90a4-19fe718aaefd",
     "title": "Action",
     "content": "Actions form a hierarchy. Application pages are generated from actions.",
-    "timestamp": 1747875111421
+    "timestamp": 1749930823665
   },
   "references/eClassifiers/ContentPanel/references/eStructuralFeatures/floatRightNavigation/index.html": {
     "path": "Content Panel/References/floatRightNavigation",
-    "link-uuid": "add64d23-7961-4240-9c89-8db29d4408ad",
+    "link-uuid": "e0e408d8-8d2c-40e2-9b86-a2b4d327f7d8",
     "title": "floatRightNavigation",
     "content": "Type Navigation Panel Multiplicity 0..1 Navigation panel which floats to the right of the content.",
-    "timestamp": 1747875111474
+    "timestamp": 1749930823726
   },
   "references/eClassifiers/NavigationBar/inheritance.html": {
     "path": "Navigation Bar/Inheritance",
-    "link-uuid": "901a5e85-8d59-48df-bb9d-2d03e6798609",
+    "link-uuid": "b9632f04-2dce-47d6-81dc-0c7dcc089ac8",
     "title": "Inheritance",
     "content": "Supertypes ",
-    "timestamp": 1747875111583
+    "timestamp": 1749930823863
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/anonymous/index.html": {
     "path": "Action/References/anonymous",
-    "link-uuid": "02eef0a4-2529-4770-aa86-b750b13550a0",
+    "link-uuid": "e9ad4535-05b7-4cf9-86bc-daa7ecaedf2b",
     "title": "anonymous",
     "content": "Type Action Multiplicity 0..* Actions which are not shown in the containing action UI, but for which pages are generated and can be explicitly referenced, e.g. from content.",
-    "timestamp": 1747875111429
+    "timestamp": 1749930823676
   },
   "references/eClassifiers/NavigationPanel/references/eStructuralFeatures/id/index.html": {
     "path": "Navigation Panel/Attributes/id",
-    "link-uuid": "6e3fd2bd-834a-41fc-a8be-0c4689eb14d6",
+    "link-uuid": "2f9e83f5-539d-4296-93fd-63d7b9ac4154",
     "title": "id",
     "content": "Type EString Multiplicity 0..1 ID for jsTree to store state between pages, e.g. expaned nodes.",
-    "timestamp": 1747875111609
+    "timestamp": 1749930823896
   },
   "references/eClassifiers/Action/references/eOperations/createLink-0/index.html": {
     "path": "Action/Operations/createLink",
-    "link-uuid": "fb494dff-f5c3-48b1-85f4-34180db63b15",
+    "link-uuid": "251ecbf1-0e86-4c75-8cb3-da47dd38b7ae",
     "title": "createLink",
     "content": "Type Link Multiplicity 1 Creates a link pointing to this action and populated with action&rsquo;s text, icon, tooltip, and uuid attributes.",
-    "timestamp": 1747875111428
+    "timestamp": 1749930823673
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/modalActivator/index.html": {
     "path": "Action/Attributes/modalActivator",
-    "link-uuid": "10780264-455f-4247-acbf-40a560778a08",
+    "link-uuid": "5707fdbe-7b5f-4bad-bde0-feb796b36189",
     "title": "modalActivator",
     "content": "Type EBoolean Multiplicity 0..1 Inline action&rsquo;s content is displayed in a modal dialog which opens on a click on the action&rsquo;s link.",
-    "timestamp": 1747875111436
+    "timestamp": 1749930823683
   },
   "references/eClassifiers/Header/index.html": {
-    "link-uuid": "7e67f125-7358-4afd-92af-a4dbffca8df8",
+    "link-uuid": "9af7e258-254a-4cad-a9a5-c5ead964c404",
     "title": "Header",
     "content": "Page header has a title on the left and a navigation bar on the right.",
-    "timestamp": 1747875111507
+    "timestamp": 1749930823758
   },
   "references/eClassifiers/NavigationPanel/references/eStructuralFeatures/labelTrimLength/index.html": {
     "path": "Navigation Panel/Attributes/labelTrimLength",
-    "link-uuid": "6323e104-9d5a-48f9-90d1-8fdb9a3fffd6",
+    "link-uuid": "2689476e-8b95-49db-9824-71fb0c1e672e",
     "title": "labelTrimLength",
     "content": "Type EInt Multiplicity 0..1",
-    "timestamp": 1747875111612
+    "timestamp": 1749930823899
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/sections/index.html": {
     "path": "Action/References/sections",
-    "link-uuid": "e7720f19-eaff-4496-b9c0-49dd0adc3e09",
+    "link-uuid": "a7199652-58c1-464e-8284-684ff9ce48b4",
     "title": "sections",
     "content": "Type Action Multiplicity 0..* Actions which are generated into content sections. Id&rsquo;s of section actions are used to create URL fragments.",
-    "timestamp": 1747875111442
+    "timestamp": 1749930823690
   },
   "references/eClassifiers/ContentPanel/index.html": {
-    "link-uuid": "322e47f7-1d37-49ae-af4a-0eb7ef3363fc",
+    "link-uuid": "ad1eb4ff-aaf5-4ab0-aac0-d14171c4e3d0",
     "title": "Content Panel",
     "content": "Content panel displays the primary page conent and can have a navigation bar and several navigation panels.",
-    "timestamp": 1747875111467
+    "timestamp": 1749930823718
   },
   "references/eClassifiers/ContentPanel/references/eStructuralFeatures/floatLeftNavigation/index.html": {
     "path": "Content Panel/References/floatLeftNavigation",
-    "link-uuid": "d329f446-3459-4d34-aeb5-cb0a7c924749",
+    "link-uuid": "9befe794-7e87-44e0-8309-2b7d4cea0c24",
     "title": "floatLeftNavigation",
     "content": "Type Navigation Panel Multiplicity 0..1 Navigation panel which float to the left of the content.",
-    "timestamp": 1747875111473
+    "timestamp": 1749930823724
   },
   "references/eClassifiers/Link/references/eStructuralFeatures/modal/index.html": {
     "path": "Link/References/modal",
-    "link-uuid": "78539227-4030-4652-a6a9-db4aaf4f63df",
+    "link-uuid": "fd967dcf-986f-4275-aab1-db4b9254c834",
     "title": "modal",
     "content": "Type Modal Multiplicity 0..1",
-    "timestamp": 1747875111567
+    "timestamp": 1749930823837
   },
   "references/eClassifiers/NavigationBar/references/eStructuralFeatures/dark/index.html": {
     "path": "Navigation Bar/Attributes/dark",
-    "link-uuid": "a264c011-ebeb-4009-af70-0c01005472d7",
+    "link-uuid": "34e19cf6-eff7-4099-8427-f10046e36ebf",
     "title": "dark",
     "content": "Type EBoolean Multiplicity 0..1",
-    "timestamp": 1747875111588
+    "timestamp": 1749930823871
   },
   "references/eClassifiers/Footer/index.html": {
-    "link-uuid": "5ca7084d-b455-4dc1-97ca-85dc5b4b9451",
+    "link-uuid": "5ba63eb6-7f49-4e19-a132-5e5246593258",
     "title": "Footer",
     "content": "Footer is displayed below the navigation and content panels.",
-    "timestamp": 1747875111492
+    "timestamp": 1749930823744
   },
   "references/eClassifiers/Header/inheritance.html": {
     "path": "Header/Inheritance",
-    "link-uuid": "30665244-901d-4b4a-9ab8-212fc0c90be3",
+    "link-uuid": "f299c469-4a86-442f-a1c3-500f6973cd64",
     "title": "Inheritance",
     "content": "Supertypes ",
-    "timestamp": 1747875111508
+    "timestamp": 1749930823760
   },
   "references/eClassifiers/Page/index.html": {
-    "link-uuid": "3c2b90b0-859b-4f79-9b6b-9fc6cb343d6e",
+    "link-uuid": "a4e1226c-39ba-422d-aa26-ea7374ea1251",
     "title": "Page",
     "content": "Application page consisting of several parts - header, navigation bar, navigation panel, content panel, and footer. Page extends Tag, but name attribute shall not be used - it defaults to div.",
-    "timestamp": 1747875111629
+    "timestamp": 1749930823918
   },
   "references/eClassifiers/Link/references/eStructuralFeatures/script/index.html": {
     "path": "Link/Attributes/script",
-    "link-uuid": "5ddf3ac1-3272-4dd1-8f2b-dd15100ba877",
+    "link-uuid": "44f11493-d7eb-4a7c-b6e4-00bf3d7ecb02",
     "title": "script",
     "content": "Type EString Multiplicity 0..1",
-    "timestamp": 1747875111570
+    "timestamp": 1749930823842
   },
   "references/eClassifiers/Label/references/eStructuralFeatures/tooltip/index.html": {
     "path": "Label/Attributes/tooltip",
-    "link-uuid": "a847b35b-38ff-4abf-bf15-71ebc253fe36",
+    "link-uuid": "b3197d81-1630-4dea-b311-82fdff2ad2a8",
     "title": "tooltip",
     "content": "Type EString Multiplicity 0..1",
-    "timestamp": 1747875111540
+    "timestamp": 1749930823802
   },
   "references/eClassifiers/Header/references/eStructuralFeatures/title/index.html": {
     "path": "Header/References/title",
-    "link-uuid": "eb56d551-ef17-41ad-8e28-acd233873c67",
+    "link-uuid": "ed2b0a92-99fa-4f1f-8a4f-a772ad6d35e3",
     "title": "title",
     "content": "Type Label Multiplicity 0..1 Header title displayed on the left.",
-    "timestamp": 1747875111511
+    "timestamp": 1749930823763
   },
   "references/eClassifiers/Label/index.html": {
-    "link-uuid": "e945b446-bb70-4872-8d22-a93ff8be9c0a",
+    "link-uuid": "d4435cbb-a603-4ede-b9e2-8cdcc94f80e0",
     "title": "Label",
     "content": "Label is a text and an icon with a tooltip, notification badge, and help dialog. Labels can have children. Label is a base class for Link.",
-    "timestamp": 1747875111527
+    "timestamp": 1749930823780
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/resources/index.html": {
     "path": "Action/References/resources",
-    "link-uuid": "f6b6a558-ec23-401e-a470-ee75d8aac408",
+    "link-uuid": "b2165d8e-bcf1-4c63-9751-dc6acbb3dec6",
     "title": "resources",
     "content": "Type Resource Multiplicity 0..* Resources referenced by the page. Resource names are resolved relative to the page location.",
-    "timestamp": 1747875111438
+    "timestamp": 1749930823686
   },
   "references/eClassifiers/Label/references/eStructuralFeatures/decorator/index.html": {
     "path": "Label/References/decorator",
-    "link-uuid": "835d01d3-258d-4690-8e64-9d317ad6cb7a",
+    "link-uuid": "604cdc8a-1322-433b-b222-ee673c1fda41",
     "title": "decorator",
     "content": "Type Label Multiplicity 0..1         If decorator label or link is present it is rendered next to the containing label.\n        For example, a help icon with a tooltip, link, or modal.",
-    "timestamp": 1747875111533
+    "timestamp": 1749930823788
   },
   "references/eClassifiers/Action/inheritance.html": {
     "path": "Action/Inheritance",
-    "link-uuid": "b0354a73-6e3e-40ec-a09f-a2b89837aa9d",
+    "link-uuid": "d09697bd-fb4f-4d89-aef2-958ee50721f2",
     "title": "Inheritance",
     "content": "Supertypes ",
-    "timestamp": 1747875111423
+    "timestamp": 1749930823666
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/floatRightNavigation/index.html": {
     "path": "Action/References/floatRightNavigation",
-    "link-uuid": "d1a70a3f-7a0c-4f7c-b329-2cd33a71745e",
+    "link-uuid": "c45396bd-32e9-475b-9fd1-22099e310c3f",
     "title": "floatRightNavigation",
     "content": "Type Navigation Panel Multiplicity 0..1 Float right navigation panel.",
-    "timestamp": 1747875111432
+    "timestamp": 1749930823679
   },
   "references/eClassifiers/ActionReference/inheritance.html": {
     "path": "Action Reference/Inheritance",
-    "link-uuid": "896e4fc0-27f8-49fd-90e2-dfb67b4b6c5d",
+    "link-uuid": "25bac59a-a048-40f0-8a54-4d59c99f5671",
     "title": "Inheritance",
     "content": "Supertypes ",
-    "timestamp": 1747875111453
+    "timestamp": 1749930823703
   },
   "references/eClassifiers/NavigationPanel/references/eStructuralFeatures/jsTreeSearchThreshold/index.html": {
     "path": "Navigation Panel/Attributes/jsTreeSearchThreshold",
-    "link-uuid": "8219000a-72b8-4b69-9ae1-3de842aaef01",
+    "link-uuid": "3e413f21-4b35-4374-940f-a59d1c616bf7",
     "title": "jsTreeSearchThreshold",
     "content": "Type EInt Multiplicity 0..1 Minimal number of tree nodes to show a search text input. Default is 0 - search is always shown.",
-    "timestamp": 1747875111610
+    "timestamp": 1749930823898
   },
   "references/eClassifiers/ContentPanel/references/eStructuralFeatures/sectionStyle/index.html": {
     "path": "Content Panel/Attributes/sectionStyle",
-    "link-uuid": "44df2a08-b03c-4350-b3cb-5c57ea7e06fd",
+    "link-uuid": "8ae2aa84-ba15-4d83-8efd-5a72c8d89cd8",
     "title": "sectionStyle",
     "content": "Type Section Style Multiplicity 0..1 Defines how to generate section children.",
-    "timestamp": 1747875111480
+    "timestamp": 1749930823732
   },
   "references/eClassifiers/Label/references/eStructuralFeatures/text/index.html": {
     "path": "Label/Attributes/text",
-    "link-uuid": "ba6b85a1-ce18-4ebb-a2f3-b6327756c677",
+    "link-uuid": "0f88f783-e924-488b-8f4e-5709bc5e0921",
     "title": "text",
     "content": "Type EString Multiplicity 0..1",
-    "timestamp": 1747875111539
+    "timestamp": 1749930823799
   },
   "references/eClassifiers/NavigationBar/references/eStructuralFeatures/brand/index.html": {
     "path": "Navigation Bar/References/brand",
-    "link-uuid": "5ff1b1e9-3368-49e7-bdb3-ec10c582537a",
+    "link-uuid": "b5df646d-c03f-4215-8667-5a637948fd25",
     "title": "brand",
     "content": "Type Label Multiplicity 0..1 Brand label displayed on the left.",
-    "timestamp": 1747875111587
+    "timestamp": 1749930823869
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/leftNavigation/index.html": {
     "path": "Action/References/leftNavigation",
-    "link-uuid": "52e468c1-467e-4999-8cde-6608e735e3ce",
+    "link-uuid": "d988caac-3a62-4eee-a1ad-bcab5d05b950",
     "title": "leftNavigation",
     "content": "Type Navigation Panel Multiplicity 0..1 Left navigation panel",
-    "timestamp": 1747875111434
+    "timestamp": 1749930823682
   },
   "references/eClassifiers/Page/references/eStructuralFeatures/navigationPanel/index.html": {
     "path": "Page/References/navigationPanel",
-    "link-uuid": "c5e528fc-7b69-472c-aa93-258839a3827e",
+    "link-uuid": "85696b25-c0cd-43c1-9566-c9971b535bda",
     "title": "navigationPanel",
     "content": "Type Navigation Panel Multiplicity 0..1 Navigation panel is positioned on the left of the content panel below the navigation bar.",
-    "timestamp": 1747875111642
+    "timestamp": 1749930823931
   },
   "references/eClassifiers/Footer/inheritance.html": {
     "path": "Footer/Inheritance",
-    "link-uuid": "85316458-b6eb-402c-aeaf-4ed1cdd47ea5",
+    "link-uuid": "e349cfc2-aac2-405e-bba3-30a63907c30a",
     "title": "Inheritance",
     "content": "Supertypes ",
-    "timestamp": 1747875111493
+    "timestamp": 1749930823746
   },
   "references/eClassifiers/NavigationBar/references/eStructuralFeatures/background/index.html": {
     "path": "Navigation Bar/Attributes/background",
-    "link-uuid": "615ec393-7cca-4aae-9e3f-6ee72ee01e8c",
+    "link-uuid": "4cf0e24d-45df-4275-a837-e8caf91ec7f2",
     "title": "background",
     "content": "Type Color Multiplicity 0..1",
-    "timestamp": 1747875111586
+    "timestamp": 1749930823868
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/inline/index.html": {
     "path": "Action/Attributes/inline",
-    "link-uuid": "76a08844-a4e9-4a72-aed3-7e2294836054",
+    "link-uuid": "a834366a-85c6-4e7f-90cc-c564335281ce",
     "title": "inline",
     "content": "Type EBoolean Multiplicity 0..1 Inline action&rsquo;s content is displayed instead of an action link in navigation panels.",
-    "timestamp": 1747875111433
+    "timestamp": 1749930823681
   },
   "references/eClassifiers/Page/references/eStructuralFeatures/footer/index.html": {
     "path": "Page/References/footer",
-    "link-uuid": "3d3b4085-c31f-4a8c-a4f1-7efca9015755",
+    "link-uuid": "708c532a-b653-433a-9d8b-e9a7c237c0d2",
     "title": "footer",
     "content": "Type Footer Multiplicity 0..1",
-    "timestamp": 1747875111636
+    "timestamp": 1749930823927
   },
   "references/eClassifiers/Link/references/eStructuralFeatures/confirmation/index.html": {
     "path": "Link/Attributes/confirmation",
-    "link-uuid": "f508e5f7-97f3-4e4d-be56-8821132c7a90",
+    "link-uuid": "64776dde-3b73-49c2-a8fc-d1108df7b894",
     "title": "confirmation",
     "content": "Type EString Multiplicity 0..1 Confirmation to display in a confirmation dialog before action activation to give the user an opportunity to cancel the action. E.g. confirmation of deletion.",
-    "timestamp": 1747875111564
+    "timestamp": 1749930823834
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/floatLeftNavigation/index.html": {
     "path": "Action/References/floatLeftNavigation",
-    "link-uuid": "29ffc951-c276-4e2d-8920-7a1236df3cad",
+    "link-uuid": "1fb7f61a-a284-4e57-a72a-29476d81e41e",
     "title": "floatLeftNavigation",
     "content": "Type Navigation Panel Multiplicity 0..1 Float left navigation panel.",
-    "timestamp": 1747875111430
+    "timestamp": 1749930823678
   },
   "references/eClassifiers/Page/references/eStructuralFeatures/header/index.html": {
     "path": "Page/References/header",
-    "link-uuid": "74603207-4de3-45d9-8ad7-dedff9ca930f",
+    "link-uuid": "ab33e69a-1d54-427d-a9bc-c0048b9237ff",
     "title": "header",
     "content": "Type Header Multiplicity 0..1 Page header is displayed on the top of the page.",
-    "timestamp": 1747875111638
+    "timestamp": 1749930823928
   },
   "references/eClassifiers/Label/references/eStructuralFeatures/id/index.html": {
     "path": "Label/Attributes/id",
-    "link-uuid": "8212e11b-48c2-46b0-9d8b-96712c5f328c",
+    "link-uuid": "eaa2c84c-6f80-4d8e-9a2b-148a8b56ded5",
     "title": "id",
     "content": "Type EString Multiplicity 0..1",
-    "timestamp": 1747875111535
+    "timestamp": 1749930823794
   },
   "references/eClassifiers/PagePart/index.html": {
-    "link-uuid": "e8a0c13e-1ceb-45a6-a276-5b8272f7fe87",
+    "link-uuid": "22ed85ff-dfcd-44b9-8edf-1c52de13a3e4",
     "title": "Page Part",
     "content": "Base class for page parts.",
-    "timestamp": 1747875111658
+    "timestamp": 1749930823951
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/navigation/index.html": {
     "path": "Action/References/navigation",
-    "link-uuid": "4626c6d7-9ee1-4d4f-b81f-f6c73faca7b9",
+    "link-uuid": "0d1cf5db-b409-4a44-bc62-8143a953af5b",
     "title": "navigation",
     "content": "Type EObject Multiplicity 0..* Navigation items are displayed in the footer the root action, in the navigation bar for the principal action, and in the content panel navigation bar for the active action.",
-    "timestamp": 1747875111437
+    "timestamp": 1749930823685
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/rightNavigation/index.html": {
     "path": "Action/References/rightNavigation",
-    "link-uuid": "78e1215c-4bff-4306-8868-18855579773d",
+    "link-uuid": "c393df8b-79ee-4e87-862c-a2639c4cf4f9",
     "title": "rightNavigation",
     "content": "Type Navigation Panel Multiplicity 0..1 Right navigation panel.",
-    "timestamp": 1747875111439
+    "timestamp": 1749930823687
   },
   "references/eClassifiers/Link/references/eStructuralFeatures/action/index.html": {
     "path": "Link/References/action",
-    "link-uuid": "84391673-e37c-4a0b-b39a-606fe2940acf",
+    "link-uuid": "6cf8ec03-24db-44db-8092-c52f4b595ad4",
     "title": "action",
     "content": "Type Action Multiplicity 0..1 A link can point to an action.",
-    "timestamp": 1747875111563
+    "timestamp": 1749930823832
   },
   "references/eClassifiers/NavigationPanel/references/eStructuralFeatures/collapsible/index.html": {
     "path": "Navigation Panel/Attributes/collapsible",
-    "link-uuid": "23eaa406-b601-4289-8606-09196c2df565",
+    "link-uuid": "524819f9-a6c6-480a-a4f4-5fe48f0916ef",
     "title": "collapsible",
     "content": "Type EBoolean Multiplicity 0..1",
-    "timestamp": 1747875111608
+    "timestamp": 1749930823895
   },
   "references/eClassifiers/Link/inheritance.html": {
     "path": "Link/Inheritance",
-    "link-uuid": "96042396-6918-44c3-b328-78f3bc25e44a",
+    "link-uuid": "7f49bb26-df92-4407-a7e5-6aa0aa3ce02a",
     "title": "Inheritance",
     "content": "Supertypes Subtypes  ",
-    "timestamp": 1747875111559
+    "timestamp": 1749930823827
   },
   "references/eClassifiers/NavigationPanel/inheritance.html": {
     "path": "Navigation Panel/Inheritance",
-    "link-uuid": "2021ddb9-5552-4701-b48d-09766a9d6503",
+    "link-uuid": "a1f17111-a255-4258-ae87-6c892f7b7ead",
     "title": "Inheritance",
     "content": "Supertypes ",
-    "timestamp": 1747875111605
+    "timestamp": 1749930823892
   },
   "references/eClassifiers/ContentPanel/inheritance.html": {
     "path": "Content Panel/Inheritance",
-    "link-uuid": "fb884e55-2094-4259-8864-3fb77094f883",
+    "link-uuid": "14518227-2dbe-459c-a46b-1d697f8e36f3",
     "title": "Inheritance",
     "content": "Supertypes ",
-    "timestamp": 1747875111468
+    "timestamp": 1749930823720
   },
   "references/eClassifiers/NavigationBar/index.html": {
-    "link-uuid": "ae367f80-0e50-4094-9a23-a428c1a0534a",
+    "link-uuid": "d88e2a97-8289-4f09-9221-4fc67f811f97",
     "title": "Navigation Bar",
     "content": "Navigation bar has a brand and navigation items.",
-    "timestamp": 1747875111581
+    "timestamp": 1749930823861
   },
   "references/eClassifiers/NavigationBar/references/eStructuralFeatures/expand/index.html": {
     "path": "Navigation Bar/Attributes/expand",
-    "link-uuid": "ca35c6da-d339-4757-a54e-c9231c4d0328",
+    "link-uuid": "55029a6b-611a-4995-9228-55ae7a3e0bb7",
     "title": "expand",
     "content": "Type Breakpoint Multiplicity 0..1",
-    "timestamp": 1747875111589
+    "timestamp": 1749930823873
   },
   "references/eClassifiers/Link/references/eStructuralFeatures/location/index.html": {
     "path": "Link/Attributes/location",
-    "link-uuid": "d4986def-61b2-4c96-913d-b794aad4a131",
+    "link-uuid": "b4a75851-9a54-4529-89f3-59499c1a1d90",
     "title": "location",
     "content": "Type EString Multiplicity 0..1 Link URL relative to the ancestor URL or base-uri. ${base-uri} token can be used in the activator to define the uri relative to the base generation URI (output folder) instead of the parent URI. It might be useful it the parent URI is an absolute external URI. ${base-uri} ends with a slash, so there is no need to add a slash. E.g. ${base-uri}index.html.",
-    "timestamp": 1747875111565
+    "timestamp": 1749930823836
   },
   "references/eClassifiers/NavigationPanel/references/eStructuralFeatures/style/index.html": {
     "path": "Navigation Panel/Attributes/style",
-    "link-uuid": "cf023e20-230d-4a15-973d-895b66fae606",
+    "link-uuid": "4819e502-862c-41f0-8519-5e971bf59d10",
     "title": "style",
     "content": "Type Navigation Panel Style Multiplicity 0..1 Panel style",
-    "timestamp": 1747875111613
+    "timestamp": 1749930823901
   },
   "references/eClassifiers/Page/references/eStructuralFeatures/contentPanel/index.html": {
     "path": "Page/References/contentPanel",
-    "link-uuid": "18a92b77-e0dd-420d-a582-13701e837236",
+    "link-uuid": "f463739b-d356-45ae-a3e5-f894c4b86db3",
     "title": "contentPanel",
     "content": "Type Content Panel Multiplicity 0..1 Content panel is positioned on the right of the navigation panel below the navigation bar.",
-    "timestamp": 1747875111633
+    "timestamp": 1749930823923
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/sectionStyle/index.html": {
     "path": "Action/Attributes/sectionStyle",
-    "link-uuid": "ff8c2180-e752-41b2-849f-ce83c7b31e72",
+    "link-uuid": "3dbc75fe-c18b-4ba2-bc79-f8de697919b5",
     "title": "sectionStyle",
     "content": "Type Section Style Multiplicity 0..1 Defines how to generate section children.",
-    "timestamp": 1747875111443
+    "timestamp": 1749930823692
   },
   "references/eClassifiers/Link/references/eStructuralFeatures/target/index.html": {
     "path": "Link/Attributes/target",
-    "link-uuid": "1bbe3c58-5dfc-40b5-aff0-6035e9f355ff",
+    "link-uuid": "194cfeb2-7dfd-47fb-a5ee-e413e256b96f",
     "title": "target",
     "content": "Type EString Multiplicity 0..1",
-    "timestamp": 1747875111571
+    "timestamp": 1749930823844
   },
   "references/eClassifiers/Label/inheritance.html": {
     "path": "Label/Inheritance",
-    "link-uuid": "52e962cb-aee6-4414-a899-2d5f3ad01fd5",
+    "link-uuid": "22f34050-60d4-406b-8ae3-610bee6e1cf3",
     "title": "Inheritance",
     "content": "Supertypes Subtypes  ",
-    "timestamp": 1747875111529
+    "timestamp": 1749930823781
   },
   "references/eClassifiers/Label/references/eStructuralFeatures/outline/index.html": {
     "path": "Label/Attributes/outline",
-    "link-uuid": "9ac228da-7713-4087-9ba7-b37dd1cb08eb",
+    "link-uuid": "804a4142-bc51-46be-ad93-c7736f161f8c",
     "title": "outline",
     "content": "Type EBoolean Multiplicity 0..1",
-    "timestamp": 1747875111538
+    "timestamp": 1749930823798
   },
   "references/eClassifiers/PagePart/inheritance.html": {
     "path": "Page Part/Inheritance",
-    "link-uuid": "baa04cbb-36e6-44ab-9fc7-3d3fad0701d7",
+    "link-uuid": "374bc3fb-e7fd-4ef8-a2cf-03fec2f39ecf",
     "title": "Inheritance",
     "content": "Supertypes Subtypes  ",
-    "timestamp": 1747875111659
+    "timestamp": 1749930823953
   },
   "references/eClassifiers/ContentPanel/references/eStructuralFeatures/breadcrumb/index.html": {
     "path": "Content Panel/References/breadcrumb",
-    "link-uuid": "83c9abcb-0221-4ad1-bd14-9c07e205cdc6",
+    "link-uuid": "d801bbda-9791-40f7-a547-3ee4b212f430",
     "title": "breadcrumb",
     "content": "Type Label Multiplicity 0..* Breadcrumb items. Displayed on the top of the content panel.",
-    "timestamp": 1747875111472
+    "timestamp": 1749930823723
   },
   "references/eClassifiers/ContentPanel/references/eStructuralFeatures/sections/index.html": {
     "path": "Content Panel/References/sections",
-    "link-uuid": "79c93288-d244-4c9d-81d9-34dcab001c95",
+    "link-uuid": "b28a432d-6d03-4e2f-8919-68ad78608ad9",
     "title": "sections",
     "content": "Type Content Panel Multiplicity 0..* Content sections.",
-    "timestamp": 1747875111479
+    "timestamp": 1749930823731
   },
   "references/eClassifiers/Action/references/eStructuralFeatures/sectionColumns/index.html": {
     "path": "Action/Attributes/sectionColumns",
-    "link-uuid": "c970ad4b-0c9a-4e45-810a-af71e4f21c34",
+    "link-uuid": "189fdb7b-c24d-488c-8bf9-846e4af64b4b",
     "title": "sectionColumns",
     "content": "Type EInt Multiplicity 0..1 Applicable to section style &ldquo;Card&rdquo;. Defines how many columns shall be in a row of section cards.",
-    "timestamp": 1747875111441
+    "timestamp": 1749930823689
   },
   "references/eClassifiers/Label/references/eStructuralFeatures/icon/index.html": {
     "path": "Label/Attributes/icon",
-    "link-uuid": "c444c5ea-4e59-41aa-bd3f-60f555baada0",
+    "link-uuid": "cc6887a9-0fbc-492e-ad46-32b13314ff3d",
     "title": "icon",
     "content": "Type EString Multiplicity 0..1         Label icon it treated as URL if contains ``/`` or as a CSS class otherwise.\n        E.g. ``fas fa-wrench`` would be treated as a CSS class.",
-    "timestamp": 1747875111534
+    "timestamp": 1749930823790
   },
   "references/eClassifiers/PagePart/references/eStructuralFeatures/items/index.html": {
     "path": "Page Part/References/items",
-    "link-uuid": "fbc4bf32-7ffa-41bc-9bdf-bb23cf4f06bc",
+    "link-uuid": "c2e59068-3076-428f-b841-2ffb5dfb743c",
     "title": "items",
     "content": "Type EObject Multiplicity 0..* Navigation items.",
-    "timestamp": 1747875111660
+    "timestamp": 1749930823954
   },
   "references/eClassifiers/ContentPanel/references/eStructuralFeatures/rightNavigation/index.html": {
     "path": "Content Panel/References/rightNavigation",
-    "link-uuid": "76ad71de-501b-4e45-b26d-a8ee07c336f5",
+    "link-uuid": "b6073050-fcf9-430f-ae0b-8d500bfd0b09",
     "title": "rightNavigation",
     "content": "Type Navigation Panel Multiplicity 0..1 Navigation panel to display on the right of the content.",
-    "timestamp": 1747875111476
+    "timestamp": 1749930823728
   }
 }

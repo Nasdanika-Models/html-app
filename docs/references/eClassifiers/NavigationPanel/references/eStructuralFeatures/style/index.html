@@ -25,7 +25,19 @@
     <script src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/html-app@master/gen/web-resources/js/components/table.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/components/table.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script><!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/3d-force-graph"></script><!-- Node text styling -->      
+<style>
+  .node-label {
+        font-size: 12px;
+        padding: 1px 4px;
+        border-radius: 4px;
+        background-color: rgba(0,0,0,0.5);
+        user-select: none;
+      }               
+</style>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9BRJVLK8CC"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -39,14 +51,14 @@
     <div class="container-fluid nsd-app-container">
       <div class="row">
         <div class="col nsd-app-header">
-          <a href="https://github.com/Nasdanika-Models" data-nsd-label-uuid="142890e8-3828-43bd-9478-efbf9bd7045c" class="nsd-app-header-title">
+          <a href="https://github.com/Nasdanika-Models" data-nsd-label-uuid="2def9658-c4ac-4ce9-97a7-df6f1100510d" class="nsd-app-header-title">
             <img src="https://docs.nasdanika.org/images/nasdanika-logo.png" class="nsd-app-label-icon"/>Nasdanika Models</a>
           <ul class="nav nsd-app-header-navs">
             <li class="nav-item">
-              <a href="../../../../../../search.html" data-nsd-label-uuid="18b4ffac-f136-4ad0-997f-f4033cb56d51" class="nav-link"><span class="fas fa-search nsd-app-label-icon"></span>Search</a>
+              <a href="../../../../../../search.html" data-nsd-label-uuid="2b2e61f3-cbea-48c4-a949-595769ed9028" class="nav-link"><span class="fas fa-search nsd-app-label-icon"></span>Search</a>
             </li>
             <li class="nav-item">
-              <a href="../../../../../../glossary.html" data-nsd-label-uuid="b66fdbfc-7514-4971-8ba2-9aa21a4695f2" class="nav-link"><span class="fas fa-book nsd-app-label-icon"></span>Glossary</a>
+              <a href="../../../../../../glossary.html" data-nsd-label-uuid="b3097068-3efb-4d37-a925-95f4d62c29fa" class="nav-link"><span class="fas fa-book nsd-app-label-icon"></span>Glossary</a>
             </li>
           </ul>
         </div>
@@ -54,30 +66,32 @@
       <div class="row">
         <div class="col nsd-app-navbar">
           <ul class="navbar navbar-light navbar-expand-lg">
-            <a href="../../../../../../index.html" title="A model for building HTML applications" data-nsd-label-uuid="20124075-c39f-4dff-9408-d320566b3e46" class="navbar-brand">
+            <a href="../../../../../../index.html" title="A model for building HTML applications" data-nsd-label-uuid="c001af72-af79-4aef-aa86-0489d8f0230b" class="navbar-brand">
               <img src="https://img.icons8.com/fluency/48/application.png" class="nsd-app-label-icon"/>HTML Application Model</a>
-            <button type="button" data-toggle="collapse" data-target="#nsd_1t0" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"><span class="navbar-toggler-icon"></span>
+            <button type="button" data-toggle="collapse" data-target="#nsd_yy" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"><span class="navbar-toggler-icon"></span>
             </button>
-            <div id="nsd_1t0" class="collapse navbar-collapse">
+            <div id="nsd_yy" class="collapse navbar-collapse">
               <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                  <a href="../../../../../../classifiers.html" data-nsd-label-uuid="cf4ede70-92e5-4772-b74b-92cb51ffd652" class="nav-link">Classifiers</a>
+                  <a href="../../../../../../classifiers.html" data-nsd-label-uuid="a050970e-35b2-47ad-bd06-1c3cb8ca15a4" class="nav-link">Classifiers</a>
                 </li>
                 <li class="nav-item">
-                  <a href="../../../../../../diagram.html" data-nsd-label-uuid="b82a622a-197e-4432-96a8-354831161974" class="nav-link"><span class="fas fa-project-diagram nsd-app-label-icon"></span>Diagram</a>
+                  <a href="../../../../../../diagram.html" data-nsd-label-uuid="0e77458a-8fb1-405e-99f4-9706598db94f" class="nav-link"><span class="fas fa-project-diagram nsd-app-label-icon"></span>Diagram</a>
                 </li>
                 <li class="nav-item">
-                  <li data-nsd-label-uuid="406306d3-81c5-4f03-9954-fa4ea72682d5" class="dropdown">
+                  <li data-nsd-label-uuid="b33b1072-7cff-4840-ba79-8246f7c044f4" class="dropdown">
                     <a role="button" data-toggle="dropdown" class="nav-link dropdown-toggle">
                       <img src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/16/external-diagram-seo-media-dreamstale-lineal-dreamstale.png" class="nsd-app-label-icon"/>Graphs</a>
                     <div class="dropdown-menu">
-                      <a href="../../../../../../default-graph.html" data-nsd-label-uuid="deefc988-775c-4743-a89f-4ba6327a14bf" class="dropdown-item">Default Graph</a>
-                      <a href="../../../../../../circular-layout-graph.html" data-nsd-label-uuid="7791fdb8-f4dd-4112-aec3-0071f49d08c0" class="dropdown-item">Circular Graph</a>
-                      <a href="../../../../../../force-layout-graph.html" data-nsd-label-uuid="249abfa1-281c-44dd-b30a-4eb422eff0f6" class="dropdown-item">Force Graph</a>
+                      <a href="../../../../../../default-graph.html" data-nsd-label-uuid="e0753594-3359-4677-b048-7d8e7533cc52" class="dropdown-item">Default Graph</a>
+                      <a href="../../../../../../circular-layout-graph.html" data-nsd-label-uuid="3b505a76-b913-4859-bb2c-8a815fe881df" class="dropdown-item">Circular Graph</a>
+                      <a href="../../../../../../force-layout-graph.html" data-nsd-label-uuid="d79c1265-21c8-48cc-a4bf-22eb04749310" class="dropdown-item">Force Graph</a>
+                      <a href="../../../../../../force-layout-graph-3d.html" data-nsd-label-uuid="026b5d5a-a545-4c3f-a902-a51268afb8e6" class="dropdown-item">Force Graph 3D</a>
                       <div title="With dependencies and sub-packages" class="dropdown-divider"></div>
-                      <a href="../../../../../../default-graph-with-dependencies-and-subpackages.html" data-nsd-label-uuid="ab666f48-7d73-4351-a637-823f30396d49" class="dropdown-item">Default Graph</a>
-                      <a href="../../../../../../circular-layout-graph-with-dependencies-and-subpackages.html" data-nsd-label-uuid="fa36d728-74d6-4285-af86-268a10a572ce" class="dropdown-item">Circular Graph</a>
-                      <a href="../../../../../../force-layout-graph-with-dependencies-and-subpackages.html" data-nsd-label-uuid="5ea979c0-9316-4e05-a748-2d11580bd8ff" class="dropdown-item">Force Graph</a>
+                      <a href="../../../../../../default-graph-with-dependencies-and-subpackages.html" data-nsd-label-uuid="2129025d-ab88-4cb6-b7fa-af432396b3d1" class="dropdown-item">Default Graph</a>
+                      <a href="../../../../../../circular-layout-graph-with-dependencies-and-subpackages.html" data-nsd-label-uuid="a12542e6-3b5f-437d-8ef2-06cd7df15521" class="dropdown-item">Circular Graph</a>
+                      <a href="../../../../../../force-layout-graph-with-dependencies-and-subpackages.html" data-nsd-label-uuid="b38fa119-4a1b-423b-bb52-4639e1f7d590" class="dropdown-item">Force Graph</a>
+                      <a href="../../../../../../force-layout-graph-3d-with-dependencies-and-subpackages.html" data-nsd-label-uuid="d700514d-b16f-4e58-b939-6ded297135b4" class="dropdown-item">Force Graph 3D</a>
                     </div>
                   </li>
                 </li>
@@ -89,49 +103,49 @@
       <div class="row nsd-app-content-row">
         <div class="col nsd-app-navigation-panel">
           <div class="list-group list-group-flush">
-            <a href="../../../../Action/index.html" data-nsd-label-uuid="b6d818e2-ea63-443a-9cef-848517b2658e" class="list-group-item list-group-action">
+            <a href="../../../../Action/index.html" data-nsd-label-uuid="b17e23a9-b1f1-40ac-90a4-19fe718aaefd" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/>Action</a>
-            <a href="../../../../ActionReference/index.html" data-nsd-label-uuid="ded5f095-0896-4383-b6f7-57f8d9e922b4" class="list-group-item list-group-action">
+            <a href="../../../../ActionReference/index.html" data-nsd-label-uuid="174e9e18-89d6-4935-9624-33dc825034b2" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/>Action Reference</a>
-            <a href="../../../../ContentPanel/index.html" data-nsd-label-uuid="322e47f7-1d37-49ae-af4a-0eb7ef3363fc" class="list-group-item list-group-action">
+            <a href="../../../../ContentPanel/index.html" data-nsd-label-uuid="ad1eb4ff-aaf5-4ab0-aac0-d14171c4e3d0" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/>Content Panel</a>
-            <a href="../../../../Footer/index.html" data-nsd-label-uuid="5ca7084d-b455-4dc1-97ca-85dc5b4b9451" class="list-group-item list-group-action">
+            <a href="../../../../Footer/index.html" data-nsd-label-uuid="5ba63eb6-7f49-4e19-a132-5e5246593258" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/>Footer</a>
-            <a href="../../../../Header/index.html" data-nsd-label-uuid="7e67f125-7358-4afd-92af-a4dbffca8df8" class="list-group-item list-group-action">
+            <a href="../../../../Header/index.html" data-nsd-label-uuid="9af7e258-254a-4cad-a9a5-c5ead964c404" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/>Header</a>
-            <a href="../../../../Label/index.html" data-nsd-label-uuid="e945b446-bb70-4872-8d22-a93ff8be9c0a" class="list-group-item list-group-action">
+            <a href="../../../../Label/index.html" data-nsd-label-uuid="d4435cbb-a603-4ede-b9e2-8cdcc94f80e0" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/>Label</a>
-            <a href="../../../../Link/index.html" data-nsd-label-uuid="fc66a559-d76d-4b49-9ab8-95d603b51a58" class="list-group-item list-group-action">
+            <a href="../../../../Link/index.html" data-nsd-label-uuid="453a84f8-cb94-4e18-b89d-e0fbfa9baa0c" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/>Link</a>
-            <a href="../../../../NavigationBar/index.html" data-nsd-label-uuid="ae367f80-0e50-4094-9a23-a428c1a0534a" class="list-group-item list-group-action">
+            <a href="../../../../NavigationBar/index.html" data-nsd-label-uuid="d88e2a97-8289-4f09-9221-4fc67f811f97" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/>Navigation Bar</a>
-            <a href="../../../index.html" data-nsd-label-uuid="7f4adf2f-40b5-47b3-88c8-437922c08b79" class="list-group-item list-group-action active">
+            <a href="../../../index.html" data-nsd-label-uuid="d0fcbcb3-18ea-4f20-8e0a-47bf32b1f39d" class="list-group-item list-group-action active">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/>Navigation Panel</a>
-            <a href="../../../../NavigationPanelStyle/index.html" data-nsd-label-uuid="ed849455-f4c3-4218-a996-78f100b60145" class="list-group-item list-group-action">
+            <a href="../../../../NavigationPanelStyle/index.html" data-nsd-label-uuid="20b522e3-90f4-4eba-801e-5c870e10f989" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EEnum.gif" class="nsd-app-label-icon"/>Navigation Panel Style</a>
-            <a href="../../../../Page/index.html" data-nsd-label-uuid="3c2b90b0-859b-4f79-9b6b-9fc6cb343d6e" class="list-group-item list-group-action">
+            <a href="../../../../Page/index.html" data-nsd-label-uuid="a4e1226c-39ba-422d-aa26-ea7374ea1251" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/>Page</a>
-            <a href="../../../../PagePart/index.html" data-nsd-label-uuid="e8a0c13e-1ceb-45a6-a276-5b8272f7fe87" class="list-group-item list-group-action">
+            <a href="../../../../PagePart/index.html" data-nsd-label-uuid="22ed85ff-dfcd-44b9-8edf-1c52de13a3e4" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/><i>Page Part</i></a>
-            <a href="../../../../SectionStyle/index.html" data-nsd-label-uuid="7a0f15f0-a18f-4a4f-844e-40c6bf00f224" class="list-group-item list-group-action">
+            <a href="../../../../SectionStyle/index.html" data-nsd-label-uuid="9718ba3f-100b-426a-859f-ea71b9e6590b" class="list-group-item list-group-action">
               <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EEnum.gif" class="nsd-app-label-icon"/>Section Style</a>
           </div>
         </div>
-        <div data-nsd-label-uuid="cf023e20-230d-4a15-973d-895b66fae606" data-nsd-action-uris="uuid:cf023e20-230d-4a15-973d-895b66fae606" class="col nsd-app-content-panel">
+        <div data-nsd-label-uuid="4819e502-862c-41f0-8519-5e971bf59d10" data-nsd-action-uris="uuid:4819e502-862c-41f0-8519-5e971bf59d10" class="col nsd-app-content-panel">
           <div class="container-fluid">
             <div class="row nsd-app-content-panel-breadcrumb-row">
               <div class="col">
                 <nav aria-label="breadcrumb" class="nsd-app-content-panel-breadcrumb">
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                      <a href="../../../index.html" data-nsd-label-uuid="7f4adf2f-40b5-47b3-88c8-437922c08b79">
+                      <a href="../../../index.html" data-nsd-label-uuid="d0fcbcb3-18ea-4f20-8e0a-47bf32b1f39d">
                         <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EClass.gif" class="nsd-app-label-icon"/>Navigation Panel</a>
                     </li>
                     <li class="breadcrumb-item">
-                      <a href="../../../attributes.html" data-nsd-label-uuid="422d1222-e22b-4942-9fea-3138172200b2">
+                      <a href="../../../attributes.html" data-nsd-label-uuid="1efad40b-ebca-4850-8443-09d303739ad7">
                         <img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EAttribute.gif" class="nsd-app-label-icon"/>Attributes</a>
                     </li>
-                    <li class="breadcrumb-item active"><span data-nsd-label-uuid="cf023e20-230d-4a15-973d-895b66fae606"><img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EAttribute.gif" class="nsd-app-label-icon"/>style</span>
+                    <li class="breadcrumb-item active"><span data-nsd-label-uuid="4819e502-862c-41f0-8519-5e971bf59d10"><img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EAttribute.gif" class="nsd-app-label-icon"/>style</span>
                     </li>
                   </ol>
                 </nav>
@@ -139,7 +153,7 @@
             </div>
             <div class="row nsd-app-content-panel-title-and-items-row">
               <div class="col-auto">
-                <H1><span data-nsd-label-uuid="cf023e20-230d-4a15-973d-895b66fae606" class="nsd-app-content-panel-title"><img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EAttribute.gif" class="nsd-app-label-icon"/>style<a href="https://ecore.models.nasdanika.org/references/eClassifiers/EAttribute/index.html" style="vertical-align:super;font-size:x-small;margin-left:0.2em"><span class="far fa-question-circle nsd-app-label-icon"></span></a></span>
+                <H1><span data-nsd-label-uuid="4819e502-862c-41f0-8519-5e971bf59d10" class="nsd-app-content-panel-title"><img src="https://cdn.jsdelivr.net/gh/Nasdanika-Models/ecore@master/graph/web-resources/icons/EAttribute.gif" class="nsd-app-label-icon"/>style<a href="https://ecore.models.nasdanika.org/references/eClassifiers/EAttribute/index.html" style="vertical-align:super;font-size:x-small;margin-left:0.2em"><span class="far fa-question-circle nsd-app-label-icon"></span></a></span>
                 </H1>
               </div>
             </div>
@@ -174,7 +188,7 @@
         <div class="col nsd-app-footer">
           <ul class="nav nsd-app-footer-navs">
             <li class="nav-item">
-              <a href="https://github.com/Nasdanika-Models/html-app" data-nsd-label-uuid="6270a426-6096-4cbb-8042-1595208dd05e" class="nav-link"><span class="fab fa-github nsd-app-label-icon"></span>Sources</a>
+              <a href="https://github.com/Nasdanika-Models/html-app" data-nsd-label-uuid="d8e0086f-13f9-4f98-92a4-4954c255b345" class="nav-link"><span class="fab fa-github nsd-app-label-icon"></span>Sources</a>
             </li>
           </ul>
         </div>
