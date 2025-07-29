@@ -230,6 +230,10 @@ public class Configuration implements RepresentationElementFilter {
 	public Collection<DocumentationFactory> getDocumentationFactories(ProgressMonitor progressMonitor) {
 		return Collections.emptyList();
 	}
+	
+	public boolean isUseTooltipIfDocIsEmpty() {
+		return true;
+	}
 
 	protected ResourceSet resourceSet = new ResourceSetImpl();
 	

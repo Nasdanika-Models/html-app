@@ -45,6 +45,8 @@ import org.nasdanika.persistence.ObjectLoader;
  */
 public class BaseProcessor<T extends Element> implements WidgetFactory {
 	
+	private static final String PLAIN_TEXT = "text/plain";
+
 	protected Configuration configuration;
 	
 	public BaseProcessor(DrawioProcessorFactory configuration) {
@@ -217,6 +219,24 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 								docRefURI[0],
 								tokenSource,
 								progressMonitor);				
+					}
+				}
+				
+				String tooltip = modelElement.getTooltip();
+				if (!Util.isBlank(tooltip)) {
+					Optional<DocumentationFactory> dfo = configuration.getDocumentationFactories(progressMonitor)
+						.stream()
+						.filter(df -> df.canHandle(PLAIN_TEXT))
+						.findAny();
+					
+					if (dfo.isPresent()) {
+						return dfo.get().createDocumentation(
+								element, 
+								tooltip, 
+								PLAIN_TEXT, 
+								refBaseUri,
+								tokenSource,
+								progressMonitor);
 					}
 				}
 			} catch (Exception e) {

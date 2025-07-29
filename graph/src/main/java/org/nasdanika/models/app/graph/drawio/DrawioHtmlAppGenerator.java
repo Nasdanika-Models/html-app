@@ -142,6 +142,11 @@ public class DrawioHtmlAppGenerator extends Configuration {
 				return DrawioHtmlAppGenerator.this.getRefBaseURI(docURI);
 			}
 			
+			@Override
+			public boolean isUseTooltipIfDocIsEmpty() {
+				return DrawioHtmlAppGenerator.this.isUseTooltipIfDocIsEmpty();
+			}
+			
 			/**
 			 * Override to implement filtering of representation elements
 			 * @param representationElement

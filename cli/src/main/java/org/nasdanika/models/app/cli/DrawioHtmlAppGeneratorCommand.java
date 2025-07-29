@@ -75,6 +75,11 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 			}
 			
 			@Override
+			public boolean isUseTooltipIfDocIsEmpty() {
+				return DrawioHtmlAppGeneratorCommand.this.tooltip;
+			}
+			
+			@Override
 			public void filterRepresentationElement(
 					ModelElement sourceElement, 
 					ModelElement representationElement,
@@ -87,6 +92,16 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 			
 		};
 	}
+			
+	@Option(
+		names = {"--tooltip"},
+		description = {
+			"Use tooltip as documentation",
+			"if documentation is empty.",
+			"Default: true"
+		},
+		negatable = true)
+	private boolean tooltip;	
 	
 	@Option(
 		names = {"-b", "--base-uri"},
