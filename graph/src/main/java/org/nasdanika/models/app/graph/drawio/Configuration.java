@@ -30,7 +30,7 @@ import org.nasdanika.persistence.ConfigurationException;
 /**
  * Base class for processor configuration/customization classes.
  */
-public class Configuration implements RepresentationElementFilter {
+public class Configuration extends org.nasdanika.drawio.gen.section.Configuration implements RepresentationElementFilter {
 	/**
 	 * Icons size for UI generation - jsTree displays icons up to 24x24 pixels, leaving 4 pixes for padding
 	 */
@@ -40,19 +40,10 @@ public class Configuration implements RepresentationElementFilter {
 	 */
 	public static final URI DEFAULT_APP_BASE = URI.createURI("https://app.diagrams.net/");
 	
-	public static final String DOC_FORMAT_PROPERTY = "doc-format";
-	public static final String DOC_REF_PROPERTY = "doc-ref";
-	public static final String DOCUMENTATION_PROPERTY = "documentation";
 	public static final String PROTOTYPE_PROPERTY = "prototype";
 	public static final String PROTO_REF_PROPERTY = "proto-ref";
-	public static final String TITLE_PROPERTY = "title";
-	public static final String ICON_PROPERTY = "icon";
 	public static final String ROLE_PROPERTY = "role";
-	public static final String PARENT_PROPERTY = "parent";
 	
-	public static final String SOURCE_KEY = "source";
-	public static final String TARGET_KEY = "target";
-
 	public static final String ANONYMOUS_ROLE = "anonymous";
 	public static final String CHILD_ROLE = "child";
 	public static final String NAVIGATION_ROLE = "navigation";
@@ -61,10 +52,6 @@ public class Configuration implements RepresentationElementFilter {
 	public static final String SORT_KEY_PROPERTY = "sort-key";
 	
 	public static final String INDEX_NAME = "index.html";
-	
-	public String getIconProperty() {
-		return ICON_PROPERTY;
-	}	
 		
 	public String getSortKeyProperty() {
 		return SORT_KEY_PROPERTY;
@@ -72,22 +59,6 @@ public class Configuration implements RepresentationElementFilter {
 	
 	public String getRoleProperty() {
 		return ROLE_PROPERTY;
-	}	
-	
-	public String getParentProperty() {
-		return PARENT_PROPERTY;
-	}	
-	
-	public String getTitleProperty() {
-		return TITLE_PROPERTY;
-	}	
-		
-	public String getDocumentationProperty() {
-		return DOCUMENTATION_PROPERTY;
-	}	
-		
-	public String getDocRefProperty() {
-		return DOC_REF_PROPERTY;
 	}	
 		
 	public String getPrototypeProperty() {
@@ -97,18 +68,6 @@ public class Configuration implements RepresentationElementFilter {
 	public String getProtoRefProperty() {
 		return PROTO_REF_PROPERTY;
 	}	
-	
-	public String getDocFormatProperty() {
-		return DOC_FORMAT_PROPERTY; 
-	}		
-	
-	public String getSourceKey() {
-		return SOURCE_KEY; 
-	}		
-	
-	public String getTargetKey() {
-		return TARGET_KEY; 
-	}		
 	
 	public String getAnonymousRole() {
 		return ANONYMOUS_ROLE; 
@@ -215,16 +174,6 @@ public class Configuration implements RepresentationElementFilter {
 			ProgressMonitor progressMonitor) {
 		
 		return processor;
-	}
-	
-	/**
-	 * Base URI for resolving documentation and prototype references instead of the
-	 * document URI. Resolved relative to the document URI.
-	 * If null, document URI is used.
-	 * @return
-	 */
-	public URI getRefBaseURI(URI docURI) {
-		return docURI;
 	}
 	
 	public Collection<DocumentationFactory> getDocumentationFactories(ProgressMonitor progressMonitor) {

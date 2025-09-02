@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.nasdanika.cli.HelpCommand;
 import org.nasdanika.cli.ParentCommands;
 import org.nasdanika.common.Composable;
+import org.nasdanika.common.Content;
 import org.nasdanika.common.DefaultConverter;
 import org.nasdanika.common.Description;
 import org.nasdanika.common.DocumentationFactory;
@@ -217,7 +218,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 				progressMonitor);				
 		
 		if (!handled) {
-			if (Util.isBlank(descriptionRecord.description().format()) || Description.MARKDOWN_FORMAT.equals(descriptionRecord.description().format())) {		
+			if (Util.isBlank(descriptionRecord.description().format()) || Content.MARKDOWN.equals(descriptionRecord.description().format())) {		
 				StringBuilder builder = new StringBuilder();
 				String markdown = descriptionRecord.description().value();
 				if (Util.isBlank(markdown)) {
@@ -482,7 +483,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 							progressMonitor);				
 					
 					if (!handled) {
-						if (Util.isBlank(description.format()) || Description.MARKDOWN_FORMAT.equals(description.format())) {
+						if (Util.isBlank(description.format()) || Content.MARKDOWN.equals(description.format())) {
 							String markdown = description.value();
 							if (Util.isBlank(markdown)) {
 								String dResource = description.resource();
@@ -651,7 +652,7 @@ public class ActionHelpMixIn implements HelpCommand.OutputFormatMixIn {
 			} else {
 				String format = description.format();
 				if (Util.isBlank(format)) {
-					format = Description.MARKDOWN_FORMAT;
+					format = Content.MARKDOWN;
 				}
 				for (DocumentationFactory docFactory: documentationFactories) {						
 					if (docFactory.canHandle(format)) {

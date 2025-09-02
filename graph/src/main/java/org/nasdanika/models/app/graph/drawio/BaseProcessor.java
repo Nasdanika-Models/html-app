@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.jsoup.Jsoup;
-import org.nasdanika.common.Description;
+import org.nasdanika.common.Content;
 import org.nasdanika.common.DocumentationFactory;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Status;
@@ -155,7 +155,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 							docFormatStr[0] = modelElement.getProperty(docFormatProperty);
 						}
 						if (Util.isBlank(docFormatStr[0])) {
-							docFormatStr[0] = Description.MARKDOWN_FORMAT;
+							docFormatStr[0] = Content.MARKDOWN;
 						}
 						
 						Optional<DocumentationFactory> dfo = configuration.getDocumentationFactories(progressMonitor)

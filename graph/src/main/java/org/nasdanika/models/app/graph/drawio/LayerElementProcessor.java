@@ -64,8 +64,6 @@ public class LayerElementProcessor<T extends LayerElement> extends LinkTargetPro
 		super(factory);
 	}
 
-	public Collection<ModelElement> referrers = new ArrayList<>();	
-
 	/**
 	 * Has documentation or has a page link (which implies having documentation)
 	 */
