@@ -47,4 +47,9 @@ public class RootProcessor extends BaseProcessor<Root> {
 		}
 	}
 
+	@Override
+	public URI getActionURI(ProgressMonitor progressMonitor) {
+		throw new UnsupportedOperationException();
+	}
+
 }

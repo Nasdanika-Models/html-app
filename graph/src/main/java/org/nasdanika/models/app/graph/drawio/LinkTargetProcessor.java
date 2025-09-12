@@ -8,7 +8,7 @@ import org.nasdanika.drawio.LinkTarget;
 import org.nasdanika.drawio.ModelElement;
 import org.nasdanika.drawio.Node;
 
-public class LinkTargetProcessor<T extends LinkTarget> extends BaseProcessor<T> {
+public abstract class LinkTargetProcessor<T extends LinkTarget> extends BaseProcessor<T> {
 	
 	public LinkTargetProcessor(DrawioProcessorFactory factory) {
 		super(factory);

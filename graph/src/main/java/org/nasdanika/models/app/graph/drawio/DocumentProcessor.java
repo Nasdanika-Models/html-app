@@ -82,4 +82,9 @@ public class DocumentProcessor extends BaseProcessor<Document> {
 		return compoundSupplier;
 	}
 
+	@Override
+	public URI getActionURI(ProgressMonitor progressMonitor) {
+		throw new UnsupportedOperationException();
+	}
+
 }

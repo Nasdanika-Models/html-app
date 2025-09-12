@@ -43,7 +43,7 @@ import org.nasdanika.persistence.ObjectLoader;
 /**
  * Base class for processors
  */
-public class BaseProcessor<T extends Element> implements WidgetFactory {
+public abstract class BaseProcessor<T extends Element> implements WidgetFactory {
 	
 	private static final String PLAIN_TEXT = "text/plain";
 
@@ -68,9 +68,7 @@ public class BaseProcessor<T extends Element> implements WidgetFactory {
 	/**
 	 * @return Action URI if this processor creates an action or null otherwise.
 	 */
-	public URI getActionURI(ProgressMonitor progressMonitor) {
-		throw new UnsupportedOperationException();
-	}
+	public abstract URI getActionURI(ProgressMonitor progressMonitor);
 
 	@Override
 	public Object createLabel(ProgressMonitor progressMonitor) {

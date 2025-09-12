@@ -149,12 +149,12 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 			ProcessorInfo<WidgetFactory> sourceElementProcessorInfo = registry.get(sourceElement);
 			if (sourceElementProcessorInfo != null) {
 				WidgetFactory sourceElementProcessor = sourceElementProcessorInfo.getProcessor();
-				if (sourceElementProcessor instanceof BaseProcessor) {
-					BaseProcessor<?> baseProcessor = (BaseProcessor<?>) sourceElementProcessor;
-					String role = baseProcessor.getRole();
+				if (sourceElementProcessor instanceof LayerElementProcessor) {
+					LayerElementProcessor<?> layerElementProcessor = (LayerElementProcessor<?>) sourceElementProcessor;
+					String role = layerElementProcessor.getRole();
 					String sectionRole = configuration.getSectionRole();
 					if (Util.isBlank(sectionRole) || !sectionRole.equals(role)) {
-						URI sourceURI = baseProcessor.getActionURI(progressMonitor);
+						URI sourceURI = layerElementProcessor.getActionURI(progressMonitor);
 						if (sourceURI != null && uri != null) {
 							URI linkURI = sourceURI.deresolve(uri, true, true, true);
 							representationElement.setLink(linkURI.toString());
@@ -170,6 +170,11 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 				registry, 
 				progressMonitor);
 			
+	}
+
+	@Override
+	public URI getActionURI(ProgressMonitor progressMonitor) {
+		throw new UnsupportedOperationException();
 	}
 	
 }

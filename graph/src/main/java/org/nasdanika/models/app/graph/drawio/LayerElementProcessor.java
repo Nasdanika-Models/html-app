@@ -34,7 +34,7 @@ import org.nasdanika.graph.processor.ProcessorInfo;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.graph.WidgetFactory;
 
-public class LayerElementProcessor<T extends LayerElement> extends LinkTargetProcessor<T> {
+public abstract class LayerElementProcessor<T extends LayerElement> extends LinkTargetProcessor<T> {
 	
 	protected Map<ModelElement, ProcessorInfo<WidgetFactory>> childInfos = new ConcurrentHashMap<>();
 	
