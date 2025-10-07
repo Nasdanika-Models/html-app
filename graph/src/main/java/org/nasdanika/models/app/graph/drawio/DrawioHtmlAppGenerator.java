@@ -40,7 +40,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Supplier<Collection<Label>> createLabelsSupplier(Document document, ProgressMonitor progressMonitor) {
+	public Supplier<Collection<Label>> createLabelsSupplier(org.nasdanika.drawio.Element root, ProgressMonitor progressMonitor) {
 		NopEndpointProcessorConfigFactory<WidgetFactory> processorConfigFactory = new NopEndpointProcessorConfigFactory<WidgetFactory>() {
 			
 			@Override
@@ -54,7 +54,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 		
 		Collection<Element> elements = new ArrayList<>();
 		Consumer<org.nasdanika.drawio.Element> consumer = org.nasdanika.drawio.Util.withLinkTargets(elements::add, ConnectionBase.SOURCE);
-		document.accept(consumer, null);
+		root.accept(consumer, null);
 		Map<Element, ProcessorConfig> configs = processorConfigTransformer.transform(elements, false, progressMonitor);
 		
 		DrawioProcessorFactory processorFactory = createProcessorFactory(progressMonitor);
@@ -70,12 +70,12 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			.map(DrawioHtmlAppGenerator::getLinkTargetRecursive)
 			.forEach(entry ->  ((LinkTargetProcessor<LinkTarget>) processors.get(entry.getValue()).getProcessor()).addReferrer(entry.getKey()));
 		
-		DocumentProcessor docProcessor = (DocumentProcessor) processors.get(document).getProcessor();
+		BaseProcessor<?> rootProcessor = (BaseProcessor<?>) processors.get(root).getProcessor();
 				
 		URI baseURI = getBaseURI();
-		docProcessor.resolve(baseURI, progressMonitor);
+		rootProcessor.resolve(baseURI, progressMonitor);
 		
-		Supplier<Collection<Label>> labelsSupplier = docProcessor.createLabelsSupplier();
+		Supplier<Collection<Label>> labelsSupplier = rootProcessor.createLabelsSupplier();
 		return labelsSupplier.then(labels -> {
 			for (Label label: labels) {
 				label.rebase(null, baseURI);

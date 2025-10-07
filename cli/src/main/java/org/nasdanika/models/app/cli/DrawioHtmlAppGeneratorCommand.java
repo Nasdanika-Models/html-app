@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -22,12 +23,14 @@ import org.nasdanika.common.Util;
 import org.nasdanika.drawio.Document;
 import org.nasdanika.drawio.Element;
 import org.nasdanika.drawio.ModelElement;
+import org.nasdanika.drawio.Page;
 import org.nasdanika.graph.processor.ProcessorInfo;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.graph.WidgetFactory;
 import org.nasdanika.models.app.graph.drawio.DrawioHtmlAppGenerator;
 import org.nasdanika.models.app.graph.drawio.RepresentationElementFilter;
 
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParentCommand;
@@ -153,7 +156,16 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 					"URIs are resolved relative to the current directory"
 			})
 	@Description(icon = "https://docs.nasdanika.org/images/filter.svg")
-	private List<String> representationElementFilters = new ArrayList<>();	
+	private List<String> representationElementFilters = new ArrayList<>();
+		
+	@Option(			
+			names = {"--page"},
+			paramLabel = "Page name",
+			description = {
+					"If provided, actions are generated for the page",
+					"with matching name"
+			})
+	private String pageName;		
 
 	@Override
 	protected Collection<Label> getLabels(ProgressMonitor progressMonitor) {
@@ -185,7 +197,15 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 		}		
 		
 		DrawioHtmlAppGenerator actionGenerator = createDrawioActionGenerator(actionGeneratorBaseURI, refs);
-		Supplier<Collection<Label>> labelSupplier = actionGenerator.createLabelsSupplier(document, progressMonitor);
+		org.nasdanika.drawio.Element root = document;
+		if (!Util.isBlank(pageName)) {
+			Optional<Page> pageOpt = document.getPages().stream().filter(p -> pageName.equals(p.getName())).findFirst();
+			if (pageOpt.isEmpty()) {
+				throw new CommandLine.ParameterException(spec.commandLine(), "Page not found: " + pageName);
+			}
+			root = pageOpt.get();
+		}
+		Supplier<Collection<Label>> labelSupplier = actionGenerator.createLabelsSupplier(root, progressMonitor);
 		Consumer<Diagnostic> diagnosticConsumer = createDiagnosticConsumer(progressMonitor);
 		return labelSupplier.call(progressMonitor, diagnosticConsumer);
 	}		
