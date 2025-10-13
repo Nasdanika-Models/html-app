@@ -33,6 +33,7 @@ public class DocumentProcessor extends BaseProcessor<Document> {
 			.entrySet()
 			.stream()
 			.filter(ppe -> ppe.getValue().getProcessor().getReferrers().isEmpty())
+			.sorted((a,b) -> a.getKey().getPosition() - b.getKey().getPosition())
 			.toList();
 		
 		if (topLevelPageProcessors.size() == 1) {
