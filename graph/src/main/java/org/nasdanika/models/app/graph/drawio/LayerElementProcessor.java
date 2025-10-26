@@ -81,7 +81,15 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 		}
 		
 		Collection<EObject> documentation = super.getDocumentation(progressMonitor);
-		if (Util.isBlank(element.getLabel()) || (documentation.isEmpty() && !hasNonChildRoles())) {			
+		String label = element.getLabel();
+		if (Util.isBlank(label)) {
+			String titleProperty = configuration.getTitleProperty();
+			if (!Util.isBlank(titleProperty)) {
+				label = element.getProperty(titleProperty);
+			}			
+		}
+		
+		if (Util.isBlank(label) || (documentation.isEmpty() && !hasNonChildRoles())) {			
 			return null;
 		}
 		return uri;
