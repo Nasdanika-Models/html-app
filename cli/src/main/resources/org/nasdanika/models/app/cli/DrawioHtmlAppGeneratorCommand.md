@@ -9,7 +9,7 @@
     * Adds the generated labels to the root action
 * Passes the resulting model to the [site](site/index.html) sub-command to generate a documentation site
 
-## Diagram element configuration – 
+## Diagram element configuration 
 
 Diagram elements can be configured with the following properties:
 

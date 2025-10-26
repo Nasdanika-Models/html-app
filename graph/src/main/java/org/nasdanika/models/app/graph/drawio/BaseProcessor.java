@@ -499,6 +499,12 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 	 */
 	protected Collection<Label> createLabels(List<Label> childLabels, ProgressMonitor progressMonitor) {		
 		String label = element instanceof ModelElement ? ((ModelElement) element).getLabel() : null;
+		if (Util.isBlank(label) && element instanceof ModelElement) {
+			String titleProperty = configuration.getTitleProperty();
+			if (!Util.isBlank(titleProperty)) {
+				label = ((ModelElement) element).getProperty(titleProperty);
+			}			
+		}
 		if (Util.isBlank(label)) {
 			return childLabels;
 		}
