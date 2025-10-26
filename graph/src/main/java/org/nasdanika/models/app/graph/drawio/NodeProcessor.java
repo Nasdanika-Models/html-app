@@ -48,31 +48,33 @@ public class NodeProcessor extends LayerElementProcessor<Node> {
 	public void configureLabel(Label label, ProgressMonitor progressMonitor) {
 		super.configureLabel(label, progressMonitor);
 		
-		Map<String, String> style = element.getStyle();
-		String image = style.get("image");
-		if (!Util.isBlank(image)) {
-			// Drawio does not add ;base64 to the image URL, browsers don't understand. Fixing it here.
-			if (image.startsWith(DATA_URI_PNG_PREFIX_NO_BASE_64)) {
-				int insertIdx = DATA_URI_PNG_PREFIX_NO_BASE_64.length() - 1;
-				image = image.substring(0, insertIdx) + ";base64" + image.substring(insertIdx);
-			} else if (image.startsWith(DATA_URI_JPEG_PREFIX_NO_BASE_64)) {
-				int insertIdx = DATA_URI_JPEG_PREFIX_NO_BASE_64.length() - 1;
-				image = image.substring(0, insertIdx) + ";base64" + image.substring(insertIdx);
-			} else {
-				URI imageURI = URI.createURI(image);
-				if (imageURI.isRelative()) {
-					URI appBase = configuration.getAppBase();
-					if (appBase != null && !appBase.isRelative()) {
-						imageURI = imageURI.resolve(appBase);
+		if (Util.isBlank(label.getIcon())) {
+			Map<String, String> style = element.getStyle();
+			String image = style.get("image");
+			if (!Util.isBlank(image)) {
+				// Drawio does not add ;base64 to the image URL, browsers don't understand. Fixing it here.
+				if (image.startsWith(DATA_URI_PNG_PREFIX_NO_BASE_64)) {
+					int insertIdx = DATA_URI_PNG_PREFIX_NO_BASE_64.length() - 1;
+					image = image.substring(0, insertIdx) + ";base64" + image.substring(insertIdx);
+				} else if (image.startsWith(DATA_URI_JPEG_PREFIX_NO_BASE_64)) {
+					int insertIdx = DATA_URI_JPEG_PREFIX_NO_BASE_64.length() - 1;
+					image = image.substring(0, insertIdx) + ";base64" + image.substring(insertIdx);
+				} else {
+					URI imageURI = URI.createURI(image);
+					if (imageURI.isRelative()) {
+						URI appBase = configuration.getAppBase();
+						if (appBase != null && !appBase.isRelative()) {
+							imageURI = imageURI.resolve(appBase);
+						}
 					}
+					image = imageURI.toString();				
 				}
-				image = imageURI.toString();				
-			}
-			
-			try {
-				label.setIcon(Util.scaleImage(configuration.rewriteImage(image, progressMonitor), configuration.getIconSize()));
-			} catch (IOException e) {
-				progressMonitor.worked(Status.WARNING, 1, "Could not scale image: " + e, e);
+				
+				try {
+					label.setIcon(Util.scaleImage(configuration.rewriteImage(image, progressMonitor), configuration.getIconSize()));
+				} catch (IOException e) {
+					progressMonitor.worked(Status.WARNING, 1, "Could not scale image: " + e, e);
+				}
 			}
 		}
 	}
