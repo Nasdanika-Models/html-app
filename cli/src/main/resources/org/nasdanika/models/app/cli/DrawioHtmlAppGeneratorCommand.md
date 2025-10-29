@@ -13,6 +13,7 @@
 
 Diagram elements can be configured with the following properties:
 
+* ``child-comparator`` - a YAML specification for sorting child elements as explained below
 * ``documentation`` - documentation text in documentation format
 * ``doc-format`` - explicitly specified documentation format for ``documentation`` and ``doc-ref``. Out of the box:
     * ``markdown`` (default), 
@@ -37,6 +38,35 @@ Site pages are generated only for elements with:
 
 * Documentation (``documentation`` or ``doc-ref``), prototypes (``prototype`` or ``prototype-ref``), or both.
 * Labels or ``title`` property. If you don't want an element label to be visible (e.g. on connections) uncheck "Font color" checkbox on the "Text" tab.
+
+### child-comparator
+
+The specification can be a list, a string, or a map. Lists are treated as maps with null values and strings are treated as singleton maps with null values.
+
+Map entry keys are comparator names and values are configurations. The following comparators are supported:
+
+* ``flow`` and ``reverse-flow`` order elements based on how they are connected to each other. These comparators configuration is either null, string or a list of strings. Strings are evaluated as [Spring Expression Language](https://docs.spring.io/spring-framework/reference/core/expressions.html) (SpEL) boolean expressions in the context of connections. If the expression evaluates to ``false``, then the given connection is not included in the flow traversal. It can be used if there are loops. For example, you plan a trip and want the destinations to be sorted in the visit order. There is a loop - the returning flight home. You can provide an expression which evaluates to ``false`` for that flight.
+* ``down-left`` - Compares nodes by their vertical order first with higher nodes being smaller and then by horizontal order with nodes on the right being smaller. Nodes are considered vertically equal if they vertically overlap. 
+* ``down-right`` - Compares nodes by their vertical order first with higher nodes being smaller and then by horizontal order with nodes on the left being smaller. Nodes are considered vertically equal if they vertically overlap. This comparator can be used for org. charts.
+* ``left-down`` - Compares nodes by their horizontal order first with nodes on the right being smaller and then by vertical order with higher nodes being smaller. Nodes are considered horizontally equal if they horizontally overlap. 
+* ``left-up`` - Compares nodes by their horizontal order first with nodes on the right being smaller and then by vertical order with lower nodes being smaller. Nodes are considered horizontally equal if they horizontally overlap. 
+* ``right-down`` - Compares nodes by their horizontal order first with nodes on the left being smaller and then by vertical order with higher nodes being smaller. Nodes are considered horizontally equal if they horizontally overlap. 
+* ``right-up`` - Compares nodes by their horizontal order first with nodes on the left being smaller and then by vertical order with lower nodes being smaller. Nodes are considered horizontally equal if they horizontally overlap. 
+* ``up-left`` - Compares nodes by their vertical order first with lower nodes being smaller and then by horizontal order with nodes on the right being smaller. Nodes are considered vertically equal if they vertically overlap. 
+* ``up-right`` - Compares nodes by their vertical order first with lower nodes being smaller and then by horizontal order with nodes on the left being smaller. Nodes are considered vertically equal if they vertically overlap. 
+
+### icon
+
+Drawio has more than two thousand built-in icons. You can find more icons on the below sites:
+
+* [Font Awesome 5 icons](https://fontawesome.com/v5/search?ic=free) 
+* [FlatIcons](https://www.flaticon.com/pricing) - 16.8 million icons. Free with attribution, a paid plan is available - no attribution. In-browser editor. PNG and SVG (premium) formats.
+* [IconFinder](https://www.iconfinder.com/) - the world's largest marketplace for icons, ... 6 million icons at your fingertips including free icons. Multiple subscription levels.
+* [Iconduck](https://iconduck.com/) - more than 250 000 free open source icons
+* [Techicons](https://techicons.dev/) - SVG and PNG tech icons, sourced from https://github.com/devicons/devicon. 473 icons. 
+* Cloud providers:
+    * [Azure](https://learn.microsoft.com/en-us/azure/architecture/icons/)
+    * [AWS](https://aws.amazon.com/architecture/icons/)  
 
 ### prototype
 
@@ -67,20 +97,6 @@ Action:
 
 Property value is a URI of the prototype action or label resolved relative to the element base URI.
 For example ``bob-prototype.yml#/``.
-
-### icon
-
-Drawio has more than two thousand built-in icons. You can find more icons on the below sites:
-
-* [Font Awesome 5 icons](https://fontawesome.com/v5/search?ic=free) 
-* [FlatIcons](https://www.flaticon.com/pricing) - 16.8 million icons. Free with attribution, a paid plan is available - no attribution. In-browser editor. PNG and SVG (premium) formats.
-* [IconFinder](https://www.iconfinder.com/) - the world's largest marketplace for icons, ... 6 million icons at your fingertips including free icons. Multiple subscription levels.
-* [Icons8](https://icons8.com/) - more than a million icons in 47 styles. Free and subscription. Icons can be edited in-place before downloading.
-* [Iconduck](https://iconduck.com/) - more than 250 000 free open source icons
-* [Techicons](https://techicons.dev/) - SVG and PNG tech icons, sourced from https://github.com/devicons/devicon. 473 icons. 
-* Cloud providers:
-    * [Azure](https://learn.microsoft.com/en-us/azure/architecture/icons/)
-    * [AWS](https://aws.amazon.com/architecture/icons/)  
     
 ### Element ID 
 
