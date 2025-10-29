@@ -1,11 +1,16 @@
 package org.nasdanika.models.app.graph.drawio;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.util.URI;
@@ -25,8 +30,12 @@ import org.nasdanika.drawio.Connection;
 import org.nasdanika.drawio.Element;
 import org.nasdanika.drawio.LinkTarget;
 import org.nasdanika.drawio.ModelElement;
+import org.nasdanika.drawio.Node;
 import org.nasdanika.drawio.Page;
 import org.nasdanika.drawio.Root;
+import org.nasdanika.drawio.comparators.CartesianNodeComparator;
+import org.nasdanika.drawio.comparators.Comparators;
+import org.nasdanika.drawio.comparators.FlowComparator;
 import org.nasdanika.emf.persistence.EObjectLoader;
 import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Text;
@@ -39,11 +48,24 @@ import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.graph.WidgetFactory;
 import org.nasdanika.persistence.ConfigurationException;
 import org.nasdanika.persistence.ObjectLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.EvaluationException;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.ParseException;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * Base class for processors
  */
 public abstract class BaseProcessor<T extends Element> implements WidgetFactory {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(BaseProcessor.class);
+	
 	
 	private static final String PLAIN_TEXT = "text/plain";
 
@@ -370,7 +392,30 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 		}
 		return null;
 	}
-			
+	
+	protected ModelElement getLabelModelElement(Label label) {
+		for (Adapter a: label.eAdapters()) {
+			if (a instanceof ModelElementAdapter) {
+				return ((ModelElementAdapter) a).getModelElement();
+			}
+		}
+		return null;
+	}
+
+	protected int compareLabelsBySortKey(Label a, Label b) {
+		String aKey = getLabelSortKey(a);
+		String bKey = getLabelSortKey(b);
+		if (Util.isBlank(aKey)) {
+			return Util.isBlank(bKey) ? 0 : 1;
+		} 
+		
+		if (Util.isBlank(bKey)) {
+			return -1;
+		}
+		
+		return aKey.compareTo(bKey);
+	}	
+	
 	protected int compareLabelsBySortKeyAndText(Label a, Label b) {
 		String aKey = getLabelSortKey(a);
 		String bKey = getLabelSortKey(b);
@@ -398,14 +443,73 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 		return Jsoup.parse(a.getText()).text().compareTo(Jsoup.parse(b.getText()).text());
 	}	
 	
+	protected Predicate<Connection> createFlowComparatorConnectionPredicate(Object config) {
+		if (config instanceof String) {
+			return conn -> {
+				try {			
+					ExpressionParser parser = new SpelExpressionParser();
+					Expression exp = parser.parseExpression((String) config);
+					EvaluationContext evaluationContext = new StandardEvaluationContext();
+					return exp.getValue(evaluationContext, conn, Boolean.class);
+				} catch (ParseException e) {
+					LOGGER.error("Error parsing connection predicate expression '" + config + "' for " + conn, e);
+				} catch (EvaluationException e) {
+					LOGGER.error("Error evaluating connection predicate expression '" + config + "' for " + conn, e);
+				}
+				return true; // Has to explicitly evaluate to false
+			};
+		}
+		
+		Predicate<Connection> ret = null;		
+		if (config instanceof Iterable) {
+			for (Object ce: (Iterable<?>) config) {
+				Predicate<Connection> cePredicate = createFlowComparatorConnectionPredicate(ce);
+				if (cePredicate != null) {
+					if (ret == null) {
+						ret = cePredicate;
+					} else {
+						ret = ret.and(cePredicate);
+					}
+				}
+			}
+		}
+		
+		return ret;
+	}	
+	
+	protected Comparator<ModelElement> createChildLabelModelElementComparator(Comparators comparatorType, Object config) {
+		return switch (comparatorType) {
+			case flow -> new FlowComparator(createFlowComparatorConnectionPredicate(config));
+			case reverseFlow -> new FlowComparator(createFlowComparatorConnectionPredicate(config)).reversed();
+			default -> {
+				for (CartesianNodeComparator.Direction direction: CartesianNodeComparator.Direction.values()) {
+					if (direction.name().equals(comparatorType.name())) {
+						CartesianNodeComparator nodeComparator = new CartesianNodeComparator(direction);
+						yield (a, b) -> {
+							if (a instanceof Node) {
+								if (b instanceof Node) {
+									return nodeComparator.compare((Node) a, (Node) b);
+								}
+								return -1;
+							}
+							return b instanceof Node ? 1 : 0;
+						};
+					}			
+				}						
+				
+				yield null;
+			}
+		};		
+	}
+	
 	/**
-	 * Groups by role, sorts by sort key and label text
+	 * Groups by role, sorts by child comparator, sort key and label text
 	 * @param label
 	 * @param children
 	 */
 	protected void addChildLabels(Label label, Collection<Label> childLabels, ProgressMonitor progressMonitor) {
 		Map<String, List<Label>> groupedByRole = Util.groupBy(childLabels, this::getLabelRole);
-		groupedByRole.values().forEach(labels -> Collections.sort(labels, this::compareLabelsBySortKeyAndText));
+		groupedByRole.values().forEach(labels -> Collections.sort(labels, getChildLabelComparator()));
 		
 		String childRole = configuration.getChildRole();
 		if (!Util.isBlank(childRole)) {
@@ -460,6 +564,59 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 			progressMonitor.worked(Status.ERROR, 1, "Unsupported roles: " + groupedByRole.keySet(), label);				
 		}				
 	}
+	
+	protected Comparator<Label> getChildLabelComparator() {
+		Element childComparatorPropertySource = element instanceof Page ? ((Page) element).getModel().getRoot() : element;
+		if (childComparatorPropertySource instanceof ModelElement) {
+			String childComparatorProperty = configuration.getChildComparatorProperty();
+			if (!Util.isBlank(childComparatorProperty)) {
+				String childLabelComparatorStr = ((ModelElement) childComparatorPropertySource).getProperty(childComparatorProperty);
+				if (!Util.isBlank(childLabelComparatorStr)) {
+					Yaml yaml = new Yaml();
+					Object spec = yaml.load(childLabelComparatorStr);
+					return createChildLabelComparator(spec);
+				}
+			}
+		}
+				
+		return this::compareLabelsBySortKeyAndText;
+	}
+	
+	protected Comparator<Label> createChildLabelComparator(Object spec) {
+		if (spec instanceof Map) {
+			List<Comparator<Label>> comparators = new ArrayList<>();	
+			for (Entry<?, ?> se: ((Map<?,?>) spec).entrySet()) {
+				for (Comparators comparatorType: Comparators.values()) {
+					if (comparatorType.key.equals(se.getKey())) {
+						Comparator<ModelElement> childLabelModelElementComparator = createChildLabelModelElementComparator(comparatorType, se.getValue());
+						if (childLabelModelElementComparator != null) {
+							comparators.add((l1, l2) -> {
+								ModelElement me1 = getLabelModelElement(l1);
+								ModelElement me2 = getLabelModelElement(l2);
+								if (me1 != null && me2 != null) {
+									int cmp = childLabelModelElementComparator.compare(me1, me2);
+									return cmp;
+								}									
+								return 0;
+							});
+						}
+					}
+				}
+			}
+			
+			comparators.add(this::compareLabelsBySortKey);			
+			return comparators.stream().reduce(Comparator::thenComparing).get();
+		}
+		if (spec instanceof Iterable) {
+			Map<Object, Object> specMap = new LinkedHashMap<>();
+			for (Object se: (Iterable<?>) spec) {
+				specMap.put(se, null);
+			}
+			return createChildLabelComparator(specMap);
+		}
+		
+		return createChildLabelComparator(spec == null ? Collections.emptyMap() : Collections.singletonMap(spec, null));		
+	}	
 	
 	protected String getRole() {
 		if (element instanceof ModelElement) {

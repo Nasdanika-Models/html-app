@@ -52,6 +52,12 @@ public class Configuration extends org.nasdanika.drawio.gen.section.Configuratio
 	public static final String SORT_KEY_PROPERTY = "sort-key";
 	
 	public static final String INDEX_NAME = "index.html";
+	
+	public static final String CHILD_COMPARATOR_PROPERTY = "child-comparator";
+	
+	public String getChildComparatorProperty() {
+		return CHILD_COMPARATOR_PROPERTY;
+	}		
 		
 	public String getSortKeyProperty() {
 		return SORT_KEY_PROPERTY;
