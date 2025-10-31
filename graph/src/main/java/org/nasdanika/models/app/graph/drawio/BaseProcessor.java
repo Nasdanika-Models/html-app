@@ -36,6 +36,7 @@ import org.nasdanika.drawio.Root;
 import org.nasdanika.drawio.comparators.CartesianNodeComparator;
 import org.nasdanika.drawio.comparators.Comparators;
 import org.nasdanika.drawio.comparators.FlowComparator;
+import org.nasdanika.drawio.comparators.PositionModelElementComparator;
 import org.nasdanika.emf.persistence.EObjectLoader;
 import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Text;
@@ -481,6 +482,8 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 		return switch (comparatorType) {
 			case flow -> new FlowComparator(createFlowComparatorConnectionPredicate(config));
 			case reverseFlow -> new FlowComparator(createFlowComparatorConnectionPredicate(config)).reversed();
+			case position -> new PositionModelElementComparator();
+			case positionReversed -> new PositionModelElementComparator().reversed();
 			default -> {
 				for (CartesianNodeComparator.Direction direction: CartesianNodeComparator.Direction.values()) {
 					if (direction.name().equals(comparatorType.name())) {
