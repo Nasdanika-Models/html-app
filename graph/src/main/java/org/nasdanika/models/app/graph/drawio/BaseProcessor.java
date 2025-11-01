@@ -35,6 +35,7 @@ import org.nasdanika.drawio.Page;
 import org.nasdanika.drawio.Root;
 import org.nasdanika.drawio.comparators.CartesianNodeComparator;
 import org.nasdanika.drawio.comparators.Comparators;
+import org.nasdanika.drawio.comparators.EnumerateComparator;
 import org.nasdanika.drawio.comparators.FlowComparator;
 import org.nasdanika.drawio.comparators.PositionModelElementComparator;
 import org.nasdanika.emf.persistence.EObjectLoader;
@@ -403,18 +404,31 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 		return null;
 	}
 
-	protected int compareLabelsBySortKey(Label a, Label b) {
+	protected int compareLabelsBySortKeyAndPosition(Label a, Label b) {
 		String aKey = getLabelSortKey(a);
 		String bKey = getLabelSortKey(b);
 		if (Util.isBlank(aKey)) {
-			return Util.isBlank(bKey) ? 0 : 1;
+			if (Util.isBlank(bKey)) {
+				int ap = getLabelModelElement(a).getPosition();
+				int bp = getLabelModelElement(b).getPosition();
+				return ap - bp;
+			}
+			
+			return 1;
 		} 
 		
 		if (Util.isBlank(bKey)) {
 			return -1;
 		}
 		
-		return aKey.compareTo(bKey);
+		int cmp = aKey.compareTo(bKey);		
+		if (cmp != 0) {		
+			return cmp;
+		}
+		
+		int ap = getLabelModelElement(a).getPosition();
+		int bp = getLabelModelElement(b).getPosition();
+		return ap - bp;
 	}	
 	
 	protected int compareLabelsBySortKeyAndText(Label a, Label b) {
@@ -484,6 +498,8 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 			case reverseFlow -> new FlowComparator(createFlowComparatorConnectionPredicate(config)).reversed();
 			case position -> new PositionModelElementComparator();
 			case positionReversed -> new PositionModelElementComparator().reversed();
+			case enumerate -> new EnumerateComparator();
+			case enumerateReversed -> new EnumerateComparator().reversed();
 			default -> {
 				for (CartesianNodeComparator.Direction direction: CartesianNodeComparator.Direction.values()) {
 					if (direction.name().equals(comparatorType.name())) {
@@ -607,7 +623,7 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 				}
 			}
 			
-			comparators.add(this::compareLabelsBySortKey);			
+			comparators.add(this::compareLabelsBySortKeyAndPosition);			
 			return comparators.stream().reduce(Comparator::thenComparing).get();
 		}
 		if (spec instanceof Iterable) {

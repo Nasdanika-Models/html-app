@@ -45,6 +45,19 @@ The specification can be a list, a string, or a map. Lists are treated as maps w
 
 Map entry keys are comparator names and values are configurations. The following comparators are supported:
 
+* ``enumerate`` and ``reverse-enumerate`` order model elements using enumerate value. 
+Elements without enumerate value are considered equal to any other elements including those
+with enumerate value. 
+This is done to allow chaining with, say, flow comparator. 
+As a result, this comparator will violate the transitivity requirement if some elements don't have enumerate value. 
+Therefore, it shall be chained with other comparators. For example, flow and then position or label.    
+Enumerate value is treated as path of dot-separated values and two enumerate values are compared
+element-by-element with elements containing only digits parsed and compared as integers.
+For example, ``20`` would be greater than ``3``, ``1.1.1`` would be greater than ``1.1`` and smaller than ``2.5.6`` or ``3``.
+Numbers are considered smaller than strings ``1.12`` is smaller than ``1.a``
+Practical use - ordering connections emanating from the same node. Say, excursions from the same location.  
+If those excursions have multiple segments, then this comparator can be chained with the flow comparator
+and possibly terminated by the position or label comparator just in case.
 * ``flow`` and ``reverse-flow`` order elements based on how they are connected to each other. These comparators configuration is either null, string or a list of strings. Strings are evaluated as [Spring Expression Language](https://docs.spring.io/spring-framework/reference/core/expressions.html) (SpEL) boolean expressions in the context of connections. If the expression evaluates to ``false``, then the given connection is not included in the flow traversal. It can be used if there are loops. For example, you plan a trip and want the destinations to be sorted in the visit order. There is a loop - the returning flight home. You can provide an expression which evaluates to ``false`` for that flight.
 * ``position`` and ``reverse-position`` order elements by their position in the container's children list (z-order).  
 * ``down-right`` - Compares nodes by their vertical order first with higher nodes being smaller and then by horizontal order with nodes on the left being smaller. Nodes are considered vertically equal if they vertically overlap. This comparator can be used for org. charts.
