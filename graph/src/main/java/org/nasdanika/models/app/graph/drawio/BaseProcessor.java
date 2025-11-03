@@ -750,4 +750,11 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 		return configuration.getIndexName();
 	}
 	
+	/**
+	 * Returns true if the element is tested by configuration
+	 */
+	public boolean test() {
+		return configuration.test(element);
+	}
+	
 }

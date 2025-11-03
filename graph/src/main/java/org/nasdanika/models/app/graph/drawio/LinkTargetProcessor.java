@@ -2,6 +2,7 @@ package org.nasdanika.models.app.graph.drawio;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.nasdanika.drawio.Connection;
 import org.nasdanika.drawio.LinkTarget;
@@ -38,5 +39,19 @@ public abstract class LinkTargetProcessor<T extends LinkTarget> extends BaseProc
 		}
 		return false;
 	}	
+	
+	@Override
+	public boolean test() {
+		if (!referrers.isEmpty()) {
+			// Returns true if there are tested referrers
+			Optional<ModelElement> testedReferrers = referrers
+				.stream()
+				.filter(configuration::test)
+				.findAny();
+			return testedReferrers.isPresent();
+		}
+		
+		return super.test();
+	}
 
 }

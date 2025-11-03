@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
@@ -54,7 +55,18 @@ public class DocumentProcessor extends BaseProcessor<Document> {
 				.toList();
 		
 		if (topLevelPageProcessorSuppliers.isEmpty()) {
-			PageProcessor firstPageProcessor = pageProcessors.get(element.getPages().iterator().next()).getProcessor();
+			Optional<PageProcessor> firstPageProcessorOpt = element.getPages()
+				.stream()
+				.map(pageProcessors::get)
+				.filter(PageProcessor.class::isInstance)
+				.map(PageProcessor.class::cast)
+				.filter(PageProcessor::test)
+				.findFirst();
+			
+			if (firstPageProcessorOpt.isEmpty()) {
+				return Supplier.from(Collections.emptyList(), "Document pages supplier");
+			}
+			PageProcessor firstPageProcessor = firstPageProcessorOpt.get();
 			firstPageProcessor.isTopLevelPage = true; // Forcing
 			return firstPageProcessor.createLabelsSupplier();			
 		}

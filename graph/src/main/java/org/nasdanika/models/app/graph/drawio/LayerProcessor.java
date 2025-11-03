@@ -51,7 +51,7 @@ public class LayerProcessor extends BaseProcessor<Layer> {
 	public Supplier<Collection<Label>> createLabelsSupplier() {
 		MapCompoundSupplier<LayerElement, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Child labels supplier");
 		for (Entry<LayerElement, ProcessorInfo<WidgetFactory>> ce: childInfos.entrySet()) {
-			if (isLogicalChild(ce.getKey())) {
+			if (configuration.test(ce.getKey()) && isLogicalChild(ce.getKey())) {
 				WidgetFactory processor = ce.getValue().getProcessor();
 				if (processor != null) {
 					childLabelsSupplier.put(ce.getKey(), processor.createLabelsSupplier());

@@ -3,6 +3,8 @@ package org.nasdanika.models.app.graph.drawio;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -11,13 +13,16 @@ import org.eclipse.emf.common.util.URI;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Supplier;
 import org.nasdanika.common.Util;
+import org.nasdanika.drawio.Connection;
 import org.nasdanika.drawio.Document;
 import org.nasdanika.drawio.LayerElement;
 import org.nasdanika.drawio.ModelElement;
+import org.nasdanika.drawio.Node;
 import org.nasdanika.drawio.Page;
 import org.nasdanika.drawio.Root;
 import org.nasdanika.exec.content.ContentFactory;
 import org.nasdanika.exec.content.Text;
+import org.nasdanika.graph.Element;
 import org.nasdanika.graph.processor.ProcessorElement;
 import org.nasdanika.graph.processor.ProcessorInfo;
 import org.nasdanika.graph.processor.RegistryEntry;
@@ -95,6 +100,14 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 		return Collections.singleton(action);
 	}	
 	
+	protected boolean isAncestor(Element a, Element d) {
+		if (d instanceof ModelElement) {
+			ModelElement dp = ((ModelElement) d).getParent();
+			return dp == a || isAncestor(a, dp);
+		}
+		return false;
+	}
+	
 	/**
 	 * Creates filtered representation
 	 * @param semanticModelElement
@@ -107,6 +120,48 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 	public Document createRepresentation(ProgressMonitor progressMonitor) throws ParserConfigurationException {		
 		Document representationDocument = Document.create(true, element.getDocument().getURI());
 		representationDocument.getPages().add(element);
+		Collection<String> connectionsToRemove = new HashSet<>();
+		// Removing the first found while there are elements to remove
+		while (true) {
+			Optional<Element> toRemoveOpt = representationDocument.getPages().get(0)
+				.stream()
+				.filter(e -> !configuration.test(e))
+				.findFirst();
+			
+			if (toRemoveOpt.isPresent()) {
+				Element toRemove = toRemoveOpt.get();
+				if (toRemove instanceof ModelElement) {
+					if (toRemove instanceof Node) {
+						((Node) toRemove).getOutgoingConnections()
+							.stream()
+							.map(Connection::getId)
+							.forEach(connectionsToRemove::add);
+						
+						((Node) toRemove).getIncomingConnections()
+							.stream()
+							.map(Connection::getId)
+							.forEach(connectionsToRemove::add);
+					}
+					((ModelElement) toRemove).remove();
+				}
+			} else {
+				break;
+			}
+		}
+		
+		for (String id: connectionsToRemove) {
+			Optional<Connection> toRemoveOpt = representationDocument.getPages().get(0)
+				.stream()
+				.filter(Connection.class::isInstance)
+				.map(Connection.class::cast)
+				.filter(c -> id.equals(c.getId()))
+				.findFirst();
+			
+			if (toRemoveOpt.isPresent()) {
+				toRemoveOpt.get().remove();
+			}
+		}
+		
 		representationDocument.getPages().get(0).accept(representationElement -> {
 			if (representationElement instanceof ModelElement) {
 				filterRepresentationElement(findElement(representationElement), (ModelElement) representationElement, progressMonitor);
@@ -139,7 +194,10 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 		
 		// Links
 		if (representationElement instanceof LayerElement) {
-			if (sourceElement.isTargetLink()) {
+			if (representationElement.getId().equals("ushuaia")) {
+				System.out.println(representationElement.getLink());
+			}
+			if (representationElement.isTargetLink()) {
 				representationElement.setLink(null);
 			}
 			while (sourceElement.isTargetLink() && sourceElement.getLinkTarget() instanceof ModelElement) {

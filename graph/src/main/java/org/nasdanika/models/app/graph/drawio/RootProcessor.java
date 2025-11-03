@@ -29,7 +29,9 @@ public class RootProcessor extends BaseProcessor<Root> {
 	public Supplier<Collection<Label>> createLabelsSupplier() {
 		MapCompoundSupplier<Layer, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Layer labels supplier");
 		for (Entry<Layer, ProcessorInfo<WidgetFactory>> ce: layerProcessorInfos.entrySet()) {
-			childLabelsSupplier.put(ce.getKey(), ce.getValue().getProcessor().createLabelsSupplier());
+			if (configuration.test(ce.getKey())) {
+				childLabelsSupplier.put(ce.getKey(), ce.getValue().getProcessor().createLabelsSupplier());
+			}
 		}
 		
 		return childLabelsSupplier.then(this::createRootLabels);

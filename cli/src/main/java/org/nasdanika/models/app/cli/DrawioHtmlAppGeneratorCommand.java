@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -24,11 +25,14 @@ import org.nasdanika.drawio.Document;
 import org.nasdanika.drawio.Element;
 import org.nasdanika.drawio.ModelElement;
 import org.nasdanika.drawio.Page;
+import org.nasdanika.drawio.Tag;
 import org.nasdanika.graph.processor.ProcessorInfo;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.graph.WidgetFactory;
 import org.nasdanika.models.app.graph.drawio.DrawioHtmlAppGenerator;
 import org.nasdanika.models.app.graph.drawio.RepresentationElementFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -43,6 +47,8 @@ import picocli.CommandLine.ParentCommand;
 @ParentCommands(Document.Supplier.class)
 @Description(icon = "https://docs.nasdanika.org/images/html-application.svg")
 public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorCommand {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(DrawioHtmlAppGeneratorCommand.class);
 	
 	public DrawioHtmlAppGeneratorCommand(CapabilityLoader capabilityLoader) {
 		super(capabilityLoader);
@@ -110,6 +116,19 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 		names = {"-b", "--base-uri"},
 		description = "Base URI. E.g. 'pages/'")
 	private String base;
+	
+	@Option(
+		names = "--predicate",
+		description = {
+				"SpEL expression for filtering",
+				"diagram elements"
+		})
+	private String predicate;
+	
+	@Option(
+		names = "--tag",
+		description = "Tag(s) to filter diagram elements")
+	private List<String> tag;
 		
 	@Option(
 		names = "--ref-base-uri",
@@ -205,9 +224,35 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 			}
 			root = pageOpt.get();
 		}
-		Supplier<Collection<Label>> labelSupplier = actionGenerator.createLabelsSupplier(root, progressMonitor);
+		Supplier<Collection<Label>> labelSupplier = actionGenerator.createLabelsSupplier(root, this::testElement, progressMonitor);
 		Consumer<Diagnostic> diagnosticConsumer = createDiagnosticConsumer(progressMonitor);
 		return labelSupplier.call(progressMonitor, diagnosticConsumer);
 	}		
+	
+	protected boolean testElement(org.nasdanika.graph.Element element) {
+		if (!Util.isBlank(predicate)) {
+			try {
+				return element.evaluate(predicate, Boolean.class);
+			} catch (Exception e) {
+				LOGGER.debug("Error evaluating predicate '" + predicate + "' in the context of '" + element + "': " + e, e);
+			}
+		}
+		
+		if (tag != null && !tag.isEmpty()) {
+			if (element instanceof ModelElement) {
+				Set<Tag> elementTags = ((ModelElement) element).getTags();
+				if (elementTags.isEmpty()) {
+					return true; // No tags 
+				}
+				for (Tag eTag: elementTags) {
+					if (tag.contains(eTag.getName())) {
+						return true;
+					}
+				}
+				return false;
+			}
+		}
+		return true;
+	}
 
 }

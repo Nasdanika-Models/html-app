@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -18,6 +19,8 @@ import org.nasdanika.drawio.ConnectionBase;
 import org.nasdanika.drawio.Document;
 import org.nasdanika.drawio.LinkTarget;
 import org.nasdanika.drawio.ModelElement;
+import org.nasdanika.drawio.Node;
+import org.nasdanika.drawio.Root;
 import org.nasdanika.graph.Connection;
 import org.nasdanika.graph.Element;
 import org.nasdanika.graph.processor.NopEndpointProcessorConfigFactory;
@@ -39,8 +42,51 @@ public class DrawioHtmlAppGenerator extends Configuration {
 		this.capabilityLoader = capabilityLoader;
 	}
 	
+	/**
+	 * @param predicate
+	 * @return if the predicate is null or returns true for a given element, its parent and source/target for connections.
+	 */
+	protected boolean test(Element element, Predicate<Element> predicate) {
+		if (predicate == null) {
+			return true;
+		}
+		
+		if (predicate.test(element)) {
+			if (element instanceof org.nasdanika.drawio.Connection) {
+				Node source = ((org.nasdanika.drawio.Connection) element).getSource();
+				if (source != null && !test(source, predicate)) {
+					return false;
+				}
+				Node target = ((org.nasdanika.drawio.Connection) element).getTarget();
+				if (target != null && !test(target, predicate)) {
+					return false;
+				}
+			}
+			
+			if (element instanceof ModelElement) {
+				ModelElement parent = ((ModelElement) element).getParent();
+				if (parent != null && !test(parent, predicate)) {
+					return false;
+				}
+				if (element instanceof Root) {
+					if (!test(((Root) element).getModel().getPage(), predicate)) {
+						return false;
+					}
+				}
+			}					
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
 	@SuppressWarnings("unchecked")
-	public Supplier<Collection<Label>> createLabelsSupplier(org.nasdanika.drawio.Element root, ProgressMonitor progressMonitor) {
+	public Supplier<Collection<Label>> createLabelsSupplier(
+			org.nasdanika.drawio.Element root,
+			Predicate<Element> predicate,
+			ProgressMonitor progressMonitor) {
+		
 		NopEndpointProcessorConfigFactory<WidgetFactory> processorConfigFactory = new NopEndpointProcessorConfigFactory<WidgetFactory>() {
 			
 			@Override
@@ -57,7 +103,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 		root.accept(consumer, null);
 		Map<Element, ProcessorConfig> configs = processorConfigTransformer.transform(elements, false, progressMonitor);
 		
-		DrawioProcessorFactory processorFactory = createProcessorFactory(progressMonitor);
+		DrawioProcessorFactory processorFactory = createProcessorFactory(predicate, progressMonitor);
 		ReflectiveProcessorFactoryProvider<WidgetFactory, WidgetFactory, WidgetFactory> rpfp = new ReflectiveProcessorFactoryProvider<>(processorFactory);
 		Map<Element, ProcessorInfo<WidgetFactory>> processors = rpfp.getFactory().createProcessors(configs.values(), false, progressMonitor);
 		
@@ -109,7 +155,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 		return super.getRefBaseURI(docURI);
 	}
 
-	protected DrawioProcessorFactory createProcessorFactory(ProgressMonitor progressMonitor) {
+	protected DrawioProcessorFactory createProcessorFactory(Predicate<Element> predicate, ProgressMonitor progressMonitor) {
 		return new DrawioProcessorFactory(capabilityLoader, progressMonitor) {
 			
 			@Override
@@ -234,6 +280,11 @@ public class DrawioHtmlAppGenerator extends Configuration {
 					BiConsumer<Element, BiConsumer<ProcessorInfo<Object>, ProgressMonitor>> infoProvider,
 					ProgressMonitor progressMonitor) {
 				return DrawioHtmlAppGenerator.this.filter(config, processor, infoProvider, progressMonitor);
+			}
+			
+			@Override
+			public boolean test(Element element) {
+				return  DrawioHtmlAppGenerator.this.test(element, predicate);
 			}
 			
 		};

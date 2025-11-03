@@ -217,6 +217,15 @@ public class Configuration extends org.nasdanika.drawio.gen.section.Configuratio
 		return Context.EMPTY_CONTEXT;
 	}
 	
+	/**
+	 * Element predicate
+	 * @param element
+	 * @return
+	 */
+	public boolean test(Element element) {
+		return true;
+	}
+	
 	public void onDiagnostic(org.nasdanika.common.Diagnostic diagnostic) {
 		if (diagnostic.getStatus() == Status.FAIL || diagnostic.getStatus() == Status.ERROR) {
 			System.err.println("***********************");

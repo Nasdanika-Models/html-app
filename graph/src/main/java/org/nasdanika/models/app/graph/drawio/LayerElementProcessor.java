@@ -161,33 +161,35 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 
 		// Own child nodes not linked to other nodes
 		C: for (Entry<ModelElement, ProcessorInfo<WidgetFactory>> ce: childInfos.entrySet()) {
-			ModelElement child = ce.getKey();
-			if (child instanceof Connection && ((Connection) child).getSource() != null) {
-				continue;
-			}
-			if (child instanceof Node) {
-				Node childNode = (Node) child;
-				if (!Util.isBlank(parentProperty)) {
-					if (!Util.isBlank(targetKey)) {
-						for (Connection cnoc: childNode.getOutgoingConnections()) {
-							String cParent = cnoc.getProperty(parentProperty);
-							if (targetKey.equals(cParent)) {
-								continue C; // Logical child of connection's target
-							}
-						}
-					}
-					if (!Util.isBlank(sourceKey)) {
-						for (Connection cnoc: childNode.getIncomingConnections()) {
-							String cParent = cnoc.getProperty(parentProperty);
-							if (sourceKey.equals(cParent)) {
-								continue C; // Logical child of connection's source
-							}
-						}
-					}
+			ModelElement child = ce.getKey();		
+			if (configuration.test(child)) {
+				if (child instanceof Connection && ((Connection) child).getSource() != null) {
+					continue;
 				}
-				
+				if (child instanceof Node) {
+					Node childNode = (Node) child;
+					if (!Util.isBlank(parentProperty)) {
+						if (!Util.isBlank(targetKey)) {
+							for (Connection cnoc: childNode.getOutgoingConnections()) {
+								String cParent = cnoc.getProperty(parentProperty);
+								if (targetKey.equals(cParent)) {
+									continue C; // Logical child of connection's target
+								}
+							}
+						}
+						if (!Util.isBlank(sourceKey)) {
+							for (Connection cnoc: childNode.getIncomingConnections()) {
+								String cParent = cnoc.getProperty(parentProperty);
+								if (sourceKey.equals(cParent)) {
+									continue C; // Logical child of connection's source
+								}
+							}
+						}
+					}
+					
+				}
+				childLabelsSupplier.put(child, ce.getValue().getProcessor().createLabelsSupplier());
 			}
-			childLabelsSupplier.put(child, ce.getValue().getProcessor().createLabelsSupplier());
 		}
 		
 		// Connections without parent property
