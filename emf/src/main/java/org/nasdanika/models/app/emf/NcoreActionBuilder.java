@@ -2,6 +2,7 @@ package org.nasdanika.models.app.emf;
 
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -165,7 +166,7 @@ public class NcoreActionBuilder<T extends EObject> extends EObjectActionBuilder<
 					return null;
 				}
 				return processedDocument.toDataURI(true).toString();
-			} catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
+			} catch (ParserConfigurationException | SAXException | IOException | TransformerException | URISyntaxException e) {
 				throw new NasdanikaException("Error loading drawio document: " + e, e);
 			}
 		}
@@ -502,7 +503,7 @@ public class NcoreActionBuilder<T extends EObject> extends EObjectActionBuilder<
 							resolutionListener,  
 							progressMonitor));
 					ret.put(actionRepresentationEntry.getKey(), document);
-				} catch (ParserConfigurationException | SAXException | IOException e) {
+				} catch (ParserConfigurationException | SAXException | IOException | URISyntaxException e) {
 					throw new NasdanikaException("Error loading drawio document: " + e, e);
 				}
 			} else if (TextResourceFactory.isDataURI(representationURI)) {
