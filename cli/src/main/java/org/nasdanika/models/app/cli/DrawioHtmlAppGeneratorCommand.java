@@ -5,10 +5,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import org.eclipse.emf.common.util.URI;
 import org.nasdanika.capability.CapabilityLoader;
@@ -97,7 +102,55 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 				for (RepresentationElementFilter ref: representationElementFilters) {
 					ref.filterRepresentationElement(sourceElement, representationElement, registry, progressMonitor);
 				}
+				
+				if (representationFilterPropery != null) {
+					for (Entry<String, String> ppe: predicatePropery.entrySet()) {
+						String propVal = sourceElement.getProperty(ppe.getValue());
+						if (!Util.isBlank(propVal)) {
+							ScriptEngineManager sem = new ScriptEngineManager();
+							ScriptEngine scriptEngine = sem.getEngineByName(ppe.getKey());
+							try {
+								scriptEngine.put("sourceElement", sourceElement);
+								scriptEngine.put("representationElement", representationElement);
+								scriptEngine.eval(propVal);
+							} catch (ScriptException e) {
+								throw new CommandLine.ExecutionException(spec.commandLine(), "Error evaluating predicate: " + e, e);
+							}
+						}
+					}
+				}
 			}
+			
+			@Override
+			public boolean test(org.nasdanika.graph.Element element) {
+				if (predicatePropery != null && element instanceof ModelElement) {
+					for (Entry<String, String> ppe: predicatePropery.entrySet()) {
+						String propVal = ((ModelElement) element).getProperty(ppe.getValue());
+						if (!Util.isBlank(propVal)) {
+							if ("spel".equals(ppe.getKey())) {
+								Boolean result = element.evaluate(propVal, Boolean.class); // TODO - variables from context?
+								if (Boolean.FALSE.equals(result)) {
+									return false;
+								}
+							} else {
+								ScriptEngineManager sem = new ScriptEngineManager();
+								ScriptEngine scriptEngine = sem.getEngineByName(ppe.getKey());
+								try {
+									scriptEngine.put("element", element);
+									Object result = scriptEngine.eval(propVal);
+									if (Boolean.FALSE.equals(result)) {
+										return false;
+									}
+								} catch (ScriptException e) {
+									throw new CommandLine.ExecutionException(spec.commandLine(), "Error evaluating predicate: " + e, e);
+								}
+							}
+						}
+					}
+				}
+				
+				return super.test(element);
+			};
 			
 		};
 	}
@@ -184,7 +237,29 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 					"If provided, actions are generated for the page",
 					"with matching name"
 			})
-	private String pageName;		
+	private String pageName;
+	
+	@Option(			
+			names = {"--predicate-property"},
+			paramLabel = "Predicate property",
+			description = {
+					"Mapping of a script language name",
+					"to the property name containing",
+					"predicate script in this language",
+					"'spel' is reserved for SpEL"
+			})
+	private Map<String,String> predicatePropery;	
+	
+	@Option(			
+			names = {"--representation-filter-property"},
+			paramLabel = "Predicate property",
+			description = {
+					"Mapping of a script language name",
+					"to the property name containing",
+					"representation filter script",
+					"in this language"
+			})
+	private Map<String,String> representationFilterPropery;	
 
 	@Override
 	protected Collection<Label> getLabels(ProgressMonitor progressMonitor) {

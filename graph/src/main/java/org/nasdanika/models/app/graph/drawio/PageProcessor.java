@@ -194,9 +194,6 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 		
 		// Links
 		if (representationElement instanceof LayerElement) {
-			if (representationElement.getId().equals("ushuaia")) {
-				System.out.println(representationElement.getLink());
-			}
 			if (representationElement.isTargetLink()) {
 				representationElement.setLink(null);
 			}
