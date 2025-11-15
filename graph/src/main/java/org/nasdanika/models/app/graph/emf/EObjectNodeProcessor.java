@@ -66,6 +66,7 @@ import org.nasdanika.models.app.AppFactory;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.Link;
 import org.nasdanika.models.app.gen.AppAdapterFactory;
+import org.nasdanika.models.app.graph.WidgetFactory;
 import org.nasdanika.models.bootstrap.BootstrapElement;
 import org.nasdanika.models.bootstrap.BootstrapFactory;
 import org.nasdanika.models.bootstrap.Modal;
@@ -74,7 +75,6 @@ import org.nasdanika.models.bootstrap.TableCell;
 import org.nasdanika.models.bootstrap.TableRow;
 import org.nasdanika.models.bootstrap.TableSection;
 import org.nasdanika.models.html.HtmlFactory;
-import org.nasdanika.models.app.graph.WidgetFactory;
 import org.nasdanika.ncore.Documented;
 import org.nasdanika.ncore.NamedElement;
 import org.nasdanika.ncore.util.SemanticInfo;
@@ -118,7 +118,7 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 		return ((EObjectNodeProcessor<?>) widgetFactory);
 	};		
 	
-	protected java.util.function.Function<ProgressMonitor, Action> prototypeProvider;
+	protected java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider;
 	protected NodeProcessorConfig<WidgetFactory, WidgetFactory> config;
 	protected Context context;
 	private URI uri;
@@ -132,7 +132,7 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 	public EObjectNodeProcessor(
 			NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
 			Context context, 
-			java.util.function.Function<ProgressMonitor, Action> prototypeProvider) {		
+			java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider) {		
 		this.config = config;
 		this.context = context;
 		this.prototypeProvider = prototypeProvider;
@@ -951,7 +951,7 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 	 */
 	protected Action newAction(EObject eObject, ProgressMonitor progressMonitor) {
 		if (prototypeProvider != null) {
-			Action prototype = prototypeProvider.apply(progressMonitor);
+			Action prototype = prototypeProvider.apply(eObject, progressMonitor);
 			if (prototype != null) {
 				return prototype;
 			}				

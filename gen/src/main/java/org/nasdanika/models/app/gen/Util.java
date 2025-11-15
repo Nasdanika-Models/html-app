@@ -894,7 +894,7 @@ public final class Util {
 			processor.accept(file, path);
 		}
 		Document document = Jsoup.parse(file, "UTF-8");
-		Elements contentPanelQuery = document.select("body > div > div.row.nsd-app-content-row > div.col.nsd-app-content-panel");							                                              
+		Elements contentPanelQuery = document.select("body > div > div.row.nsd-app-content-row > main.col.nsd-app-content-panel");							                                              
 		if (contentPanelQuery.isEmpty()) {
 			return null;
 		}

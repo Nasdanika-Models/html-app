@@ -4,6 +4,7 @@ package org.nasdanika.models.app.processors;
 
 import java.util.function.BiConsumer;
 
+import org.eclipse.emf.ecore.EObject;
 import org.nasdanika.common.Context;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.graph.processor.NodeProcessorConfig;
@@ -35,7 +36,7 @@ public class LabelProcessorFactory {
 	)
 	public EClassNodeProcessor createEClassifierProcessor(
 			NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-			java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+			java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 			BiConsumer<Label, ProgressMonitor> labelConfigurator,
 			ProgressMonitor progressMonitor) {		
 		return new EClassNodeProcessor(config, context, prototypeProvider) {
@@ -59,7 +60,7 @@ public class LabelProcessorFactory {
 	)
 	public EReferenceNodeProcessor createIdProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -82,7 +83,7 @@ public class LabelProcessorFactory {
 		description = "Label text")
 	public EReferenceNodeProcessor createTextProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -110,7 +111,7 @@ public class LabelProcessorFactory {
 				""")
 	public EReferenceNodeProcessor createIconProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -133,7 +134,7 @@ public class LabelProcessorFactory {
 		description = "Label tooltip")
 	public EReferenceNodeProcessor createTooltipProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -156,7 +157,7 @@ public class LabelProcessorFactory {
 		description = "For some label representations specifies that the label shall be displayed as an outline instead of a solid fill")
 	public EReferenceNodeProcessor createOutlineProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -179,7 +180,7 @@ public class LabelProcessorFactory {
 		description = "Notification to display next to the label. E.g. a number of new messages in an inbox.")
 	public EReferenceNodeProcessor createNotificationProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -202,7 +203,7 @@ public class LabelProcessorFactory {
 		description = "Label children to build UI elements like trees, lists, navigation bars and drop-downs")
 	public EReferenceNodeProcessor createChildrenProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -230,7 +231,7 @@ public class LabelProcessorFactory {
 				""")
 	public EReferenceNodeProcessor createDecoratorProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {

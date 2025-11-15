@@ -4,6 +4,7 @@ package org.nasdanika.models.app.processors;
 
 import java.util.function.BiConsumer;
 
+import org.eclipse.emf.ecore.EObject;
 import org.nasdanika.common.Context;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.graph.processor.NodeProcessorConfig;
@@ -32,7 +33,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 	)
 	public EClassNodeProcessor createEClassifierProcessor(
 			NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-			java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+			java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 			BiConsumer<Label, ProgressMonitor> labelConfigurator,
 			ProgressMonitor progressMonitor) {		
 		return new EClassNodeProcessor(config, context, prototypeProvider) {
@@ -64,7 +65,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 				""")
 	public EReferenceNodeProcessor createIconProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -87,7 +88,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 		description = "Script to execute on link click (activation)")
 	public EReferenceNodeProcessor createLinkProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -110,7 +111,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 		description = "Modal dialog which opens on link activation")
 	public EReferenceNodeProcessor createModalProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -133,7 +134,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 		description = "Link name attribute is used for referencing sections if not blank")
 	public EReferenceNodeProcessor createNameProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -161,7 +162,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 				""")
 	public EReferenceNodeProcessor createConfirmationProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -184,7 +185,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 		description = "Link target")
 	public EReferenceNodeProcessor createTargetProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {
@@ -211,7 +212,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 				""")
 	public EReferenceNodeProcessor createActionProcessor(
 		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
-		java.util.function.Function<ProgressMonitor, Action> prototypeProvider,
+		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
 		return new EReferenceNodeProcessor(config, context, prototypeProvider) {

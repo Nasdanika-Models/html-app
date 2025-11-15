@@ -14,6 +14,7 @@ import org.nasdanika.common.SupplierFactory;
 import org.nasdanika.emf.EObjectAdaptable;
 import org.nasdanika.html.HTMLElement;
 import org.nasdanika.html.Tag;
+import org.nasdanika.html.TagName;
 import org.nasdanika.html.bootstrap.BootstrapElement;
 import org.nasdanika.html.bootstrap.BootstrapFactory;
 import org.nasdanika.html.bootstrap.Container;
@@ -80,7 +81,7 @@ public class PageSupplierFactoryAdapter extends BootstrapElementSupplierFactoryA
 					}
 				
 					if (semanticElement.getContentPanel() != null) {
-						Col contentPanel = contentRow.col();
+						Col contentPanel = contentRow.col(TagName.main);
 						contentPanel.toHTMLElement().addClass("nsd-app-content-panel");
 						parts.put(AppPackage.Literals.PAGE__CONTENT_PANEL, contentPanel.toHTMLElement());
 					}
