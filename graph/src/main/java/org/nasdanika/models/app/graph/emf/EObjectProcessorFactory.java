@@ -23,14 +23,14 @@ import org.nasdanika.models.app.graph.WidgetFactory;
  * @author Pavel
  *
  */
-public class EObjectProcessorFactory extends ProcessorFactory<Object> {
+public class EObjectProcessorFactory extends ProcessorFactory<WidgetFactory,WidgetFactory,Object> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected ProcessorInfo<Object> createProcessor(
-			ProcessorConfig config, 
+	protected ProcessorInfo<WidgetFactory,WidgetFactory,Object> createProcessor(
+			ProcessorConfig<WidgetFactory,WidgetFactory> config, 
 			boolean parallel,
-			BiConsumer<Element, BiConsumer<ProcessorInfo<Object>,ProgressMonitor>> infoProvider,
+			BiConsumer<Element, BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
 			Consumer<CompletionStage<?>> endpointWiringStageConsumer,
 			ProgressMonitor progressMonitor) {
 		
@@ -41,7 +41,7 @@ public class EObjectProcessorFactory extends ProcessorFactory<Object> {
 		if (config.getElement() instanceof EObjectNode) {
 			Object adapter = EcoreUtil.getRegisteredAdapter(((EObjectNode) config.getElement()).get(), NodeProcessorInfo.Factory.class);
 			if (adapter instanceof NodeProcessorInfo.Factory) {
-				return ((NodeProcessorInfo.Factory<Object,WidgetFactory,WidgetFactory>) adapter).create((NodeProcessorConfig<WidgetFactory, WidgetFactory>) config, parallel, infoProvider, endpointWiringStageConsumer, getContext(), progressMonitor);
+				return ((NodeProcessorInfo.Factory<WidgetFactory,WidgetFactory,Object>) adapter).create((NodeProcessorConfig<WidgetFactory, WidgetFactory>) config, parallel, infoProvider, endpointWiringStageConsumer, getContext(), progressMonitor);
 			}
 		}
 		
@@ -56,7 +56,7 @@ public class EObjectProcessorFactory extends ProcessorFactory<Object> {
 	 * Override to return true for compact reference and operation paths
 	 * @return
 	 */
-	protected boolean isCompactPath(ProcessorConfig config) {
+	protected boolean isCompactPath(ProcessorConfig<WidgetFactory,WidgetFactory> config) {
 		return false;
 	}
 		

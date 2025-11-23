@@ -28,12 +28,12 @@ public class NodeProcessor extends LayerElementProcessor<Node> {
 	}
 	
 	@ChildProcessor(info = true)
-	public void addChildInfo(ProcessorInfo<WidgetFactory> childInfo) {
+	public void addChildInfo(ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> childInfo) {
 		childInfos.put((ModelElement) childInfo.getElement(), childInfo);
 	}
 	
 	@OutgoingEndpoint
-	public void addOutgoingEndpoints(Connection connection, ConnectionProcessor connectionProcessor) {
+	public void addOutgoingEndpoints(Connection connection, WidgetFactory connectionProcessor) {
 		outgoingEndpoints.put(connection, CompletableFuture.completedStage(connectionProcessor).toCompletableFuture());
 	}
 

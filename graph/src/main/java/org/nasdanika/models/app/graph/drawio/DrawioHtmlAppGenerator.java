@@ -96,16 +96,16 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			
 		};
 		
-		Transformer<Element,ProcessorConfig> processorConfigTransformer = new Transformer<>(processorConfigFactory);				
+		Transformer<Element,ProcessorConfig<WidgetFactory,WidgetFactory>> processorConfigTransformer = new Transformer<>(processorConfigFactory);				
 		
 		Collection<Element> elements = new ArrayList<>();
 		Consumer<org.nasdanika.drawio.Element> consumer = org.nasdanika.drawio.Util.withLinkTargets(elements::add, ConnectionBase.SOURCE);
 		root.accept(consumer, null);
-		Map<Element, ProcessorConfig> configs = processorConfigTransformer.transform(elements, false, progressMonitor);
+		Map<Element, ProcessorConfig<WidgetFactory,WidgetFactory>> configs = processorConfigTransformer.transform(elements, false, progressMonitor);
 		
 		DrawioProcessorFactory processorFactory = createProcessorFactory(predicate, progressMonitor);
 		ReflectiveProcessorFactoryProvider<WidgetFactory, WidgetFactory, WidgetFactory> rpfp = new ReflectiveProcessorFactoryProvider<>(processorFactory);
-		Map<Element, ProcessorInfo<WidgetFactory>> processors = rpfp.getFactory().createProcessors(configs.values(), false, progressMonitor);
+		Map<Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> processors = rpfp.getFactory().createProcessors(configs.values(), false, progressMonitor);
 		
 		processors
 			.keySet()
@@ -203,7 +203,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			public void filterRepresentationElement(
 					ModelElement sourceElement,
 					ModelElement representationElement,
-					Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory>> registry,
+					Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry,
 					ProgressMonitor progressMonitor) {
 				
 				DrawioHtmlAppGenerator.this.filterRepresentationElement(sourceElement, representationElement, registry, progressMonitor);				
@@ -267,7 +267,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			 */
 			public Collection<? extends EObject> createRepresentationContent(
 					Document representation,
-					Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory>> registry,
+					Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry,
 					ProgressMonitor progressMonitor) {
 				
 				return DrawioHtmlAppGenerator.this.createRepresentationContent(representation, registry, progressMonitor);
@@ -275,9 +275,9 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			
 			@Override
 			public <T extends WidgetFactory> T filter(
-					ProcessorConfig config, 
+					ProcessorConfig<WidgetFactory,WidgetFactory> config, 
 					T processor,
-					BiConsumer<Element, BiConsumer<ProcessorInfo<Object>, ProgressMonitor>> infoProvider,
+					BiConsumer<Element, BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>, ProgressMonitor>> infoProvider,
 					ProgressMonitor progressMonitor) {
 				return DrawioHtmlAppGenerator.this.filter(config, processor, infoProvider, progressMonitor);
 			}

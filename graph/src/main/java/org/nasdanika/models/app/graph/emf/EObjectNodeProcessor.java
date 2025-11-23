@@ -148,10 +148,10 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 		return uri;
 	}
 	
-	protected Map<EObjectNode, ProcessorInfo<Object>> childProcessors;
+	protected Map<EObjectNode, ProcessorInfo<WidgetFactory,WidgetFactory,Object>> childProcessors;
 	
 	@ChildProcessors
-	public void setChildProcessors(Map<EObjectNode, ProcessorInfo<Object>> childProcessors) {
+	public void setChildProcessors(Map<EObjectNode, ProcessorInfo<WidgetFactory,WidgetFactory,Object>> childProcessors) {
 		this.childProcessors = childProcessors;
 	}
 	

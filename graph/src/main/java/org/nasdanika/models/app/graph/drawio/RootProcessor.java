@@ -22,13 +22,13 @@ public class RootProcessor extends BaseProcessor<Root> {
 	}
 
 	@ChildProcessors
-	public Map<Layer, ProcessorInfo<WidgetFactory>> layerProcessorInfos;
+	public Map<Layer, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> layerProcessorInfos;
 	
 	@SuppressWarnings("resource")
 	@Override
 	public Supplier<Collection<Label>> createLabelsSupplier() {
 		MapCompoundSupplier<Layer, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Layer labels supplier");
-		for (Entry<Layer, ProcessorInfo<WidgetFactory>> ce: layerProcessorInfos.entrySet()) {
+		for (Entry<Layer, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> ce: layerProcessorInfos.entrySet()) {
 			if (configuration.test(ce.getKey())) {
 				childLabelsSupplier.put(ce.getKey(), ce.getValue().getProcessor().createLabelsSupplier());
 			}
@@ -44,7 +44,7 @@ public class RootProcessor extends BaseProcessor<Root> {
 	@Override
 	public void resolve(URI base, ProgressMonitor progressMonitor) {
 		super.resolve(base, progressMonitor);
-		for (ProcessorInfo<WidgetFactory> cpi: layerProcessorInfos.values()) {
+		for (ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> cpi: layerProcessorInfos.values()) {
 			cpi.getProcessor().resolve(base, progressMonitor);
 		}
 	}

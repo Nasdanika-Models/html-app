@@ -97,7 +97,7 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 			public void filterRepresentationElement(
 					ModelElement sourceElement, 
 					ModelElement representationElement,
-					Map<Element, ProcessorInfo<WidgetFactory>> registry, ProgressMonitor progressMonitor) {
+					Map<Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry, ProgressMonitor progressMonitor) {
 
 				for (RepresentationElementFilter ref: representationElementFilters) {
 					ref.filterRepresentationElement(sourceElement, representationElement, registry, progressMonitor);

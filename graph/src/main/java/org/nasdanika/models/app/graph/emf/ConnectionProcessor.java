@@ -35,8 +35,8 @@ public class ConnectionProcessor {
 		this.config = config;		
 		this.compactPath = compactPath;
 		
-		config.getSourceEndpoint().thenAccept(se -> config.setTargetHandler(createTargetHandler(se)));
-		config.getTargetEndpoint().thenAccept(te -> config.setSourceHandler(createSourceHandler(te)));
+		config.getSourceSynapse().getEndpoint().thenAccept(se -> config.getTargetSynapse().setHandler(createTargetHandler(se)));
+		config.getTargetSynapse().getEndpoint().thenAccept(te -> config.getSourceSynapse().setHandler(createSourceHandler(te)));
 	}
 	
 	protected WidgetFactory createTargetHandler(WidgetFactory sourceEndpoint) {

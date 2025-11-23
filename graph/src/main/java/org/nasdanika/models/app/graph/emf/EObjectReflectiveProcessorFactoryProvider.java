@@ -12,18 +12,17 @@ import org.nasdanika.graph.processor.ProcessorInfo;
 import org.nasdanika.graph.processor.ReflectiveProcessorFactoryProvider;
 import org.nasdanika.models.app.graph.WidgetFactory;
 
-public class EObjectReflectiveProcessorFactoryProvider extends ReflectiveProcessorFactoryProvider<Object, WidgetFactory, WidgetFactory> {
+public class EObjectReflectiveProcessorFactoryProvider extends ReflectiveProcessorFactoryProvider<WidgetFactory, WidgetFactory,Object> {
 
 	public EObjectReflectiveProcessorFactoryProvider(Object... targets) {
 		super(targets);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Object createProcessor(
-			ProcessorConfig config,
+			ProcessorConfig<WidgetFactory,WidgetFactory> config,
 			boolean parallel,
-			BiConsumer<Element, BiConsumer<ProcessorInfo<Object>,ProgressMonitor>> infoProvider,
+			BiConsumer<Element, BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
 			Consumer<CompletionStage<?>> endpointWiringStageConsumer, 
 			ProgressMonitor progressMonitor) {
 		
@@ -39,7 +38,7 @@ public class EObjectReflectiveProcessorFactoryProvider extends ReflectiveProcess
 	 * Override to return true for compact reference and operation paths
 	 * @return
 	 */
-	protected boolean isCompactPath(ProcessorConfig config) {
+	protected boolean isCompactPath(ProcessorConfig<WidgetFactory,WidgetFactory> config) {
 		return false;
 	}
 

@@ -29,7 +29,7 @@ public class LayerProcessor extends BaseProcessor<Layer> {
 	}
 
 	@ChildProcessors
-	public Map<LayerElement, ProcessorInfo<WidgetFactory>> childInfos;
+	public Map<LayerElement, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> childInfos;
 	
 	
 	protected boolean isLogicalChild(LayerElement layerElement) {
@@ -50,7 +50,7 @@ public class LayerProcessor extends BaseProcessor<Layer> {
 	@Override
 	public Supplier<Collection<Label>> createLabelsSupplier() {
 		MapCompoundSupplier<LayerElement, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Child labels supplier");
-		for (Entry<LayerElement, ProcessorInfo<WidgetFactory>> ce: childInfos.entrySet()) {
+		for (Entry<LayerElement, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> ce: childInfos.entrySet()) {
 			if (configuration.test(ce.getKey()) && isLogicalChild(ce.getKey())) {
 				WidgetFactory processor = ce.getValue().getProcessor();
 				if (processor != null) {
@@ -72,7 +72,7 @@ public class LayerProcessor extends BaseProcessor<Layer> {
 	@Override
 	public void resolve(URI base, ProgressMonitor progressMonitor) {
 		super.resolve(base, progressMonitor);
-		for (ProcessorInfo<WidgetFactory> cpi: childInfos.values()) {
+		for (ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> cpi: childInfos.values()) {
 			WidgetFactory processor = cpi.getProcessor();
 			if (processor != null) {
 				processor.resolve(uri, progressMonitor);

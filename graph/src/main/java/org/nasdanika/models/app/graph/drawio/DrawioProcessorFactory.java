@@ -60,9 +60,9 @@ public class DrawioProcessorFactory extends Configuration {
 				
 	@Processor(type = org.nasdanika.drawio.Document.class)
 	public WidgetFactory createDocumentProcessor(
-		ProcessorConfig config, 
+		ProcessorConfig<WidgetFactory,WidgetFactory> config, 
 		boolean parallel, 
-		BiConsumer<Element,BiConsumer<ProcessorInfo<Object>,ProgressMonitor>> infoProvider,
+		BiConsumer<Element,BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
 		Function<ProgressMonitor, Object> next,		
 		ProgressMonitor progressMonitor) {
 		
@@ -72,9 +72,9 @@ public class DrawioProcessorFactory extends Configuration {
 				
 	@Processor(type = org.nasdanika.drawio.Page.class)
 	public WidgetFactory createPageProcessor(
-		ProcessorConfig config, 
+		ProcessorConfig<WidgetFactory,WidgetFactory> config, 
 		boolean parallel, 
-		BiConsumer<Element,BiConsumer<ProcessorInfo<Object>,ProgressMonitor>> infoProvider,
+		BiConsumer<Element,BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
 		Function<ProgressMonitor, Object> next,		
 		ProgressMonitor progressMonitor) {
 		
@@ -84,9 +84,9 @@ public class DrawioProcessorFactory extends Configuration {
 				
 	@Processor(type = org.nasdanika.drawio.Root.class)
 	public WidgetFactory createRootProcessor(
-		ProcessorConfig config, 
+		ProcessorConfig<WidgetFactory,WidgetFactory> config, 
 		boolean parallel, 
-		BiConsumer<Element,BiConsumer<ProcessorInfo<Object>,ProgressMonitor>> infoProvider,
+		BiConsumer<Element,BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
 		Function<ProgressMonitor, Object> next,		
 		ProgressMonitor progressMonitor) {
 		
@@ -96,9 +96,9 @@ public class DrawioProcessorFactory extends Configuration {
 				
 	@Processor(type = org.nasdanika.drawio.Layer.class)
 	public WidgetFactory createLayerProcessor(
-		ProcessorConfig config, 
+		ProcessorConfig<WidgetFactory,WidgetFactory> config, 
 		boolean parallel, 
-		BiConsumer<Element,BiConsumer<ProcessorInfo<Object>,ProgressMonitor>> infoProvider,
+		BiConsumer<Element,BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
 		Function<ProgressMonitor, Object> next,		
 		ProgressMonitor progressMonitor) {
 		
@@ -108,9 +108,9 @@ public class DrawioProcessorFactory extends Configuration {
 	
 	@Processor(type = org.nasdanika.drawio.Node.class)
 	public WidgetFactory createNodeProcessor(
-		NodeProcessorConfig<?,?> config, 
+		NodeProcessorConfig<WidgetFactory,WidgetFactory> config, 
 		boolean parallel, 
-		BiConsumer<Element,BiConsumer<ProcessorInfo<Object>,ProgressMonitor>> infoProvider,
+		BiConsumer<Element,BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
 		Function<ProgressMonitor, Object> next,		
 		ProgressMonitor progressMonitor) {
 		
@@ -124,9 +124,9 @@ public class DrawioProcessorFactory extends Configuration {
 	
 	@Processor(type = org.nasdanika.drawio.Connection.class)
 	public WidgetFactory createConnectionProcessor(
-		ConnectionProcessorConfig<?,?> config, 
+		ConnectionProcessorConfig<WidgetFactory,WidgetFactory> config, 
 		boolean parallel, 
-		BiConsumer<Element,BiConsumer<ProcessorInfo<Object>,ProgressMonitor>> infoProvider,
+		BiConsumer<Element,BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
 		Function<ProgressMonitor, Object> next,		
 		ProgressMonitor progressMonitor) {
 		

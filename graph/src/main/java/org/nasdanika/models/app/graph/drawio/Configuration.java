@@ -105,7 +105,7 @@ public class Configuration extends org.nasdanika.drawio.gen.section.Configuratio
 	public void filterRepresentationElement(
 			ModelElement sourceElement,
 			ModelElement representationElement,
-			Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory>> registry,
+			Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry,
 			ProgressMonitor progressMonitor) {
 		
 	}
@@ -160,7 +160,7 @@ public class Configuration extends org.nasdanika.drawio.gen.section.Configuratio
 	 */
 	public Collection<? extends EObject> createRepresentationContent(
 			Document representation,
-			Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory>> registry,
+			Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry,
 			ProgressMonitor progressMonitor) {
 		return Collections.emptyList();
 	}
@@ -174,9 +174,9 @@ public class Configuration extends org.nasdanika.drawio.gen.section.Configuratio
 	 * @param progressMonitor
 	 */
 	public <T extends WidgetFactory> T filter(
-			ProcessorConfig config, 
+			ProcessorConfig<WidgetFactory,WidgetFactory> config, 
 			T processor, 
-			BiConsumer<Element,BiConsumer<ProcessorInfo<Object>,ProgressMonitor>> infoProvider,
+			BiConsumer<Element,BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
 			ProgressMonitor progressMonitor) {
 		
 		return processor;

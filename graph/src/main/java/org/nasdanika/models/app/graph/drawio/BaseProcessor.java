@@ -85,7 +85,7 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 	}
 	
 	@Registry 
-	public Map<Element, ProcessorInfo<WidgetFactory>> registry;
+	public Map<Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry;
 	
 	protected URI uri;
 	
@@ -363,7 +363,7 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 			// linked documentation (root)
 			if (linkTarget instanceof Page) {
 				Root root = ((Page) linkTarget).getModel().getRoot();
-				ProcessorInfo<WidgetFactory> rpi = registry.get(root);
+				ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> rpi = registry.get(root);
 				RootProcessor rootProcessor = (RootProcessor) rpi.getProcessor();
 				return rootProcessor.getPrototype(progressMonitor);
 			}

@@ -13,6 +13,6 @@ public interface RepresentationElementFilter {
 	void filterRepresentationElement(
 			ModelElement sourceElement, 
 			ModelElement representationElement,
-			Map<Element, ProcessorInfo<WidgetFactory>> registry, ProgressMonitor progressMonitor);	
+			Map<Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry, ProgressMonitor progressMonitor);	
 
 }

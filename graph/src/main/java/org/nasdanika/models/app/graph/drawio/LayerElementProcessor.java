@@ -36,27 +36,26 @@ import org.nasdanika.models.app.graph.WidgetFactory;
 
 public abstract class LayerElementProcessor<T extends LayerElement> extends LinkTargetProcessor<T> {
 	
-	protected Map<ModelElement, ProcessorInfo<WidgetFactory>> childInfos = new ConcurrentHashMap<>();
+	protected Map<ModelElement, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> childInfos = new ConcurrentHashMap<>();
 	
-	protected Map<Connection, CompletableFuture<ConnectionProcessor>> outgoingEndpoints = new ConcurrentHashMap<>();	
+	protected Map<org.nasdanika.graph.Connection, CompletableFuture<WidgetFactory>> outgoingEndpoints = new ConcurrentHashMap<>();	
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void addReferrer(ModelElement referrer) {
 		super.addReferrer(referrer);		
 		for (Element child: referrer.getChildren()) {
 			if (child instanceof ModelElement) {
-				ProcessorInfo<WidgetFactory> ci = registry.get(child);
+				ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> ci = registry.get(child);
 				if (ci != null /* && ci.getProcessor() != null */) {
 					childInfos.put((ModelElement) child, ci);
 				}
 			}
 		}		
 		
-		ProcessorInfo<WidgetFactory> referrerInfo = registry.get(referrer);
+		ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> referrerInfo = registry.get(referrer);
 		if (referrerInfo instanceof NodeProcessorInfo) {
 			NodeProcessorInfo<WidgetFactory, WidgetFactory, WidgetFactory> npi = (NodeProcessorInfo<WidgetFactory, WidgetFactory, WidgetFactory>) referrerInfo;
-			outgoingEndpoints.putAll((Map) npi.getOutgoingEndpoints());			
+			npi.getOutgoingSynapses().forEach((k,v) -> outgoingEndpoints.put(k, v.getEndpoint().toCompletableFuture()));
 		}
 	}
 	
@@ -71,7 +70,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 	public URI getActionURI(ProgressMonitor progressMonitor) {
 		LinkTarget linkTarget = element.getLinkTarget();
 		if (linkTarget instanceof Page) {
-			ProcessorInfo<WidgetFactory> ppi = registry.get(linkTarget);
+			ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> ppi = registry.get(linkTarget);
 			if (ppi != null) {
 				PageProcessor pageProcessor = (PageProcessor) ppi.getProcessor();
 				if (pageProcessor != null) {
@@ -98,18 +97,18 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 	@Override
 	public void resolve(URI base, ProgressMonitor progressMonitor) {
 		super.resolve(base, progressMonitor);
-		for (Entry<ModelElement, ProcessorInfo<WidgetFactory>> cpe: childInfos.entrySet()) {
+		for (Entry<ModelElement, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> cpe: childInfos.entrySet()) {
 			if (cpe.getKey() instanceof Node || isLogicalChildConnection(cpe.getKey())) {
 				cpe.getValue().getProcessor().resolve(uri, progressMonitor);
 			}
 		}		
-		for (Entry<Connection, CompletableFuture<ConnectionProcessor>> oe: outgoingEndpoints.entrySet()) {
+		for (Entry<org.nasdanika.graph.Connection, CompletableFuture<WidgetFactory>> oe: outgoingEndpoints.entrySet()) {
 			oe.getValue().thenAccept(cp -> cp.resolve(uri, progressMonitor));
 		}	
 		if (element.isTargetLink()) {
 			LinkTarget linkTarget = element.getLinkTarget();
 			if (linkTarget instanceof Page) {
-				ProcessorInfo<WidgetFactory> ppi = registry.get(linkTarget);
+				ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> ppi = registry.get(linkTarget);
 				if (ppi != null) {
 					ppi.getProcessor().resolve(uri, progressMonitor);
 				}
@@ -122,7 +121,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 		List<EObject> ret = new ArrayList<>();		
 		LinkTarget linkTarget = element.getLinkTarget();
 		if (linkTarget instanceof Page) {
-			ProcessorInfo<WidgetFactory> ppi = registry.get(linkTarget);
+			ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> ppi = registry.get(linkTarget);
 			if (ppi != null) {
 				PageProcessor pageProcessor = (PageProcessor) ppi.getProcessor();
 				Text representationText = ContentFactory.eINSTANCE.createText(); // Interpolate with element properties?
@@ -142,7 +141,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 		// linked documentation (root)
 		if (linkTarget instanceof Page) {
 			Root root = ((Page) linkTarget).getModel().getRoot();
-			ProcessorInfo<WidgetFactory> rpi = registry.get(root);
+			ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> rpi = registry.get(root);
 			RootProcessor rootProcessor = (RootProcessor) rpi.getProcessor();
 			ret.addAll(rootProcessor.getDocumentation(progressMonitor));			
 		}
@@ -160,7 +159,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 		String sourceKey = configuration.getSourceKey();
 
 		// Own child nodes not linked to other nodes
-		C: for (Entry<ModelElement, ProcessorInfo<WidgetFactory>> ce: childInfos.entrySet()) {
+		C: for (Entry<ModelElement, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> ce: childInfos.entrySet()) {
 			ModelElement child = ce.getKey();		
 			if (configuration.test(child)) {
 				if (child instanceof Connection && ((Connection) child).getSource() != null) {
@@ -193,13 +192,13 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 		}
 		
 		// Connections without parent property
-		for (Entry<Connection, CompletableFuture<ConnectionProcessor>> ce: outgoingEndpoints.entrySet()) {
-			Connection conn = ce.getKey();
+		for (Entry<org.nasdanika.graph.Connection, CompletableFuture<WidgetFactory>> ce: outgoingEndpoints.entrySet()) {
+			Connection conn = (Connection) ce.getKey();
 			if (!Util.isBlank(parentProperty) &&  !Util.isBlank(conn.getProperty(parentProperty))) {
 				continue;
 			}
 			if (isLogicalChildConnection(conn)) {
-				childLabelsSupplier.put(ce.getKey(), ce.getValue().join().createLabelsSupplier());
+				childLabelsSupplier.put(conn, ce.getValue().join().createLabelsSupplier());
 			}
 		}
 		
@@ -210,7 +209,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 				for (Connection oc: node.getOutgoingConnections()) {
 					Node target = oc.getTarget();
 					if (sourceKey.equals(oc.getProperty(parentProperty)) && target != null) {
-						ProcessorInfo<WidgetFactory> childInfo = registry.get(target);
+						ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> childInfo = registry.get(target);
 						if (childInfo != null) {
 							WidgetFactory processor = childInfo.getProcessor();
 							if (processor != null) {
@@ -224,7 +223,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 				for (Connection ic: node.getIncomingConnections()) {
 					Node source = ic.getSource();
 					if (targetKey.equals(ic.getProperty(parentProperty)) && source != null) {
-						ProcessorInfo<WidgetFactory> childInfo = registry.get(source);
+						ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> childInfo = registry.get(source);
 						if (childInfo != null) {
 							WidgetFactory processor = childInfo.getProcessor();
 							if (processor != null) {
@@ -240,7 +239,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 		if (element.isTargetLink()) {
 			LinkTarget linkTarget = element.getLinkTarget();
 			if (linkTarget instanceof Page) {
-				ProcessorInfo<WidgetFactory> ppi = registry.get(linkTarget);
+				ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> ppi = registry.get(linkTarget);
 				pageLabelSupplier = ppi.getProcessor().createLabelsSupplier();
 			}
 		}	

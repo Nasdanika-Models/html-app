@@ -73,7 +73,7 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 	
 	protected Collection<Label> createPageLabels(Collection<Label> rootLabels, ProgressMonitor progressMonitor) {
 		Root root = element.getModel().getRoot();
-		ProcessorInfo<WidgetFactory> rpi = registry.get(root);
+		ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> rpi = registry.get(root);
 		RootProcessor rootProcessor = (RootProcessor) rpi.getProcessor();
 		Label prototype = rootProcessor.getPrototype(progressMonitor);
 		Action action = prototype instanceof Action ? (Action) prototype : AppFactory.eINSTANCE.createAction();
@@ -201,7 +201,7 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 				sourceElement = (ModelElement) sourceElement.getLinkTarget();
 			}						
 			
-			ProcessorInfo<WidgetFactory> sourceElementProcessorInfo = registry.get(sourceElement);
+			ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> sourceElementProcessorInfo = registry.get(sourceElement);
 			if (sourceElementProcessorInfo != null) {
 				WidgetFactory sourceElementProcessor = sourceElementProcessorInfo.getProcessor();
 				if (sourceElementProcessor instanceof LayerElementProcessor) {
