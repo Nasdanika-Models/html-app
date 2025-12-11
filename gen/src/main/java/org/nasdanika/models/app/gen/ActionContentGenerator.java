@@ -389,7 +389,7 @@ public class ActionContentGenerator {
 
 				Model model = page.getModel();
 				Root root = model.getRoot();
-				List<Layer> layers = root.getLayers();
+				List<Layer<?>> layers = root.getLayers();
 
 				Node errorNode = layers.get(0).createNode();
 				errorNode.setLabel("Representation not found: " + pathSegments[0]);
@@ -463,7 +463,7 @@ public class ActionContentGenerator {
 	 * @param context
 	 * @return
 	 */
-	protected String computeInfo(Action action, org.nasdanika.drawio.Element element, Context context) {
+	protected String computeInfo(Action action, org.nasdanika.drawio.Element<?> element, Context context) {
 		DumperOptions dumperOptions = new DumperOptions();
 		dumperOptions.setDefaultFlowStyle(FlowStyle.BLOCK);
 		dumperOptions.setIndent(4);
@@ -503,7 +503,7 @@ public class ActionContentGenerator {
 		Map<String, Object> info = new LinkedHashMap<>();
 		info.put("type", element.getClass().getName());
 		if (element instanceof org.nasdanika.drawio.Element) {
-			org.nasdanika.drawio.Element drawioElement = (org.nasdanika.drawio.Element) element;
+			org.nasdanika.drawio.Element<?> drawioElement = (org.nasdanika.drawio.Element<?>) element;
 			URI uri = drawioElement.getURI();
 			if (uri != null) {
 				info.put("uri", uri.toString());
@@ -529,7 +529,7 @@ public class ActionContentGenerator {
 			}
 		}
 		if (element instanceof org.nasdanika.drawio.ModelElement) {
-			org.nasdanika.drawio.ModelElement modelElement = (org.nasdanika.drawio.ModelElement) element;
+			org.nasdanika.drawio.ModelElement<?> modelElement = (org.nasdanika.drawio.ModelElement<?>) element;
 			String id = modelElement.getId();
 			if (!org.nasdanika.common.Util.isBlank(id)) {
 				info.put("id", id);
@@ -644,7 +644,7 @@ public class ActionContentGenerator {
 	 * @param context
 	 * @return
 	 */
-	protected Object computeTableOfContents(org.nasdanika.drawio.Element element, Context context) {
+	protected Object computeTableOfContents(org.nasdanika.drawio.Element<?> element, Context context) {
 		HTMLFactory htmlFactory = context.get(HTMLFactory.class, HTMLFactory.INSTANCE);
 		if (element instanceof org.nasdanika.drawio.Document) {
 			List<Page> pages = ((org.nasdanika.drawio.Document) element).getPages();
@@ -660,13 +660,13 @@ public class ActionContentGenerator {
 		}
 
 		if (element instanceof Page) {
-			List<Layer> layers = new ArrayList<>(((Page) element).getModel().getRoot().getLayers());
+			List<Layer<?>> layers = new ArrayList<>(((Page) element).getModel().getRoot().getLayers());
 			if (layers.size() == 1) {
 				return computeTableOfContents(layers.get(0), context);
 			}
 			Collections.reverse(layers);
 			Tag ol = htmlFactory.tag(TagName.ol);
-			for (Layer layer : layers) {
+			for (Layer<?> layer : layers) {
 				if (org.nasdanika.common.Util.isBlank(layer.getLabel())) {
 					ol.content(computeTableOfContents(layer, context));
 				} else {
@@ -684,17 +684,17 @@ public class ActionContentGenerator {
 		}
 
 		if (element instanceof Layer) { // Including nodes
-			List<LayerElement> layerElements = new ArrayList<>(((Layer) element).getElements());
+			List<LayerElement<?>> layerElements = new ArrayList<>(((Layer<?>) element).getElements());
 			Collections.sort(layerElements, new LabelModelElementComparator()); // TODO - use "sort" property
 			if (element instanceof org.nasdanika.drawio.Node) {
-				List<LayerElement> outgoingConnections = new ArrayList<>(
+				List<LayerElement<?>> outgoingConnections = new ArrayList<>(
 						((org.nasdanika.drawio.Node) element).getOutgoingConnections());
 				Collections.sort(outgoingConnections, new LabelModelElementComparator());
 				layerElements.addAll(outgoingConnections);
 			}
 
 			Tag ol = htmlFactory.tag(TagName.ol);
-			for (LayerElement layerElement : layerElements) {
+			for (LayerElement<?> layerElement : layerElements) {
 				if (layerElement instanceof org.nasdanika.drawio.Node
 						|| (layerElement instanceof Connection && (((Connection) layerElement).getSource() == null
 								|| ((Connection) layerElement).getSource() == element))) {
@@ -733,7 +733,7 @@ public class ActionContentGenerator {
 //		ResolutionListener semanticLinkResolutionListener = this.context == null ? null : this.context.get(ResolutionListener.class);
 
 		if (element instanceof org.nasdanika.drawio.ModelElement) {
-			org.nasdanika.drawio.ModelElement modelElement = (org.nasdanika.drawio.ModelElement) element;
+			org.nasdanika.drawio.ModelElement<?> modelElement = (org.nasdanika.drawio.ModelElement<?>) element;
 			String targetUriPropertyValue = modelElement.getProperty(NcoreActionBuilder.TARGET_URI_KEY);
 			if (!org.nasdanika.common.Util.isBlank(targetUriPropertyValue)) {
 				SemanticInfoRecord sRec = computeSemanticInfoRecord(

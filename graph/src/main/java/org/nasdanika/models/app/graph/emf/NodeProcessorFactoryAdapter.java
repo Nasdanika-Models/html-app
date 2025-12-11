@@ -9,7 +9,7 @@ import org.nasdanika.models.app.graph.WidgetFactory;
  * @author Pavel
  *
  */
-public abstract class NodeProcessorFactoryAdapter<T extends Notifier> extends AdapterImpl implements org.nasdanika.graph.processor.NodeProcessorInfo.Factory<Object, WidgetFactory, WidgetFactory> {
+public abstract class NodeProcessorFactoryAdapter<T extends Notifier> extends AdapterImpl implements org.nasdanika.graph.processor.NodeProcessorInfo.Factory<WidgetFactory, WidgetFactory, Object, Object> {
 	
 	public NodeProcessorFactoryAdapter(T target) {
 		setTarget(target);

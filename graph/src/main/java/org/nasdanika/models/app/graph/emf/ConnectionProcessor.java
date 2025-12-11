@@ -23,7 +23,7 @@ public class ConnectionProcessor {
 	
 	protected URI sourceURI;
 	protected URI targetURI;
-	protected ConnectionProcessorConfig<WidgetFactory, WidgetFactory> config;
+	protected ConnectionProcessorConfig<WidgetFactory, WidgetFactory, Object> config;
 	private boolean compactPath;
 
 	/**
@@ -31,7 +31,7 @@ public class ConnectionProcessor {
 	 * @param config
 	 * @param compactPath if true then reference and operation paths are constructed using reference/operation id's and r or o prefix respectively. 
 	 */
-	public ConnectionProcessor(ConnectionProcessorConfig<WidgetFactory, WidgetFactory> config, boolean compactPath) {		
+	public ConnectionProcessor(ConnectionProcessorConfig<WidgetFactory, WidgetFactory, Object> config, boolean compactPath) {		
 		this.config = config;		
 		this.compactPath = compactPath;
 		

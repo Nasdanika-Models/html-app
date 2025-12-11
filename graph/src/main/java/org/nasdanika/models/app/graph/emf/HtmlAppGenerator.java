@@ -236,24 +236,24 @@ public class HtmlAppGenerator {
 		
 		Object configFactory = createConfigFactory();				
 		
-		Transformer<Element,ProcessorConfig<WidgetFactory,WidgetFactory>> processorConfigTransformer = new Transformer<>(configFactory);				
-		Map<Element, ProcessorConfig<WidgetFactory,WidgetFactory>> configs = processorConfigTransformer.transform(graph.values(), false, progressMonitor);
+		Transformer<Element,ProcessorConfig<WidgetFactory,WidgetFactory,Object>> processorConfigTransformer = new Transformer<>(configFactory);				
+		Map<Element, ProcessorConfig<WidgetFactory,WidgetFactory,Object>> configs = processorConfigTransformer.transform(graph.values(), false, progressMonitor);
 		
 		Object reflectiveFactory = createReflectiveFactory();
-		ReflectiveProcessorFactoryProvider<WidgetFactory, WidgetFactory,Object> eObjectReflectiveProcessorFactoryProvider = createReflectiveFactoryProvider(reflectiveFactory);
-		Map<Element, ProcessorInfo<WidgetFactory,WidgetFactory,Object>> registry = eObjectReflectiveProcessorFactoryProvider.getFactory().createProcessors(configs.values(), false, progressMonitor);
+		ReflectiveProcessorFactoryProvider<WidgetFactory, WidgetFactory, Object, Object> eObjectReflectiveProcessorFactoryProvider = createReflectiveFactoryProvider(reflectiveFactory);
+		Map<Element, ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object>> registry = eObjectReflectiveProcessorFactoryProvider.getFactory().createProcessors(configs.values(), false, progressMonitor);
 		
 		if (references != null) {
 			for (EObject reference: references) {
 				URI refURI = uriResolver.apply(reference);
 				if (refURI != null) {
-					for (Entry<Element, ProcessorInfo<WidgetFactory,WidgetFactory,Object>> re: registry.entrySet()) {
+					for (Entry<Element, ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object>> re: registry.entrySet()) {
 						Element element = re.getKey();
 						if (element instanceof EObjectNode) {
 							EObjectNode eObjNode = (EObjectNode) element;
 							EObject target = eObjNode.get();
 							if (target == reference) {
-								ProcessorInfo<WidgetFactory,WidgetFactory,Object> info = re.getValue();
+								ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object> info = re.getValue();
 								Object processor = info.getProcessor();
 								if (processor instanceof WidgetFactory) {
 									WidgetFactory widgetFactoryNodeProcessor = (WidgetFactory) processor;
@@ -271,13 +271,13 @@ public class HtmlAppGenerator {
 		Collection<SourceProcessorRecord> sourceProcessorRecords = new ArrayList<>();
 		for (EObject source: sources) {
 			URI sourceURI = uriResolver.apply(source);
-			for (Entry<Element, ProcessorInfo<WidgetFactory,WidgetFactory,Object>> re: registry.entrySet()) {
+			for (Entry<Element, ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object>> re: registry.entrySet()) {
 				Element element = re.getKey();
 				if (element instanceof EObjectNode) {
 					EObjectNode eObjNode = (EObjectNode) element;
 					EObject target = eObjNode.get();
 					if (target == source) {
-						ProcessorInfo<WidgetFactory,WidgetFactory,Object> info = re.getValue();
+						ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object> info = re.getValue();
 						Object processor = info.getProcessor();
 						if (processor instanceof WidgetFactory) {
 							WidgetFactory widgetFactoryNodeProcessor = (WidgetFactory) processor;
@@ -323,7 +323,7 @@ public class HtmlAppGenerator {
 		return new EObjectReflectiveProcessorFactoryProvider(reflectiveFactory);
 	}
 
-	protected EObjectNodeProcessorReflectiveFactory<Object, Object> createReflectiveFactory() {
+	protected EObjectNodeProcessorReflectiveFactory<Object, Object, Object> createReflectiveFactory() {
 		return new EObjectNodeProcessorReflectiveFactory<>(nodeProcessorFactories);
 	}
 

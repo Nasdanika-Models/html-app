@@ -9,27 +9,27 @@ import org.nasdanika.drawio.LinkTarget;
 import org.nasdanika.drawio.ModelElement;
 import org.nasdanika.drawio.Node;
 
-public abstract class LinkTargetProcessor<T extends LinkTarget> extends BaseProcessor<T> {
+public abstract class LinkTargetProcessor<T extends LinkTarget<?>> extends BaseProcessor<T> {
 	
 	public LinkTargetProcessor(DrawioProcessorFactory factory) {
 		super(factory);
 	}
 	
-	public void addReferrer(ModelElement referrer) {
+	public void addReferrer(ModelElement<?> referrer) {
 		referrers.add(referrer);
 	}
 	
-	public Collection<ModelElement> getReferrers() {
+	public Collection<ModelElement<?>> getReferrers() {
 		return referrers;
 	}
 
-	protected Collection<ModelElement> referrers = new ArrayList<>();	
+	protected Collection<ModelElement<?>> referrers = new ArrayList<>();	
 	
 	/**
 	 * @param modelElement
 	 * @return true if the argument is a connection which shall be a logical child of this element.
 	 */
-	protected boolean isLogicalChildConnection(ModelElement modelElement) {
+	protected boolean isLogicalChildConnection(ModelElement<?> modelElement) {
 		if (modelElement instanceof Connection) {
 			Node source = ((Connection) modelElement).getSource();
 			if (source != null) {
@@ -44,7 +44,7 @@ public abstract class LinkTargetProcessor<T extends LinkTarget> extends BaseProc
 	public boolean test() {
 		if (!referrers.isEmpty()) {
 			// Returns true if there are tested referrers
-			Optional<ModelElement> testedReferrers = referrers
+			Optional<ModelElement<?>> testedReferrers = referrers
 				.stream()
 				.filter(configuration::test)
 				.findAny();

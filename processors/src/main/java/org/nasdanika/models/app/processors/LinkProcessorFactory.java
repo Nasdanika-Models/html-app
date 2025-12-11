@@ -32,7 +32,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
                     """
 	)
 	public EClassNodeProcessor createEClassifierProcessor(
-			NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
+			NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config, 
 			java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 			BiConsumer<Label, ProgressMonitor> labelConfigurator,
 			ProgressMonitor progressMonitor) {		
@@ -64,7 +64,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 				``${{{{base-uri}}}}`` ends with a slash, so there is no need to add a slash. E.g. ``${{{{base-uri}}}}index.html``.
 				""")
 	public EReferenceNodeProcessor createIconProcessor(
-		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
+		NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config, 
 		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
@@ -87,7 +87,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 		featureID = AppPackage.LINK__SCRIPT,
 		description = "Script to execute on link click (activation)")
 	public EReferenceNodeProcessor createLinkProcessor(
-		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
+		NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config, 
 		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
@@ -110,7 +110,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 		featureID = AppPackage.LINK__MODAL,
 		description = "Modal dialog which opens on link activation")
 	public EReferenceNodeProcessor createModalProcessor(
-		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
+		NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config, 
 		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
@@ -133,7 +133,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 		featureID = AppPackage.LINK__NAME,
 		description = "Link name attribute is used for referencing sections if not blank")
 	public EReferenceNodeProcessor createNameProcessor(
-		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
+		NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config, 
 		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
@@ -161,7 +161,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 				E.g. confirmation of deletion.
 				""")
 	public EReferenceNodeProcessor createConfirmationProcessor(
-		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
+		NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config, 
 		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
@@ -184,7 +184,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 		featureID = AppPackage.LINK__TARGET,
 		description = "Link target")
 	public EReferenceNodeProcessor createTargetProcessor(
-		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
+		NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config, 
 		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		
@@ -211,7 +211,7 @@ public class LinkProcessorFactory extends LabelProcessorFactory {
 				A link can point to an action.
 				""")
 	public EReferenceNodeProcessor createActionProcessor(
-		NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
+		NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config, 
 		java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 		BiConsumer<Label, ProgressMonitor> labelConfigurator,
 		ProgressMonitor progressMonitor) {		

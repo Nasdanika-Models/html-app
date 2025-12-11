@@ -12,7 +12,7 @@ import org.nasdanika.graph.processor.ProcessorInfo;
 import org.nasdanika.graph.processor.ReflectiveProcessorFactoryProvider;
 import org.nasdanika.models.app.graph.WidgetFactory;
 
-public class EObjectReflectiveProcessorFactoryProvider extends ReflectiveProcessorFactoryProvider<WidgetFactory, WidgetFactory,Object> {
+public class EObjectReflectiveProcessorFactoryProvider extends ReflectiveProcessorFactoryProvider<WidgetFactory, WidgetFactory, Object, Object> {
 
 	public EObjectReflectiveProcessorFactoryProvider(Object... targets) {
 		super(targets);
@@ -20,15 +20,15 @@ public class EObjectReflectiveProcessorFactoryProvider extends ReflectiveProcess
 	
 	@Override
 	public Object createProcessor(
-			ProcessorConfig<WidgetFactory,WidgetFactory> config,
+			ProcessorConfig<WidgetFactory,WidgetFactory,Object> config,
 			boolean parallel,
-			BiConsumer<Element, BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
+			BiConsumer<Element, BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object>,ProgressMonitor>> infoProvider,
 			Consumer<CompletionStage<?>> endpointWiringStageConsumer, 
 			ProgressMonitor progressMonitor) {
 		
 		Object processor = super.createProcessor(config, parallel, infoProvider, endpointWiringStageConsumer, progressMonitor);
 		if (processor == null && config instanceof ConnectionProcessorConfig) {
-			return new ConnectionProcessor((ConnectionProcessorConfig<WidgetFactory, WidgetFactory>) config, isCompactPath(config));
+			return new ConnectionProcessor((ConnectionProcessorConfig<WidgetFactory, WidgetFactory, Object>) config, isCompactPath(config));
 		}
 			
 		return processor;
@@ -38,7 +38,7 @@ public class EObjectReflectiveProcessorFactoryProvider extends ReflectiveProcess
 	 * Override to return true for compact reference and operation paths
 	 * @return
 	 */
-	protected boolean isCompactPath(ProcessorConfig<WidgetFactory,WidgetFactory> config) {
+	protected boolean isCompactPath(ProcessorConfig<WidgetFactory,WidgetFactory,Object> config) {
 		return false;
 	}
 

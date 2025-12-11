@@ -196,7 +196,7 @@ public class NcoreActionBuilder<T extends EObject> extends EObjectActionBuilder<
 		ResolutionListener semanticLinkResolutionListener = this.context == null ? null : this.context.get(ResolutionListener.class);
 
 		if (element instanceof org.nasdanika.drawio.ModelElement) {
-			org.nasdanika.drawio.ModelElement modelElement = (org.nasdanika.drawio.ModelElement) element;
+			org.nasdanika.drawio.ModelElement<?> modelElement = (org.nasdanika.drawio.ModelElement<?>) element;
 			String semanticUUID = modelElement.getProperty(SEMANTIC_UUID_KEY);
 			if (Util.isBlank(semanticUUID)) {
 				String targetUriPropertyValue = modelElement.getProperty(TARGET_URI_KEY);
@@ -664,7 +664,7 @@ public class NcoreActionBuilder<T extends EObject> extends EObjectActionBuilder<
 			ResolutionListener resolutionListener,
 			ProgressMonitor progressMonitor) {
 		if (element instanceof org.nasdanika.drawio.ModelElement) {
-			org.nasdanika.drawio.ModelElement modelElement = (org.nasdanika.drawio.ModelElement) element;
+			org.nasdanika.drawio.ModelElement<?> modelElement = (org.nasdanika.drawio.ModelElement<?>) element;
 			String actionUUID = modelElement.getProperty(LINK_UUID_KEY);			
 			if (Util.isBlank(actionUUID)) {
 				// For semantic mapping to actions 
@@ -780,7 +780,7 @@ public class NcoreActionBuilder<T extends EObject> extends EObjectActionBuilder<
 	 * @param bases
 	 * @return
 	 */
-	public static Collection<URI> resolveURIs(String propertyName, org.nasdanika.drawio.ModelElement modelElement, Collection<URI> bases, boolean asBase) {
+	public static Collection<URI> resolveURIs(String propertyName, org.nasdanika.drawio.ModelElement<?> modelElement, Collection<URI> bases, boolean asBase) {
 		String aURI = modelElement.getProperty(propertyName);		
 		if (Util.isBlank(aURI)) {
 			if (asBase) {
@@ -808,7 +808,7 @@ public class NcoreActionBuilder<T extends EObject> extends EObjectActionBuilder<
 		return ret;
 	}
 	
-	private static Collection<URI> resolveBaseURIs(String propertyName, org.nasdanika.drawio.ModelElement modelElement, Collection<URI> bases) {
+	private static Collection<URI> resolveBaseURIs(String propertyName, org.nasdanika.drawio.ModelElement<?> modelElement, Collection<URI> bases) {
 		if (modelElement == null) {
 			return bases;
 		}

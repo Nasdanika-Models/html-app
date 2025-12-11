@@ -119,7 +119,7 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 	};		
 	
 	protected java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider;
-	protected NodeProcessorConfig<WidgetFactory, WidgetFactory> config;
+	protected NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config;
 	protected Context context;
 	private URI uri;
 	
@@ -130,7 +130,7 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 	protected List<WidgetFactory> facets = new ArrayList<>();
 	
 	public EObjectNodeProcessor(
-			NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
+			NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config, 
 			Context context, 
 			java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider) {		
 		this.config = config;
@@ -148,10 +148,10 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 		return uri;
 	}
 	
-	protected Map<EObjectNode, ProcessorInfo<WidgetFactory,WidgetFactory,Object>> childProcessors;
+	protected Map<EObjectNode, ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object>> childProcessors;
 	
 	@ChildProcessors
-	public void setChildProcessors(Map<EObjectNode, ProcessorInfo<WidgetFactory,WidgetFactory,Object>> childProcessors) {
+	public void setChildProcessors(Map<EObjectNode, ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object>> childProcessors) {
 		this.childProcessors = childProcessors;
 	}
 	
@@ -173,7 +173,7 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 		return node;
 	}
 	
-	public NodeProcessorConfig<WidgetFactory, WidgetFactory> getConfig() {
+	public NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> getConfig() {
 		return config;
 	}
 	

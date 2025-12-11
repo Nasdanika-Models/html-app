@@ -103,9 +103,9 @@ public class Configuration extends org.nasdanika.drawio.gen.section.Configuratio
 	 */
 	@Override
 	public void filterRepresentationElement(
-			ModelElement sourceElement,
-			ModelElement representationElement,
-			Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry,
+			ModelElement<?> sourceElement,
+			ModelElement<?> representationElement,
+			Map<org.nasdanika.drawio.Element<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> registry,
 			ProgressMonitor progressMonitor) {
 		
 	}
@@ -160,7 +160,7 @@ public class Configuration extends org.nasdanika.drawio.gen.section.Configuratio
 	 */
 	public Collection<? extends EObject> createRepresentationContent(
 			Document representation,
-			Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry,
+			Map<org.nasdanika.drawio.Element<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> registry,
 			ProgressMonitor progressMonitor) {
 		return Collections.emptyList();
 	}
@@ -174,9 +174,9 @@ public class Configuration extends org.nasdanika.drawio.gen.section.Configuratio
 	 * @param progressMonitor
 	 */
 	public <T extends WidgetFactory> T filter(
-			ProcessorConfig<WidgetFactory,WidgetFactory> config, 
+			ProcessorConfig<WidgetFactory,WidgetFactory,Object> config, 
 			T processor, 
-			BiConsumer<Element,BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
+			BiConsumer<Element,BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object>,ProgressMonitor>> infoProvider,
 			ProgressMonitor progressMonitor) {
 		
 		return processor;
@@ -209,7 +209,7 @@ public class Configuration extends org.nasdanika.drawio.gen.section.Configuratio
 		return ret;
 	}
 		
-	public EClassifier getType(String type, ModelElement source) {
+	public EClassifier getType(String type, ModelElement<?> source) {
 		return NcoreUtil.getType(type, getEPackages(), msg -> new ConfigurationException(msg, source));
 	}
 	

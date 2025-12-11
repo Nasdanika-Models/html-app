@@ -30,7 +30,7 @@ public class ActionProcessorFactory extends LinkProcessorFactory {
                     """
 	)
 	public EClassNodeProcessor createEClassifierProcessor(
-			NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
+			NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config, 
 			java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 			BiConsumer<Label, ProgressMonitor> labelConfigurator,
 			ProgressMonitor progressMonitor) {		
@@ -55,7 +55,7 @@ public class ActionProcessorFactory extends LinkProcessorFactory {
 //			description = ""
 //	)
 //	public EReferenceNodeProcessor create Processor(
-//			NodeProcessorConfig<WidgetFactory, WidgetFactory> config, 
+//			NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> config, 
 //			java.util.function.BiFunction<EObject, ProgressMonitor, Action> prototypeProvider,
 //			BiConsumer<Label, ProgressMonitor> labelConfigurator,
 //			ProgressMonitor progressMonitor) {		

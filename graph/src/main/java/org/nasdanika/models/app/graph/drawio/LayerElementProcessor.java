@@ -34,27 +34,27 @@ import org.nasdanika.graph.processor.ProcessorInfo;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.graph.WidgetFactory;
 
-public abstract class LayerElementProcessor<T extends LayerElement> extends LinkTargetProcessor<T> {
+public abstract class LayerElementProcessor<T extends LayerElement<?>> extends LinkTargetProcessor<T> {
 	
-	protected Map<ModelElement, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> childInfos = new ConcurrentHashMap<>();
+	protected Map<ModelElement<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> childInfos = new ConcurrentHashMap<>();
 	
 	protected Map<org.nasdanika.graph.Connection, CompletableFuture<WidgetFactory>> outgoingEndpoints = new ConcurrentHashMap<>();	
 	
 	@Override
-	public void addReferrer(ModelElement referrer) {
+	public void addReferrer(ModelElement<?> referrer) {
 		super.addReferrer(referrer);		
-		for (Element child: referrer.getChildren()) {
+		for (Element<?> child: referrer.getChildren()) {
 			if (child instanceof ModelElement) {
-				ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> ci = registry.get(child);
+				ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> ci = registry.get(child);
 				if (ci != null /* && ci.getProcessor() != null */) {
-					childInfos.put((ModelElement) child, ci);
+					childInfos.put((ModelElement<?>) child, ci);
 				}
 			}
 		}		
 		
-		ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> referrerInfo = registry.get(referrer);
+		ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> referrerInfo = registry.get(referrer);
 		if (referrerInfo instanceof NodeProcessorInfo) {
-			NodeProcessorInfo<WidgetFactory, WidgetFactory, WidgetFactory> npi = (NodeProcessorInfo<WidgetFactory, WidgetFactory, WidgetFactory>) referrerInfo;
+			NodeProcessorInfo<WidgetFactory, WidgetFactory, Object, WidgetFactory> npi = (NodeProcessorInfo<WidgetFactory, WidgetFactory, Object, WidgetFactory>) referrerInfo;
 			npi.getOutgoingSynapses().forEach((k,v) -> outgoingEndpoints.put(k, v.getEndpoint().toCompletableFuture()));
 		}
 	}
@@ -68,9 +68,9 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 	 */
 	@Override
 	public URI getActionURI(ProgressMonitor progressMonitor) {
-		LinkTarget linkTarget = element.getLinkTarget();
+		LinkTarget<?> linkTarget = element.getLinkTarget();
 		if (linkTarget instanceof Page) {
-			ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> ppi = registry.get(linkTarget);
+			ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> ppi = registry.get(linkTarget);
 			if (ppi != null) {
 				PageProcessor pageProcessor = (PageProcessor) ppi.getProcessor();
 				if (pageProcessor != null) {
@@ -97,7 +97,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 	@Override
 	public void resolve(URI base, ProgressMonitor progressMonitor) {
 		super.resolve(base, progressMonitor);
-		for (Entry<ModelElement, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> cpe: childInfos.entrySet()) {
+		for (Entry<ModelElement<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> cpe: childInfos.entrySet()) {
 			if (cpe.getKey() instanceof Node || isLogicalChildConnection(cpe.getKey())) {
 				cpe.getValue().getProcessor().resolve(uri, progressMonitor);
 			}
@@ -106,9 +106,9 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 			oe.getValue().thenAccept(cp -> cp.resolve(uri, progressMonitor));
 		}	
 		if (element.isTargetLink()) {
-			LinkTarget linkTarget = element.getLinkTarget();
+			LinkTarget<?> linkTarget = element.getLinkTarget();
 			if (linkTarget instanceof Page) {
-				ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> ppi = registry.get(linkTarget);
+				ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> ppi = registry.get(linkTarget);
 				if (ppi != null) {
 					ppi.getProcessor().resolve(uri, progressMonitor);
 				}
@@ -119,9 +119,9 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 	@Override
 	protected Collection<EObject> getDocumentation(ProgressMonitor progressMonitor) {
 		List<EObject> ret = new ArrayList<>();		
-		LinkTarget linkTarget = element.getLinkTarget();
+		LinkTarget<?> linkTarget = element.getLinkTarget();
 		if (linkTarget instanceof Page) {
-			ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> ppi = registry.get(linkTarget);
+			ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> ppi = registry.get(linkTarget);
 			if (ppi != null) {
 				PageProcessor pageProcessor = (PageProcessor) ppi.getProcessor();
 				Text representationText = ContentFactory.eINSTANCE.createText(); // Interpolate with element properties?
@@ -141,7 +141,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 		// linked documentation (root)
 		if (linkTarget instanceof Page) {
 			Root root = ((Page) linkTarget).getModel().getRoot();
-			ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> rpi = registry.get(root);
+			ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> rpi = registry.get(root);
 			RootProcessor rootProcessor = (RootProcessor) rpi.getProcessor();
 			ret.addAll(rootProcessor.getDocumentation(progressMonitor));			
 		}
@@ -152,15 +152,15 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 	@SuppressWarnings("resource")
 	@Override
 	public Supplier<Collection<Label>> createLabelsSupplier() {
-		MapCompoundSupplier<ModelElement, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Child labels supplier");
+		MapCompoundSupplier<ModelElement<?>, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Child labels supplier");
 
 		String parentProperty = configuration.getParentProperty();
 		String targetKey = configuration.getTargetKey();
 		String sourceKey = configuration.getSourceKey();
 
 		// Own child nodes not linked to other nodes
-		C: for (Entry<ModelElement, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> ce: childInfos.entrySet()) {
-			ModelElement child = ce.getKey();		
+		C: for (Entry<ModelElement<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> ce: childInfos.entrySet()) {
+			ModelElement<?> child = ce.getKey();		
 			if (configuration.test(child)) {
 				if (child instanceof Connection && ((Connection) child).getSource() != null) {
 					continue;
@@ -209,7 +209,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 				for (Connection oc: node.getOutgoingConnections()) {
 					Node target = oc.getTarget();
 					if (sourceKey.equals(oc.getProperty(parentProperty)) && target != null) {
-						ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> childInfo = registry.get(target);
+						ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> childInfo = registry.get(target);
 						if (childInfo != null) {
 							WidgetFactory processor = childInfo.getProcessor();
 							if (processor != null) {
@@ -223,7 +223,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 				for (Connection ic: node.getIncomingConnections()) {
 					Node source = ic.getSource();
 					if (targetKey.equals(ic.getProperty(parentProperty)) && source != null) {
-						ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> childInfo = registry.get(source);
+						ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> childInfo = registry.get(source);
 						if (childInfo != null) {
 							WidgetFactory processor = childInfo.getProcessor();
 							if (processor != null) {
@@ -237,9 +237,9 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 						
 		Supplier<Collection<Label>> pageLabelSupplier = Supplier.empty();		
 		if (element.isTargetLink()) {
-			LinkTarget linkTarget = element.getLinkTarget();
+			LinkTarget<?> linkTarget = element.getLinkTarget();
 			if (linkTarget instanceof Page) {
-				ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> ppi = registry.get(linkTarget);
+				ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> ppi = registry.get(linkTarget);
 				pageLabelSupplier = ppi.getProcessor().createLabelsSupplier();
 			}
 		}	
@@ -248,7 +248,7 @@ public abstract class LayerElementProcessor<T extends LayerElement> extends Link
 	}
 	
 	protected Collection<Label> createLayerElementLabels(
-			Map<ModelElement, Collection<Label>> childLabelsMap, 
+			Map<ModelElement<?>, Collection<Label>> childLabelsMap, 
 			Collection<Label> pageLabels,
 			ProgressMonitor progressMonitor) {
 

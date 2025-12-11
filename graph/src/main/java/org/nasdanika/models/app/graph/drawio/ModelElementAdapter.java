@@ -13,12 +13,12 @@ public class ModelElementAdapter implements Adapter {
 
 	private Notifier target;
 	private String role;
-	private ModelElement modelElement;
+	private ModelElement<?> modelElement;
 	private String sortKey;
 	
 	public ModelElementAdapter(
 			Label target, 
-			ModelElement modelElement,
+			ModelElement<?> modelElement,
 			String role,
 			String sortKey) {
 		this.target = target;
@@ -31,7 +31,7 @@ public class ModelElementAdapter implements Adapter {
 		return role;
 	}
 	
-	public ModelElement getModelElement() {
+	public ModelElement<?> getModelElement() {
 		return modelElement;
 	}
 	

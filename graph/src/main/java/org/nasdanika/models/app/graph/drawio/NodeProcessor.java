@@ -28,8 +28,8 @@ public class NodeProcessor extends LayerElementProcessor<Node> {
 	}
 	
 	@ChildProcessor(info = true)
-	public void addChildInfo(ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> childInfo) {
-		childInfos.put((ModelElement) childInfo.getElement(), childInfo);
+	public void addChildInfo(ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> childInfo) {
+		childInfos.put((ModelElement<?>) childInfo.getElement(), childInfo);
 	}
 	
 	@OutgoingEndpoint

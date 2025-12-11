@@ -25,7 +25,7 @@ public interface EObjectNodeProcessorMixIn<T> {
 		
 	}
 	
-	NodeProcessorConfig<WidgetFactory, WidgetFactory> getConfig();
+	NodeProcessorConfig<WidgetFactory, WidgetFactory, Object> getConfig();
 	
 	Context getContext();
 	

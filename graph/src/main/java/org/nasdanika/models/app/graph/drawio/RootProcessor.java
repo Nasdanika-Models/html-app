@@ -22,13 +22,13 @@ public class RootProcessor extends BaseProcessor<Root> {
 	}
 
 	@ChildProcessors
-	public Map<Layer, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> layerProcessorInfos;
+	public Map<Layer<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> layerProcessorInfos;
 	
 	@SuppressWarnings("resource")
 	@Override
 	public Supplier<Collection<Label>> createLabelsSupplier() {
-		MapCompoundSupplier<Layer, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Layer labels supplier");
-		for (Entry<Layer, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> ce: layerProcessorInfos.entrySet()) {
+		MapCompoundSupplier<Layer<?>, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Layer labels supplier");
+		for (Entry<Layer<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> ce: layerProcessorInfos.entrySet()) {
 			if (configuration.test(ce.getKey())) {
 				childLabelsSupplier.put(ce.getKey(), ce.getValue().getProcessor().createLabelsSupplier());
 			}
@@ -37,14 +37,14 @@ public class RootProcessor extends BaseProcessor<Root> {
 		return childLabelsSupplier.then(this::createRootLabels);
 	}
 	
-	protected Collection<Label> createRootLabels(Map<Layer, Collection<Label>> childLabels, ProgressMonitor progressMonitor) {
+	protected Collection<Label> createRootLabels(Map<Layer<?>, Collection<Label>> childLabels, ProgressMonitor progressMonitor) {
 		return childLabels.values().stream().flatMap(Collection::stream).toList();
 	}
 	
 	@Override
 	public void resolve(URI base, ProgressMonitor progressMonitor) {
 		super.resolve(base, progressMonitor);
-		for (ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> cpi: layerProcessorInfos.values()) {
+		for (ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> cpi: layerProcessorInfos.values()) {
 			cpi.getProcessor().resolve(base, progressMonitor);
 		}
 	}

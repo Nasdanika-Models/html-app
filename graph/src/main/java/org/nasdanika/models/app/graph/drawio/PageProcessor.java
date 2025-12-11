@@ -73,7 +73,7 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 	
 	protected Collection<Label> createPageLabels(Collection<Label> rootLabels, ProgressMonitor progressMonitor) {
 		Root root = element.getModel().getRoot();
-		ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> rpi = registry.get(root);
+		ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> rpi = registry.get(root);
 		RootProcessor rootProcessor = (RootProcessor) rpi.getProcessor();
 		Label prototype = rootProcessor.getPrototype(progressMonitor);
 		Action action = prototype instanceof Action ? (Action) prototype : AppFactory.eINSTANCE.createAction();
@@ -102,7 +102,7 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 	
 	protected boolean isAncestor(Element a, Element d) {
 		if (d instanceof ModelElement) {
-			ModelElement dp = ((ModelElement) d).getParent();
+			ModelElement<?> dp = ((ModelElement<?>) d).getParent();
 			return dp == a || isAncestor(a, dp);
 		}
 		return false;
@@ -142,7 +142,7 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 							.map(Connection::getId)
 							.forEach(connectionsToRemove::add);
 					}
-					((ModelElement) toRemove).remove();
+					((ModelElement<?>) toRemove).remove();
 				}
 			} else {
 				break;
@@ -164,15 +164,15 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 		
 		representationDocument.getPages().get(0).accept(representationElement -> {
 			if (representationElement instanceof ModelElement) {
-				filterRepresentationElement(findElement(representationElement), (ModelElement) representationElement, progressMonitor);
+				filterRepresentationElement(findElement(representationElement), (ModelElement<?>) representationElement, progressMonitor);
 			}
 		});
 		return representationDocument;
 	}
 	
-	protected ModelElement findElement(org.nasdanika.graph.Element representationElement) {
+	protected ModelElement<?> findElement(org.nasdanika.graph.Element representationElement) {
 		if (representationElement instanceof ModelElement) {
-			String id = ((ModelElement) representationElement).getId();
+			String id = ((ModelElement<?>) representationElement).getId();
 			return element
 					.stream()
 					.filter(ModelElement.class::isInstance)
@@ -188,8 +188,8 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 	 * Resolves links and delegates to the factory to customize filtering.
 	 */
 	protected void filterRepresentationElement(
-			ModelElement sourceElement,
-			ModelElement representationElement, 
+			ModelElement<?> sourceElement,
+			ModelElement<?> representationElement, 
 			ProgressMonitor progressMonitor) {
 		
 		// Links
@@ -198,10 +198,10 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 				representationElement.setLink(null);
 			}
 			while (sourceElement.isTargetLink() && sourceElement.getLinkTarget() instanceof ModelElement) {
-				sourceElement = (ModelElement) sourceElement.getLinkTarget();
+				sourceElement = (ModelElement<?>) sourceElement.getLinkTarget();
 			}						
 			
-			ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> sourceElementProcessorInfo = registry.get(sourceElement);
+			ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> sourceElementProcessorInfo = registry.get(sourceElement);
 			if (sourceElementProcessorInfo != null) {
 				WidgetFactory sourceElementProcessor = sourceElementProcessorInfo.getProcessor();
 				if (sourceElementProcessor instanceof LayerElementProcessor) {

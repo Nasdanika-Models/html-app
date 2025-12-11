@@ -64,7 +64,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			}
 			
 			if (element instanceof ModelElement) {
-				ModelElement parent = ((ModelElement) element).getParent();
+				ModelElement<?> parent = ((ModelElement<?>) element).getParent();
 				if (parent != null && !test(parent, predicate)) {
 					return false;
 				}
@@ -83,11 +83,11 @@ public class DrawioHtmlAppGenerator extends Configuration {
 	
 	@SuppressWarnings("unchecked")
 	public Supplier<Collection<Label>> createLabelsSupplier(
-			org.nasdanika.drawio.Element root,
+			org.nasdanika.drawio.Element<?> root,
 			Predicate<Element> predicate,
 			ProgressMonitor progressMonitor) {
 		
-		NopEndpointProcessorConfigFactory<WidgetFactory> processorConfigFactory = new NopEndpointProcessorConfigFactory<WidgetFactory>() {
+		NopEndpointProcessorConfigFactory<WidgetFactory,Object> processorConfigFactory = new NopEndpointProcessorConfigFactory<WidgetFactory,Object>() {
 			
 			@Override
 			protected boolean isPassThrough(Connection incomingConnection) {
@@ -96,16 +96,16 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			
 		};
 		
-		Transformer<Element,ProcessorConfig<WidgetFactory,WidgetFactory>> processorConfigTransformer = new Transformer<>(processorConfigFactory);				
+		Transformer<Element,ProcessorConfig<WidgetFactory,WidgetFactory,Object>> processorConfigTransformer = new Transformer<>(processorConfigFactory);				
 		
 		Collection<Element> elements = new ArrayList<>();
-		Consumer<org.nasdanika.drawio.Element> consumer = org.nasdanika.drawio.Util.withLinkTargets(elements::add, ConnectionBase.SOURCE);
+		Consumer<org.nasdanika.drawio.Element<?>> consumer = org.nasdanika.drawio.Util.withLinkTargets(elements::add, ConnectionBase.SOURCE);
 		root.accept(consumer, null);
-		Map<Element, ProcessorConfig<WidgetFactory,WidgetFactory>> configs = processorConfigTransformer.transform(elements, false, progressMonitor);
+		Map<Element, ProcessorConfig<WidgetFactory,WidgetFactory,Object>> configs = processorConfigTransformer.transform(elements, false, progressMonitor);
 		
 		DrawioProcessorFactory processorFactory = createProcessorFactory(predicate, progressMonitor);
-		ReflectiveProcessorFactoryProvider<WidgetFactory, WidgetFactory, WidgetFactory> rpfp = new ReflectiveProcessorFactoryProvider<>(processorFactory);
-		Map<Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> processors = rpfp.getFactory().createProcessors(configs.values(), false, progressMonitor);
+		ReflectiveProcessorFactoryProvider<WidgetFactory, WidgetFactory, Object, WidgetFactory> rpfp = new ReflectiveProcessorFactoryProvider<>(processorFactory);
+		Map<Element, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> processors = rpfp.getFactory().createProcessors(configs.values(), false, progressMonitor);
 		
 		processors
 			.keySet()
@@ -114,7 +114,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			.map(ModelElement.class::cast)
 			.filter(ModelElement::isTargetLink)
 			.map(DrawioHtmlAppGenerator::getLinkTargetRecursive)
-			.forEach(entry ->  ((LinkTargetProcessor<LinkTarget>) processors.get(entry.getValue()).getProcessor()).addReferrer(entry.getKey()));
+			.forEach(entry ->  ((LinkTargetProcessor<LinkTarget<?>>) processors.get(entry.getValue()).getProcessor()).addReferrer(entry.getKey()));
 		
 		BaseProcessor<?> rootProcessor = (BaseProcessor<?>) processors.get(root).getProcessor();
 				
@@ -201,9 +201,9 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			 */
 			@Override
 			public void filterRepresentationElement(
-					ModelElement sourceElement,
-					ModelElement representationElement,
-					Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry,
+					ModelElement<?> sourceElement,
+					ModelElement<?> representationElement,
+					Map<org.nasdanika.drawio.Element<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> registry,
 					ProgressMonitor progressMonitor) {
 				
 				DrawioHtmlAppGenerator.this.filterRepresentationElement(sourceElement, representationElement, registry, progressMonitor);				
@@ -267,7 +267,7 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			 */
 			public Collection<? extends EObject> createRepresentationContent(
 					Document representation,
-					Map<org.nasdanika.drawio.Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry,
+					Map<org.nasdanika.drawio.Element<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> registry,
 					ProgressMonitor progressMonitor) {
 				
 				return DrawioHtmlAppGenerator.this.createRepresentationContent(representation, registry, progressMonitor);
@@ -275,9 +275,9 @@ public class DrawioHtmlAppGenerator extends Configuration {
 			
 			@Override
 			public <T extends WidgetFactory> T filter(
-					ProcessorConfig<WidgetFactory,WidgetFactory> config, 
+					ProcessorConfig<WidgetFactory,WidgetFactory,Object> config, 
 					T processor,
-					BiConsumer<Element, BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>, ProgressMonitor>> infoProvider,
+					BiConsumer<Element, BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object>, ProgressMonitor>> infoProvider,
 					ProgressMonitor progressMonitor) {
 				return DrawioHtmlAppGenerator.this.filter(config, processor, infoProvider, progressMonitor);
 			}
@@ -290,12 +290,12 @@ public class DrawioHtmlAppGenerator extends Configuration {
 		};
 	}
 
-	private static Map.Entry<ModelElement, LinkTarget> getLinkTargetRecursive(ModelElement source) {				
+	private static Map.Entry<ModelElement<?>, LinkTarget<?>> getLinkTargetRecursive(ModelElement<?> source) {				
 		// Preventing infinite loops
-		HashSet<ModelElement> tracker = new HashSet<ModelElement>();
-		ModelElement modelElement = source; 
+		HashSet<ModelElement<?>> tracker = new HashSet<ModelElement<?>>();
+		ModelElement<?> modelElement = source; 
 		while (tracker.add(modelElement) && modelElement.isTargetLink() && modelElement.getLinkTarget() instanceof ModelElement) { 
-			modelElement = (ModelElement) modelElement.getLinkTarget();			
+			modelElement = (ModelElement<?>) modelElement.getLinkTarget();			
 		}
 		
 		if (source != modelElement) {

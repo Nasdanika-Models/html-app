@@ -11,8 +11,8 @@ import org.nasdanika.models.app.graph.WidgetFactory;
 public interface RepresentationElementFilter {
 	
 	void filterRepresentationElement(
-			ModelElement sourceElement, 
-			ModelElement representationElement,
-			Map<Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry, ProgressMonitor progressMonitor);	
+			ModelElement<?> sourceElement, 
+			ModelElement<?> representationElement,
+			Map<Element<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> registry, ProgressMonitor progressMonitor);	
 
 }

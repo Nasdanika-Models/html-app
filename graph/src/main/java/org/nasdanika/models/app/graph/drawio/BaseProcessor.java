@@ -64,7 +64,7 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * Base class for processors
  */
-public abstract class BaseProcessor<T extends Element> implements WidgetFactory {
+public abstract class BaseProcessor<T extends Element<?>> implements WidgetFactory {
 	
 	private static Logger LOGGER = LoggerFactory.getLogger(BaseProcessor.class);
 	
@@ -85,7 +85,7 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 	}
 	
 	@Registry 
-	public Map<Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry;
+	public Map<Element<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> registry;
 	
 	protected URI uri;
 	
@@ -161,7 +161,7 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 	protected Collection<EObject> getDocumentation(ProgressMonitor progressMonitor) {
 		if (element instanceof ModelElement) {		
 			try {
-				ModelElement modelElement = (ModelElement) element;
+				ModelElement<?> modelElement = (ModelElement<?>) element;
 				Function<String, String> tokenSource = key -> {
 					String value = modelElement.getProperty(key);
 					return Util.isBlank(value) ? null : value;
@@ -277,7 +277,7 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 	 */
 	public void configureLabel(Label label, ProgressMonitor progressMonitor) {
 		if (element instanceof ModelElement) {
-			ModelElement modelElement = (ModelElement) element;
+			ModelElement<?> modelElement = (ModelElement<?>) element;
 			if (Util.isBlank(label.getIcon())) {
 				String iconProperty = configuration.getIconProperty();
 				if (!Util.isBlank(iconProperty)) {
@@ -295,21 +295,21 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 				}
 			}
 			if (Util.isBlank(label.getText()) && element instanceof ModelElement) {
-				label.setText(((ModelElement) element).getId());
+				label.setText(((ModelElement<?>) element).getId());
 			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	protected Label getPrototype(ProgressMonitor progressMonitor) {
-		ModelElement modelElement = (ModelElement) element;
+		ModelElement<?> modelElement = (ModelElement<?>) element;
 		if (element instanceof ModelElement) {		
 			try {
 				EObjectLoader eObjectLoader = new EObjectLoader((ObjectLoader) null) {
 					
 					@Override
 					public ResolutionResult resolveEClass(String type) {
-						EClass eClass = (EClass) configuration.getType(type, (ModelElement) element);
+						EClass eClass = (EClass) configuration.getType(type, (ModelElement<?>) element);
 						return new ResolutionResult(eClass, null);
 					}
 					
@@ -359,11 +359,11 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 				return errorAction;
 			}
 			
-			LinkTarget linkTarget = modelElement.getLinkTarget();
+			LinkTarget<?> linkTarget = modelElement.getLinkTarget();
 			// linked documentation (root)
 			if (linkTarget instanceof Page) {
 				Root root = ((Page) linkTarget).getModel().getRoot();
-				ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> rpi = registry.get(root);
+				ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> rpi = registry.get(root);
 				RootProcessor rootProcessor = (RootProcessor) rpi.getProcessor();
 				return rootProcessor.getPrototype(progressMonitor);
 			}
@@ -395,7 +395,7 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 		return null;
 	}
 	
-	protected ModelElement getLabelModelElement(Label label) {
+	protected ModelElement<?> getLabelModelElement(Label label) {
 		for (Adapter a: label.eAdapters()) {
 			if (a instanceof ModelElementAdapter) {
 				return ((ModelElementAdapter) a).getModelElement();
@@ -492,7 +492,7 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 		return ret;
 	}	
 	
-	protected Comparator<ModelElement> createChildLabelModelElementComparator(Comparators comparatorType, Object config) {
+	protected Comparator<ModelElement<?>> createChildLabelModelElementComparator(Comparators comparatorType, Object config) {
 		return switch (comparatorType) {
 			case flow -> new FlowComparator(createFlowComparatorConnectionPredicate(config));
 			case reverseFlow -> new FlowComparator(createFlowComparatorConnectionPredicate(config)).reversed();
@@ -585,11 +585,11 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 	}
 	
 	protected Comparator<Label> getChildLabelComparator() {
-		Element childComparatorPropertySource = element instanceof Page ? ((Page) element).getModel().getRoot() : element;
+		Element<?> childComparatorPropertySource = element instanceof Page ? ((Page) element).getModel().getRoot() : element;
 		if (childComparatorPropertySource instanceof ModelElement) {
 			String childComparatorProperty = configuration.getChildComparatorProperty();
 			if (!Util.isBlank(childComparatorProperty)) {
-				String childLabelComparatorStr = ((ModelElement) childComparatorPropertySource).getProperty(childComparatorProperty);
+				String childLabelComparatorStr = ((ModelElement<?>) childComparatorPropertySource).getProperty(childComparatorProperty);
 				if (!Util.isBlank(childLabelComparatorStr)) {
 					Yaml yaml = new Yaml();
 					Object spec = yaml.load(childLabelComparatorStr);
@@ -607,11 +607,11 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 			for (Entry<?, ?> se: ((Map<?,?>) spec).entrySet()) {
 				for (Comparators comparatorType: Comparators.values()) {
 					if (comparatorType.key.equals(se.getKey())) {
-						Comparator<ModelElement> childLabelModelElementComparator = createChildLabelModelElementComparator(comparatorType, se.getValue());
+						Comparator<ModelElement<?>> childLabelModelElementComparator = createChildLabelModelElementComparator(comparatorType, se.getValue());
 						if (childLabelModelElementComparator != null) {
 							comparators.add((l1, l2) -> {
-								ModelElement me1 = getLabelModelElement(l1);
-								ModelElement me2 = getLabelModelElement(l2);
+								ModelElement<?> me1 = getLabelModelElement(l1);
+								ModelElement<?> me2 = getLabelModelElement(l2);
 								if (me1 != null && me2 != null) {
 									int cmp = childLabelModelElementComparator.compare(me1, me2);
 									return cmp;
@@ -641,7 +641,7 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 		if (element instanceof ModelElement) {
 			String roleProperty = configuration.getRoleProperty();
 			if (!Util.isBlank(roleProperty)) {
-				String role = ((ModelElement) element).getProperty(roleProperty);
+				String role = ((ModelElement<?>) element).getProperty(roleProperty);
 				if (!Util.isBlank(role)) {
 					return role;
 				}
@@ -655,7 +655,7 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 		if (element instanceof ModelElement) {
 			String sortKeyProperty = configuration.getSortKeyProperty();		
 			if (!Util.isBlank(sortKeyProperty)) {
-				return ((ModelElement) element).getProperty(sortKeyProperty);
+				return ((ModelElement<?>) element).getProperty(sortKeyProperty);
 			}
 		}
 		return null;
@@ -674,11 +674,11 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 	 * @return
 	 */
 	protected Collection<Label> createLabels(List<Label> childLabels, ProgressMonitor progressMonitor) {		
-		String label = element instanceof ModelElement ? ((ModelElement) element).getLabel() : null;
+		String label = element instanceof ModelElement ? ((ModelElement<?>) element).getLabel() : null;
 		if (Util.isBlank(label) && element instanceof ModelElement) {
 			String titleProperty = configuration.getTitleProperty();
 			if (!Util.isBlank(titleProperty)) {
-				label = ((ModelElement) element).getProperty(titleProperty);
+				label = ((ModelElement<?>) element).getProperty(titleProperty);
 			}			
 		}
 		if (Util.isBlank(label)) {
@@ -707,7 +707,7 @@ public abstract class BaseProcessor<T extends Element> implements WidgetFactory 
 		}
 		
 		if (element instanceof ModelElement) {
-			mLabel.eAdapters().add(new ModelElementAdapter(mLabel, (ModelElement) element, getRole(), getSortKey()));
+			mLabel.eAdapters().add(new ModelElementAdapter(mLabel, (ModelElement<?>) element, getRole(), getSortKey()));
 		}
 		configureLabel(mLabel, progressMonitor);
 				

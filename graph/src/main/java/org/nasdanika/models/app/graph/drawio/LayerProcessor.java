@@ -22,17 +22,17 @@ import org.nasdanika.graph.processor.ProcessorInfo;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.graph.WidgetFactory;
 
-public class LayerProcessor extends BaseProcessor<Layer> {
+public class LayerProcessor extends BaseProcessor<Layer<?>> {
 	
 	public LayerProcessor(DrawioProcessorFactory factory) {
 		super(factory);
 	}
 
 	@ChildProcessors
-	public Map<LayerElement, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> childInfos;
+	public Map<LayerElement<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> childInfos;
 	
 	
-	protected boolean isLogicalChild(LayerElement layerElement) {
+	protected boolean isLogicalChild(LayerElement<?> layerElement) {
 		if (layerElement instanceof Node) {
 			return true;
 		}
@@ -49,8 +49,8 @@ public class LayerProcessor extends BaseProcessor<Layer> {
 	@SuppressWarnings("resource")
 	@Override
 	public Supplier<Collection<Label>> createLabelsSupplier() {
-		MapCompoundSupplier<LayerElement, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Child labels supplier");
-		for (Entry<LayerElement, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> ce: childInfos.entrySet()) {
+		MapCompoundSupplier<LayerElement<?>, Collection<Label>> childLabelsSupplier = new MapCompoundSupplier<>("Child labels supplier");
+		for (Entry<LayerElement<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> ce: childInfos.entrySet()) {
 			if (configuration.test(ce.getKey()) && isLogicalChild(ce.getKey())) {
 				WidgetFactory processor = ce.getValue().getProcessor();
 				if (processor != null) {
@@ -64,7 +64,7 @@ public class LayerProcessor extends BaseProcessor<Layer> {
 	
 	@ProcessorElement
 	@Override
-	public void setElement(Layer element) {
+	public void setElement(Layer<?> element) {
 		super.setElement(element);
 		uri = URI.createURI(Util.isBlank(element.getLabel()) ? getIndexName() : element.getId() + "/" + getIndexName());
 	}
@@ -72,7 +72,7 @@ public class LayerProcessor extends BaseProcessor<Layer> {
 	@Override
 	public void resolve(URI base, ProgressMonitor progressMonitor) {
 		super.resolve(base, progressMonitor);
-		for (ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory> cpi: childInfos.values()) {
+		for (ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> cpi: childInfos.values()) {
 			WidgetFactory processor = cpi.getProcessor();
 			if (processor != null) {
 				processor.resolve(uri, progressMonitor);
@@ -89,7 +89,7 @@ public class LayerProcessor extends BaseProcessor<Layer> {
 		return uri;
 	}
 	
-	protected Collection<Label> createLayerLabels(Map<LayerElement, Collection<Label>> childLabelsMap, ProgressMonitor progressMonitor) {
+	protected Collection<Label> createLayerLabels(Map<LayerElement<?>, Collection<Label>> childLabelsMap, ProgressMonitor progressMonitor) {
 		List<Label> childLabels = new ArrayList<>(childLabelsMap.values().stream().flatMap(Collection::stream).toList());
 		return createLabels(childLabels, progressMonitor);
 	}	

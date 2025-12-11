@@ -23,25 +23,25 @@ import org.nasdanika.models.app.graph.WidgetFactory;
  * @author Pavel
  *
  */
-public class EObjectProcessorFactory extends ProcessorFactory<WidgetFactory,WidgetFactory,Object> {
+public class EObjectProcessorFactory extends ProcessorFactory<WidgetFactory,WidgetFactory,Object,Object> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected ProcessorInfo<WidgetFactory,WidgetFactory,Object> createProcessor(
-			ProcessorConfig<WidgetFactory,WidgetFactory> config, 
+	protected ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object> createProcessor(
+			ProcessorConfig<WidgetFactory,WidgetFactory,Object> config, 
 			boolean parallel,
-			BiConsumer<Element, BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object>,ProgressMonitor>> infoProvider,
+			BiConsumer<Element, BiConsumer<ProcessorInfo<WidgetFactory,WidgetFactory,Object,Object>,ProgressMonitor>> infoProvider,
 			Consumer<CompletionStage<?>> endpointWiringStageConsumer,
 			ProgressMonitor progressMonitor) {
 		
 		if (config.getElement() instanceof EReferenceConnection) {
-			return config.toInfo(new ConnectionProcessor((ConnectionProcessorConfig<WidgetFactory, WidgetFactory>) config, isCompactPath(config)));
+			return config.toInfo(new ConnectionProcessor((ConnectionProcessorConfig<WidgetFactory, WidgetFactory, Object>) config, isCompactPath(config)));
 		}
 		
 		if (config.getElement() instanceof EObjectNode) {
 			Object adapter = EcoreUtil.getRegisteredAdapter(((EObjectNode) config.getElement()).get(), NodeProcessorInfo.Factory.class);
 			if (adapter instanceof NodeProcessorInfo.Factory) {
-				return ((NodeProcessorInfo.Factory<WidgetFactory,WidgetFactory,Object>) adapter).create((NodeProcessorConfig<WidgetFactory, WidgetFactory>) config, parallel, infoProvider, endpointWiringStageConsumer, getContext(), progressMonitor);
+				return ((NodeProcessorInfo.Factory<WidgetFactory,WidgetFactory,Object,Object>) adapter).create((NodeProcessorConfig<WidgetFactory, WidgetFactory, Object>) config, parallel, infoProvider, endpointWiringStageConsumer, getContext(), progressMonitor);
 			}
 		}
 		
@@ -56,7 +56,7 @@ public class EObjectProcessorFactory extends ProcessorFactory<WidgetFactory,Widg
 	 * Override to return true for compact reference and operation paths
 	 * @return
 	 */
-	protected boolean isCompactPath(ProcessorConfig<WidgetFactory,WidgetFactory> config) {
+	protected boolean isCompactPath(ProcessorConfig<WidgetFactory,WidgetFactory,Object> config) {
 		return false;
 	}
 		

@@ -95,9 +95,9 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 			
 			@Override
 			public void filterRepresentationElement(
-					ModelElement sourceElement, 
-					ModelElement representationElement,
-					Map<Element, ProcessorInfo<WidgetFactory,WidgetFactory,WidgetFactory>> registry, ProgressMonitor progressMonitor) {
+					ModelElement<?> sourceElement, 
+					ModelElement<?> representationElement,
+					Map<Element<?>, ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory>> registry, ProgressMonitor progressMonitor) {
 
 				for (RepresentationElementFilter ref: representationElementFilters) {
 					ref.filterRepresentationElement(sourceElement, representationElement, registry, progressMonitor);
@@ -125,7 +125,7 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 			public boolean test(org.nasdanika.graph.Element element) {
 				if (predicatePropery != null && element instanceof ModelElement) {
 					for (Entry<String, String> ppe: predicatePropery.entrySet()) {
-						String propVal = ((ModelElement) element).getProperty(ppe.getValue());
+						String propVal = ((ModelElement<?>) element).getProperty(ppe.getValue());
 						if (!Util.isBlank(propVal)) {
 							if ("spel".equals(ppe.getKey())) {
 								Boolean result = element.evaluate(propVal, Boolean.class); // TODO - variables from context?
@@ -291,7 +291,7 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 		}		
 		
 		DrawioHtmlAppGenerator actionGenerator = createDrawioActionGenerator(actionGeneratorBaseURI, refs);
-		org.nasdanika.drawio.Element root = document;
+		org.nasdanika.drawio.Element<?> root = document;
 		if (!Util.isBlank(pageName)) {
 			Optional<Page> pageOpt = document.getPages().stream().filter(p -> pageName.equals(p.getName())).findFirst();
 			if (pageOpt.isEmpty()) {
@@ -315,7 +315,7 @@ public class DrawioHtmlAppGeneratorCommand extends AbstractHtmlAppGeneratorComma
 		
 		if (tag != null && !tag.isEmpty()) {
 			if (element instanceof ModelElement) {
-				Set<Tag> elementTags = ((ModelElement) element).getTags();
+				Set<Tag> elementTags = ((ModelElement<?>) element).getTags();
 				if (elementTags.isEmpty()) {
 					return true; // No tags 
 				}

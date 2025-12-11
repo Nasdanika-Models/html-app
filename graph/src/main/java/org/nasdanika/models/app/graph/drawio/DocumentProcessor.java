@@ -26,11 +26,11 @@ public class DocumentProcessor extends BaseProcessor<Document> {
 	}
 
 	@ChildProcessors
-	public Map<Page, ProcessorInfo<WidgetFactory,WidgetFactory,PageProcessor>> pageProcessors;
+	public Map<Page, ProcessorInfo<WidgetFactory,WidgetFactory,Object,PageProcessor>> pageProcessors;
 	
 	@Override
 	public void resolve(URI base, ProgressMonitor progressMonitor) {
-		List<Map.Entry<Page, ProcessorInfo<WidgetFactory,WidgetFactory,PageProcessor>>> topLevelPageProcessors = pageProcessors
+		List<Map.Entry<Page, ProcessorInfo<WidgetFactory,WidgetFactory,Object,PageProcessor>>> topLevelPageProcessors = pageProcessors
 			.entrySet()
 			.stream()
 			.filter(ppe -> ppe.getValue().getProcessor().getReferrers().isEmpty())
