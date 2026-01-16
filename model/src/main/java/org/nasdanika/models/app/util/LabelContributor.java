@@ -13,7 +13,7 @@ import org.nasdanika.models.app.Action;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.Link;
 
-public class LabelContributor implements AbstractMappingFactory.Contributor<ModelElement, Label> {
+public class LabelContributor implements AbstractMappingFactory.Contributor<ModelElement<?>, Label> {
 	
 	private AbstractMappingFactory<Object, EObject> factory;
 
@@ -28,23 +28,23 @@ public class LabelContributor implements AbstractMappingFactory.Contributor<Mode
 	
 	@Override
 	public void initialize(
-			ModelElement obj, 
+			ModelElement<?> obj, 
 			Label target,
-			BiConsumer<EObject, BiConsumer<EObject, ProgressMonitor>> elementProvider,
-			Consumer<BiConsumer<Map<EObject, EObject>, ProgressMonitor>> registry, 
+			BiConsumer<ModelElement<?>, BiConsumer<Label, ProgressMonitor>> elementProvider,
+			Consumer<BiConsumer<Map<ModelElement<?>, Label>, ProgressMonitor>> registry,
 			ProgressMonitor progressMonitor) {
 		
 		if (target instanceof Link) {
 			obj.setProperty("link-uuid", target.getUuid());
 		}		
 	}
-
+	
 	@Override
 	public void configure(
-			ModelElement obj,
-			Collection<EObject> documentation,
-			Label target, 
-			Map<ModelElement, Label> registry, 
+			ModelElement<?> obj, 
+			Collection<EObject> documentation, 
+			Label target,
+			Map<ModelElement<?>, Label> registry, 
 			boolean isPrototype, 
 			ProgressMonitor progressMonitor) {
 		
