@@ -37,7 +37,7 @@ public class LayerProcessor extends BaseProcessor<Layer<?>> {
 			return true;
 		}
 		if (layerElement instanceof Connection) {
-			Node source = ((Connection) layerElement).getSource();
+			Node source = getConnectableNode(((Connection) layerElement).getSource());
 			if (source != null) {
 				return source == element;
 			}

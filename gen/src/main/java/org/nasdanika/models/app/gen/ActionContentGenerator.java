@@ -37,7 +37,9 @@ import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.PropertyComputer;
 import org.nasdanika.common.Status;
 import org.nasdanika.common.SupplierFactory;
+import org.nasdanika.drawio.Connectable;
 import org.nasdanika.drawio.Connection;
+import org.nasdanika.drawio.ConnectionPoint;
 import org.nasdanika.drawio.Layer;
 import org.nasdanika.drawio.LayerElement;
 import org.nasdanika.drawio.Model;
@@ -497,6 +499,13 @@ public class ActionContentGenerator {
 		}
 		return out.toString();
 	}
+		
+	static Node getConnectableNode(Connectable connectable) {
+		if (connectable instanceof ConnectionPoint) {
+			return ((ConnectionPoint) connectable).getNode();
+		}
+		return (Node) connectable;
+	}		
 
 	private Map<String, Object> elementInfo(Element element, Map<? extends Element, Map<String, Object>> childInfo,
 			List<URI> actionURIs) {
@@ -610,11 +619,11 @@ public class ActionContentGenerator {
 
 		}
 		if (element instanceof Connection) {
-			Node source = ((Connection) element).getSource();
+			Node source = getConnectableNode(((Connection) element).getSource());
 			if (source != null) {
 				info.put("source", source.toString());
 			}
-			Node target = ((Connection) element).getTarget();
+			Node target = getConnectableNode(((Connection) element).getTarget());
 			if (target != null) {
 				info.put("target", target.toString());
 			}

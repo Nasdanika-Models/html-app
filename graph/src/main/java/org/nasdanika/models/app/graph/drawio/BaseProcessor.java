@@ -764,7 +764,6 @@ public abstract class BaseProcessor<T extends Element<?>> implements WidgetFacto
 			return ((ConnectionPoint) connectable).getNode();
 		}
 		return (Node) connectable;
-	}
-	
+	}	
 	
 }

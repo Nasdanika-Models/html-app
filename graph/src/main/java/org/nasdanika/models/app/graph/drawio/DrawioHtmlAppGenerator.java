@@ -15,11 +15,11 @@ import org.nasdanika.capability.CapabilityLoader;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Supplier;
 import org.nasdanika.common.Transformer;
+import org.nasdanika.drawio.Connectable;
 import org.nasdanika.drawio.ConnectionBase;
 import org.nasdanika.drawio.Document;
 import org.nasdanika.drawio.LinkTarget;
 import org.nasdanika.drawio.ModelElement;
-import org.nasdanika.drawio.Node;
 import org.nasdanika.drawio.Root;
 import org.nasdanika.graph.Connection;
 import org.nasdanika.graph.Element;
@@ -53,11 +53,11 @@ public class DrawioHtmlAppGenerator extends Configuration {
 		
 		if (predicate.test(element)) {
 			if (element instanceof org.nasdanika.drawio.Connection) {
-				Node source = ((org.nasdanika.drawio.Connection) element).getSource();
+				Connectable source = ((org.nasdanika.drawio.Connection) element).getSource();
 				if (source != null && !test(source, predicate)) {
 					return false;
 				}
-				Node target = ((org.nasdanika.drawio.Connection) element).getTarget();
+				Connectable target = ((org.nasdanika.drawio.Connection) element).getTarget();
 				if (target != null && !test(target, predicate)) {
 					return false;
 				}
