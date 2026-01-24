@@ -132,12 +132,12 @@ public class PageProcessor extends LinkTargetProcessor<Page> {
 				Element toRemove = toRemoveOpt.get();
 				if (toRemove instanceof ModelElement) {
 					if (toRemove instanceof Node) {
-						((Node) toRemove).getOutgoingConnections()
+						((Node) toRemove).getAllOutgoingConnections()
 							.stream()
 							.map(Connection::getId)
 							.forEach(connectionsToRemove::add);
 						
-						((Node) toRemove).getIncomingConnections()
+						((Node) toRemove).getAllIncomingConnections()
 							.stream()
 							.map(Connection::getId)
 							.forEach(connectionsToRemove::add);

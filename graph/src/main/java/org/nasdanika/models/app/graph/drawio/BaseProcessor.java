@@ -26,7 +26,9 @@ import org.nasdanika.common.Status;
 import org.nasdanika.common.Supplier;
 import org.nasdanika.common.SupplierFactory;
 import org.nasdanika.common.Util;
+import org.nasdanika.drawio.Connectable;
 import org.nasdanika.drawio.Connection;
+import org.nasdanika.drawio.ConnectionPoint;
 import org.nasdanika.drawio.Element;
 import org.nasdanika.drawio.LinkTarget;
 import org.nasdanika.drawio.ModelElement;
@@ -756,5 +758,13 @@ public abstract class BaseProcessor<T extends Element<?>> implements WidgetFacto
 	public boolean test() {
 		return configuration.test(element);
 	}
+		
+	static Node getConnectableNode(Connectable connectable) {
+		if (connectable instanceof ConnectionPoint) {
+			return ((ConnectionPoint) connectable).getNode();
+		}
+		return (Node) connectable;
+	}
+	
 	
 }

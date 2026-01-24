@@ -169,7 +169,7 @@ public abstract class LayerElementProcessor<T extends LayerElement<?>> extends L
 					Node childNode = (Node) child;
 					if (!Util.isBlank(parentProperty)) {
 						if (!Util.isBlank(targetKey)) {
-							for (Connection cnoc: childNode.getOutgoingConnections()) {
+							for (Connection cnoc: childNode.getAllOutgoingConnections()) {
 								String cParent = cnoc.getProperty(parentProperty);
 								if (targetKey.equals(cParent)) {
 									continue C; // Logical child of connection's target
@@ -177,7 +177,7 @@ public abstract class LayerElementProcessor<T extends LayerElement<?>> extends L
 							}
 						}
 						if (!Util.isBlank(sourceKey)) {
-							for (Connection cnoc: childNode.getIncomingConnections()) {
+							for (Connection cnoc: childNode.getAllIncomingConnections()) {
 								String cParent = cnoc.getProperty(parentProperty);
 								if (sourceKey.equals(cParent)) {
 									continue C; // Logical child of connection's source
@@ -206,8 +206,8 @@ public abstract class LayerElementProcessor<T extends LayerElement<?>> extends L
 		if (!Util.isBlank(parentProperty) && element instanceof Node) {
 			Node node = (Node) element;
 			if (!Util.isBlank(sourceKey)) {
-				for (Connection oc: node.getOutgoingConnections()) {
-					Node target = oc.getTarget();
+				for (Connection oc: node.getAllOutgoingConnections()) {
+					Node target = getConnectableNode(oc.getTarget());
 					if (sourceKey.equals(oc.getProperty(parentProperty)) && target != null) {
 						ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> childInfo = registry.get(target);
 						if (childInfo != null) {
@@ -220,8 +220,8 @@ public abstract class LayerElementProcessor<T extends LayerElement<?>> extends L
 				}
 			}
 			if (!Util.isBlank(targetKey)) {
-				for (Connection ic: node.getIncomingConnections()) {
-					Node source = ic.getSource();
+				for (Connection ic: node.getAllIncomingConnections()) {
+					Node source = getConnectableNode(ic.getSource());
 					if (targetKey.equals(ic.getProperty(parentProperty)) && source != null) {
 						ProcessorInfo<WidgetFactory,WidgetFactory,Object,WidgetFactory> childInfo = registry.get(source);
 						if (childInfo != null) {

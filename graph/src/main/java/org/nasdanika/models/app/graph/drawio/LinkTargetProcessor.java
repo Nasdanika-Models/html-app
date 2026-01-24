@@ -31,7 +31,7 @@ public abstract class LinkTargetProcessor<T extends LinkTarget<?>> extends BaseP
 	 */
 	protected boolean isLogicalChildConnection(ModelElement<?> modelElement) {
 		if (modelElement instanceof Connection) {
-			Node source = ((Connection) modelElement).getSource();
+			Node source = getConnectableNode(((Connection) modelElement).getSource());
 			if (source != null) {
 				return source == element || referrers.contains(source);
 			}

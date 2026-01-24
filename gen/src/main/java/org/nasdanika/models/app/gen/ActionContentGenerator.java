@@ -620,11 +620,11 @@ public class ActionContentGenerator {
 			}
 		}
 		if (element instanceof Node) {
-			List<Connection> incomingConnections = ((Node) element).getIncomingConnections();
+			List<Connection> incomingConnections = ((Node) element).getAllIncomingConnections();
 			if (incomingConnections != null && !incomingConnections.isEmpty()) {
 				info.put("incoming-connections", incomingConnections.stream().map(Object::toString).toArray());
 			}
-			List<Connection> outgoingConnections = ((Node) element).getOutgoingConnections();
+			List<Connection> outgoingConnections = ((Node) element).getAllOutgoingConnections();
 			if (outgoingConnections != null && !outgoingConnections.isEmpty()) {
 				info.put("outgoing-connections", outgoingConnections.stream().map(Object::toString).toArray());
 			}
@@ -688,7 +688,7 @@ public class ActionContentGenerator {
 			Collections.sort(layerElements, new LabelModelElementComparator()); // TODO - use "sort" property
 			if (element instanceof org.nasdanika.drawio.Node) {
 				List<LayerElement<?>> outgoingConnections = new ArrayList<>(
-						((org.nasdanika.drawio.Node) element).getOutgoingConnections());
+						((org.nasdanika.drawio.Node) element).getAllOutgoingConnections());
 				Collections.sort(outgoingConnections, new LabelModelElementComparator());
 				layerElements.addAll(outgoingConnections);
 			}
