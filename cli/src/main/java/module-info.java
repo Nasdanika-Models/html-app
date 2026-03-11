@@ -4,6 +4,7 @@ import org.nasdanika.models.app.cli.AppCommandFactory;
 import org.nasdanika.models.app.cli.DrawioHtmlAppGeneratorCommandFactory;
 import org.nasdanika.models.app.cli.HelpSiteCommandFactory;
 import org.nasdanika.models.app.cli.HtmlAppGeneratorCommandFactory;
+import org.nasdanika.models.app.cli.LabelsCommandFactory;
 import org.nasdanika.models.app.cli.SiteGeneratorCommandFactory;
 
 module org.nasdanika.models.app.cli {
@@ -25,6 +26,7 @@ module org.nasdanika.models.app.cli {
 		ActionHelpMixInFactory,
 		HtmlAppGeneratorCommandFactory,
 		DrawioHtmlAppGeneratorCommandFactory,
+		LabelsCommandFactory,
 		SiteGeneratorCommandFactory;
 
 }
