@@ -3,10 +3,12 @@ package org.nasdanika.models.app.cli;
 import java.util.Collection;
 
 import org.eclipse.emf.ecore.EObject;
+import org.nasdanika.cli.CommandGroup;
 import org.nasdanika.cli.ParentCommands;
 import org.nasdanika.common.EObjectSupplier;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.models.app.Label;
+import org.nasdanika.models.app.util.LabelSupplier;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.ParentCommand;
@@ -17,13 +19,13 @@ import picocli.CommandLine.ParentCommand;
 		mixinStandardHelpOptions = true,
 		name = "labels")
 @ParentCommands(EObjectSupplier.class)
-public class LabelsCommand extends AbstractHtmlAppGeneratorCommand {
+public class LabelsCommand extends CommandGroup implements LabelSupplier {
 	
 	@ParentCommand
 	EObjectSupplier<EObject> eObjectSupplier;
-	
+
 	@Override
-	protected Collection<Label> getLabels(ProgressMonitor progressMonitor) {
+	public Collection<Label> getEObjects(ProgressMonitor progressMonitor) {
 		return eObjectSupplier.getEObjects(progressMonitor).stream()
 				.filter(Label.class::isInstance)
 				.map(Label.class::cast)
