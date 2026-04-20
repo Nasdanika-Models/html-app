@@ -18,6 +18,7 @@ import org.nasdanika.graph.processor.ConnectionProcessorConfig;
 import org.nasdanika.models.app.Label;
 import org.nasdanika.models.app.Link;
 import org.nasdanika.models.app.graph.WidgetFactory;
+import org.nasdanika.ncore.util.NcoreUtil;
 
 public class ConnectionProcessor {
 	
@@ -140,7 +141,8 @@ public class ConnectionProcessor {
 
 				if (conn instanceof EReferenceConnection) {
 					EReference eRef = ((EReferenceConnection) conn).getReference();
-					if (eRef.isContainment()) {
+					boolean shallResolve = eRef.isContainment() || "true".equals(NcoreUtil.getNasdanikaAnnotationDetail(eRef, "logicalContainment"));					
+					if (shallResolve) {
 						String uriStr;
 						if (compactPath && eClass != null) {
 							uriStr = "r" + Integer.toString(eClass.getFeatureID(eRef), Character.MAX_RADIX);							

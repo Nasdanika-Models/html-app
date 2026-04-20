@@ -202,6 +202,14 @@ public abstract class BaseProcessor<T extends Element<?>> implements WidgetFacto
 				}
 				
 				String docRefProperty = configuration.getDocRefProperty();
+				
+//				if (Util.isBlank(docRefProperty)) {
+//					String docRefPattern = configuration.getDocRefPattern();
+//					if (!Util.isBlank(docRefPattern)) {
+//						docRefProperty = docRefPattern.formatted(modelElement.getPath());
+//					}
+//				}
+				
 				if (!Util.isBlank(docRefProperty)) {
 					String docRefStr = modelElement.getProperty(docRefProperty);
 					if (!Util.isBlank(docRefStr)) {
