@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.common.Supplier;
+import org.nasdanika.common.Util;
 import org.nasdanika.graph.Node;
 import org.nasdanika.graph.emf.EObjectNode;
 import org.nasdanika.graph.emf.EOperationConnection;
@@ -141,8 +142,9 @@ public class ConnectionProcessor {
 
 				if (conn instanceof EReferenceConnection) {
 					EReference eRef = ((EReferenceConnection) conn).getReference();
-					boolean shallResolve = eRef.isContainment() || "true".equals(NcoreUtil.getNasdanikaAnnotationDetail(eRef, "logicalContainment"));					
-					if (shallResolve) {
+					String logicalContainmentAnnotation = NcoreUtil.getNasdanikaAnnotationDetail(eRef, "logicalContainment");
+					boolean isLogicalContainment = Util.isBlank(logicalContainmentAnnotation) ? eRef.isContainment() : "true".equals(logicalContainmentAnnotation);
+					if (isLogicalContainment) {
 						String uriStr;
 						if (compactPath && eClass != null) {
 							uriStr = "r" + Integer.toString(eClass.getFeatureID(eRef), Character.MAX_RADIX);							
