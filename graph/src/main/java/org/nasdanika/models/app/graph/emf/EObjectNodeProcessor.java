@@ -77,6 +77,7 @@ import org.nasdanika.models.bootstrap.TableSection;
 import org.nasdanika.models.html.HtmlFactory;
 import org.nasdanika.ncore.Documented;
 import org.nasdanika.ncore.NamedElement;
+import org.nasdanika.ncore.util.NcoreUtil;
 import org.nasdanika.ncore.util.SemanticInfo;
 
 /**
@@ -504,7 +505,9 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 	 * This implementation returns true for containment references, i.e. actions for child objects shall be created. 
 	 */
 	protected boolean isCallOutgoingReferenceLabelsSuppliers(EReference eReference) {
-		return eReference != null && eReference.isContainment();
+		String logicalContainmentAnnotation = NcoreUtil.getNasdanikaAnnotationDetail(eReference, "logicalContainment");
+		boolean isLogicalContainment = Util.isBlank(logicalContainmentAnnotation) ? eReference.isContainment() : "true".equals(logicalContainmentAnnotation);
+		return eReference != null && isLogicalContainment;
 	}
 		
 	/**

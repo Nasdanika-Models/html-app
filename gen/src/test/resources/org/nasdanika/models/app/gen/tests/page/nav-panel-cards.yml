@@ -64,7 +64,7 @@ resources-file:
                               location: https://www.nasdanika.org
                               disabled: true
                           - app-label: Partition child label
-          navigation-bar:
+          navigationBar:
             brand:
               app-link:
                 icon: fa fa-user
@@ -107,7 +107,7 @@ resources-file:
                               text: Partition child link
                               location: https://www.nasdanika.org
                               disabled: true
-          navigation-panel:
+          navigationPanel:
             style: CARDS
             items:
               - app-link:
@@ -192,7 +192,7 @@ resources-file:
                   active: true  
               - app-label:
                   text: Plain label item 18
-          content-panel:
+          contentPanel:
             content:
               - content-text: Content panel
               - html-tag:

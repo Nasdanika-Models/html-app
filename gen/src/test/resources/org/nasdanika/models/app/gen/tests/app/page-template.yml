@@ -22,7 +22,7 @@ bootstrap.Page:
   body:
     app.Page:
       fluid: true
-      navigation-panel:
+      navigationPanel:
         style: COLLAPSIBLE_CARDS
         collapsible: true
  

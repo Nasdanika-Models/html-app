@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.eclipse.emf.ecore.EObject;
 import org.nasdanika.cli.CommandGroup;
 import org.nasdanika.cli.ParentCommands;
+import org.nasdanika.common.Description;
 import org.nasdanika.common.EObjectSupplier;
 import org.nasdanika.common.ProgressMonitor;
 import org.nasdanika.models.app.Label;
@@ -19,6 +20,7 @@ import picocli.CommandLine.ParentCommand;
 		mixinStandardHelpOptions = true,
 		name = "labels")
 @ParentCommands(EObjectSupplier.class)
+@Description(icon = "https://docs.nasdanika.org/images/tags.svg")
 public class LabelsCommand extends CommandGroup implements LabelSupplier {
 	
 	@ParentCommand

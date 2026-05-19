@@ -69,7 +69,7 @@ resources-file:
                               disabled: true
                           - content-text: Partition child inline text
                           - app-label: Partition child label
-          navigation-bar:
+          navigationBar:
             brand:
               app-link:
                 icon: fa fa-user
@@ -112,7 +112,7 @@ resources-file:
                               text: Partition child link
                               location: https://www.nasdanika.org
                               disabled: true
-          navigation-panel:
+          navigationPanel:
             items:
               - app-link:
                   icon: fa fa-cog
@@ -153,7 +153,7 @@ resources-file:
                               text: Partition child link
                               location: https://www.nasdanika.org
                               disabled: true
-          content-panel:
+          contentPanel:
             title:
               app-label:
                 icon: fa fa-user
@@ -209,7 +209,7 @@ resources-file:
                   icon: fa fa-user 
                   text: Drop-down
                   active: true
-            left-navigation:
+            leftNavigation:
               style: CARDS
               items:
                 - app-link:
@@ -247,7 +247,7 @@ resources-file:
                                 text: Partition child link
                                 location: https://www.nasdanika.org
                                 disabled: true            
-            right-navigation:
+            rightNavigation:
               items:
                 - app-link:
                     icon: fa fa-cog
@@ -284,7 +284,7 @@ resources-file:
                                 text: Partition child link
                                 location: https://www.nasdanika.org
                                 disabled: true            
-            float-left-navigation:
+            floatLeftNavigation:
               appearance:
                 border: DARK
               style: CARDS
@@ -324,7 +324,7 @@ resources-file:
                                 text: Partition child link
                                 location: https://www.nasdanika.org
                                 disabled: true            
-            float-right-navigation:
+            floatRightNavigation:
               items:
                 - app-link:
                     icon: fa fa-cog
@@ -379,7 +379,7 @@ resources-file:
                       disabled: true  
                 content:
                   - content-text: Section 1 content 
-                float-left-navigation:
+                floatLeftNavigation:
                   appearance:
                     border: DARK
                   style: CARDS
@@ -502,7 +502,7 @@ resources-file:
                       text: Disabled link item
                       location: https://www.nasdanika.org
                       disabled: true  
-                float-right-navigation:
+                floatRightNavigation:
                   items:
                     - app-link:
                         icon: fa fa-cog

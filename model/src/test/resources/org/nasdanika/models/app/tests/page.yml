@@ -12,13 +12,13 @@ bootstrap-page:
       header:
         content:
           content-text: Header
-      navigation-bar:
+      navigationBar:
         content:
           content-text: Navigation bar
-      navigation-panel:
+      navigationPanel:
         content:
           content-text: Navigation panel
-      content-panel:
+      contentPanel:
         content:
           - content-text: Content panel
           - html-tag:
