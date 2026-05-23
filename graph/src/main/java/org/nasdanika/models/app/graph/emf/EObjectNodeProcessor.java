@@ -1000,8 +1000,8 @@ public class EObjectNodeProcessor<T extends EObject> implements WidgetFactory, E
 	public void configureLabel(Object source, Label label, ProgressMonitor progressMonitor) {
 		if (source instanceof EObject) {
 			EObject eObject = (EObject) source;
-			if (eObject instanceof NamedElement && Util.isBlank(label.getText())) {
-				label.setText(StringEscapeUtils.escapeHtml4(getName((NamedElement) eObject)));
+			if (eObject instanceof NamedElement namedElement && Util.isBlank(label.getText())) {
+				label.setText(StringEscapeUtils.escapeHtml4(getName(namedElement)));
 			}
 			if (label instanceof Link && uri != null) {
 				((Link) label).setLocation(uri.toString());
