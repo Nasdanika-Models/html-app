@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.nasdanika.models.app</groupId>
 	<artifactId>parent</artifactId>
-	<version>2026.2.0</version>
+	<version>2026.6.0</version>
 	<packaging>pom</packaging>
 	<name>HTML Application model, processors, doc generator</name>
 	<description>HTML application model, node processors and HTML documentation genertor</description>
@@ -40,9 +40,9 @@
 	</developers>
 
 	<properties>
-		<core.version>2026.2.0</core.version>
-		<html.version>2026.2.0</html.version>
-		<models.ecore.version>2026.2.0</models.ecore.version>
+		<core.version>2026.6.0</core.version>
+		<html.version>2026.6.0</html.version>
+		<models.ecore.version>2026.6.0</models.ecore.version>
 		<jacoco.version>0.8.14</jacoco.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.javadoc.failOnError>false</maven.javadoc.failOnError>
@@ -50,6 +50,26 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.5.0</version>
+				<executions>
+					<execution>
+						<id>enforce-maven</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>3.9.16</version>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -125,19 +145,19 @@
 		<dependency>
 		    <groupId>org.junit.jupiter</groupId>
 		    <artifactId>junit-jupiter-api</artifactId>
-		    <version>6.0.1</version>
+		    <version>6.1.0</version>
 		    <scope>test</scope>
 		</dependency>		
 		<dependency>
 		    <groupId>org.junit.jupiter</groupId>
 		    <artifactId>junit-jupiter-engine</artifactId>
-		    <version>6.0.1</version>
+		    <version>6.1.0</version>
 		    <scope>test</scope>
 		</dependency>		
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.27.6</version>
+			<version>4.0.0-M1</version>
 			<scope>test</scope>
 		</dependency>				
 	</dependencies>
@@ -188,4 +208,6 @@
 		</profile>
 	</profiles>
 </project>
+
+
 
